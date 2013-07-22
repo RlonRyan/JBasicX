@@ -1,0 +1,5 @@
+####################
+# GitIgnore
+####################
+private.xml
+private.properties
