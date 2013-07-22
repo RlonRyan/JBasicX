@@ -1,11 +1,12 @@
-package JGameEngineX;
-
 /**
  * @author RlonRyan
  * @name JGameX
  * @version 1.0.2
  * @date September 11th, 2011
  */
+
+package JGameEngineX;
+
 import JBasicX.JImageHandlerX;
 import JIOX.*;
 import JSpriteX.JSpriteHolderX;
@@ -16,23 +17,46 @@ import java.awt.event.KeyListener;
 import java.awt.geom.AffineTransform;
 import java.awt.image.*;
 
-/**
- *
- * @author Ryan
- */
 public abstract class JGameEngineX extends Applet implements Runnable, JInputOutputX, KeyListener {
 
 // Constants
+    /**
+     *
+     */
     public static final int gamestopped = 0;
+    /**
+     *
+     */
     public static final int gamemenu = 1;
+    /**
+     *
+     */
     public static final int gamerunning = 2;
+    /**
+     *
+     */
     public static final int gamepaused = 3;
+    /**
+     *
+     */
     public static final Color defaultbackgroundcolor = Color.BLACK;
+    /**
+     *
+     */
     public static final Color defaultdrawcolor = Color.WHITE;
 // Public
+    /**
+     *
+     */
     public JSpriteHolderX spriteholder;
 // Protected
+    /**
+     *
+     */
     protected JMouseX mouse;
+    /**
+     *
+     */
     protected JImageHandlerX images;
 // Private
     private boolean[] keys = new boolean[526];
@@ -65,71 +89,75 @@ public abstract class JGameEngineX extends Applet implements Runnable, JInputOut
      * <br/>Called by the
      * <code>init</code> function.
      */
-    public abstract void gameStart()
+    public abstract void gameStart();
 
-    ;
     /**
      * <code>gameEnd</code> function to override in new instance.
-     * <p/>Override function is to contain game end code.
-     * <br/>Called when <code>gamestatus = stopped</code>.
+     * <p/>
+     * Override function is to contain game end code.
+     * <br/>Called when
+     * <code>gamestatus = stopped</code>.
      */
-    public abstract void gameEnd()
+    public abstract void gameEnd();
 
-    ;
     /**
      * <code>gameStart</code> function to override in new instance.
-     * <p/>Override function is to contain game menu code.
-     * <br/>Called when <code>gamestatus = menu</code>.
+     * <p/>
+     * Override function is to contain game menu code.
+     * <br/>Called when
+     * <code>gamestatus = menu</code>.
      */
-    public abstract void gameMenu()
+    public abstract void gameMenu();
 
-    ;
     /**
      * <code>gameStart</code> function to override in new instance.
-     * <p/>Override function is to contain game update code.
-     * <br/>Called when <code>gamestatus = running</code>.
+     * <p/>
+     * Override function is to contain game update code.
+     * <br/>Called when
+     * <code>gamestatus = running</code>.
      */
-    public abstract void gameUpdate()
-    ;
+    public abstract void gameUpdate();
+
     /**
      * <code>gameStart</code> function to override in new instance.
-     * <p/>Override function is to contain game pause code.
-     * <br/>Called when <code>gamestatus = paused</code>.
+     * <p/>
+     * Override function is to contain game pause code.
+     * <br/>Called when
+     * <code>gamestatus = paused</code>.
      */
-    public abstract void gamePaused()
-    ;
+    public abstract void gamePaused();
+
     /**
      *
      * @param g2d The graphics pointing to backbuffer to be drawn to.
      */
-    public abstract void gameMenuPaint(Graphics2D g2d)
+    public abstract void gameMenuPaint(Graphics2D g2d);
 
-    ;
     /**
      *
      * @param g2d The graphics pointing to backbuffer to be drawn to.
      */
-    public abstract void gamePaint(Graphics2D g2d)
+    public abstract void gamePaint(Graphics2D g2d);
 
-    ;
     /**
      *
      * @param g2d The graphics pointing to backbuffer to be drawn to.
      */
-    public abstract void gamePausePaint(Graphics2D g2d)
+    public abstract void gamePausePaint(Graphics2D g2d);
 
-    ;
     /**
      *
      * @param g2d The graphics pointing to backbuffer to be drawn to.
      */
-    public abstract void gameStoppedPaint(Graphics2D g2d)
-
-    ;
+    public abstract void gameStoppedPaint(Graphics2D g2d);
     //Acessors
+
     /**
-     * Method for getting the <code>gamestatus</code>variable.
-     * @return <code>gamestatus</code><br/>0 = stopped.<br/>1 = menu.<br/>2 = running.<br/>3 = paused.
+     * Method for getting the
+     * <code>gamestatus</code>variable.
+     * <p/>
+     * @return <code>gamestatus</code><br/>0 = stopped.<br/>1 = menu.<br/>2 =
+     *         running.<br/>3 = paused.
      */
     public final int getGameStatus() {
         return this.gamestatus;
@@ -152,14 +180,26 @@ public abstract class JGameEngineX extends Applet implements Runnable, JInputOut
         return this.winh;
     }
 
+    /**
+     *
+     * @return
+     */
     public final int getGameWinWidthCenter() {
         return this.winwc;
     }
 
+    /**
+     *
+     * @return
+     */
     public final int getGameWinHeightCenter() {
         return this.winhc;
     }
 
+    /**
+     *
+     * @return
+     */
     public final BufferedImage getBackbuffer() {
         return this.backbuffer;
     }
@@ -228,10 +268,18 @@ public abstract class JGameEngineX extends Applet implements Runnable, JInputOut
         return this.gamelastpausedat;
     }
 
+    /**
+     *
+     * @return
+     */
     public final Color getDrawColor() {
         return drawcolor;
     }
 
+    /**
+     *
+     * @return
+     */
     public final Color getBackgroundColor() {
         return backgroundcolor;
     }
@@ -244,6 +292,10 @@ public abstract class JGameEngineX extends Applet implements Runnable, JInputOut
         return this.keys;
     }
 
+    /**
+     *
+     * @return
+     */
     public final String getKeysDownString() {
         String keysdown = "Keys: ";
         for (int i = 1; i < 525; i++) {
@@ -254,10 +306,20 @@ public abstract class JGameEngineX extends Applet implements Runnable, JInputOut
         return keysdown;
     }
 
+    /**
+     *
+     * @param keycode
+     * @return
+     */
     public final boolean isKeyDown(int keycode) {
         return this.keys[keycode];
     }
 
+    /**
+     *
+     * @param keycode
+     * @return
+     */
     public final boolean isKeyDownAndRemove(int keycode) {
         if (this.keys[keycode]) {
             this.keys[keycode] = false;
@@ -291,10 +353,18 @@ public abstract class JGameEngineX extends Applet implements Runnable, JInputOut
         this.showgamedata = visable;
     }
 
+    /**
+     *
+     * @param drawcolor
+     */
     public final void setDrawColor(Color drawcolor) {
         this.drawcolor = drawcolor;
     }
 
+    /**
+     *
+     * @param backgroundcolor
+     */
     public final void setBackgroundColor(Color backgroundcolor) {
         this.backgroundcolor = backgroundcolor;
     }
@@ -312,28 +382,45 @@ public abstract class JGameEngineX extends Applet implements Runnable, JInputOut
         this.resizeGame(gamewindowwidth, gamewindowheight);
     }
 
+    /**
+     *
+     * @param dfps
+     */
     public final void setDFPS(long dfps) {
         this.dfps = dfps;
     }
 
     //Reset
+    /**
+     *
+     */
     public final void resetBackgroundColorToDefault() {
         this.backgroundcolor = defaultbackgroundcolor;
     }
 
+    /**
+     *
+     */
     public final void resetDrawColorToDefault() {
         this.drawcolor = defaultdrawcolor;
         this.g2d.setColor(drawcolor);
     }
 
+    /**
+     *
+     */
     public final void resetDrawColor() {
         this.g2d.setColor(drawcolor);
     }
 
+    /**
+     *
+     */
     public final void resetAffineTransform() {
         this.g2d.setTransform(affinetransform);
     }
     //Functions
+
     /**
      *
      */
@@ -361,27 +448,25 @@ public abstract class JGameEngineX extends Applet implements Runnable, JInputOut
             framenum = 0;
         }
         clearBackbuffer();
-        if (this.gamestatus == gamemenu) {
-            gameMenuPaint(g2d);
-        }
-        else if (this.gamestatus == gamepaused) {
-            gamePausePaint(g2d);
-        }
-        else if (this.gamestatus == gamerunning) {
-            gamePaint(g2d);
-        }
-        else if (this.gamestatus == gamestopped) {
-            gameStoppedPaint(g2d);
-        }
-        else {
-            Color prevc = this.g2d.getColor();
-            this.g2d.setColor(Color.red);
-            this.g2d.drawString("ERROR: INVALID GAME MODE", this.getGameWinWidthCenter() - 10, this.getGameWinHeightCenter());
-            this.g2d.setColor(prevc);
+        switch (this.gamestatus) {
+            case gamemenu:
+                gameMenuPaint(g2d);
+                break;
+            case gamepaused:
+                gamePausePaint(g2d);
+                break;
+            case gamerunning:
+                gamePaint(g2d);
+                break;
+            case gamestopped:
+                gameStoppedPaint(g2d);
+                break;
+            default:
+                paintError("Invalid Game Mode.");
+                break;
         }
         if (showgamedata) {
-            g2d.drawString("FPS: " + this.fps, 10, backbuffer.getHeight() - 10);
-            g2d.drawString("Sups: " + this.spriteholder.getSups(), 100, this.getGameWinHeight() - 10);
+            paintGameData();
         }
         paint(g);
     }
@@ -399,6 +484,38 @@ public abstract class JGameEngineX extends Applet implements Runnable, JInputOut
         g2d.setPaint(this.backgroundcolor);
         g2d.fillRect(0, 0, backbuffer.getWidth(), backbuffer.getHeight());
         g2d.setColor(prev);
+    }
+
+    /**
+     *
+     */
+    public void paintGameData() {
+        g2d.drawString("FPS: " + this.fps, 10, backbuffer.getHeight() - 10);
+        g2d.drawString("Sups: " + this.spriteholder.getSups(), 100, this.getGameWinHeight() - 10);
+    }
+
+    /**
+     *
+     * @param desc
+     */
+    public void paintError(String desc) {
+        String message = "Error: " + desc;
+        Color prevc = this.g2d.getColor();
+        this.g2d.setColor(Color.red);
+        this.g2d.drawString(message, this.getGameWinWidthCenter() - (10 + (this.g2d.getFontMetrics().stringWidth(message) / 2)), this.getGameWinHeightCenter());
+        this.g2d.setColor(prevc);
+    }
+
+    /**
+     *
+     * @param e
+     */
+    public void paintError(Exception e) {
+        String message = "Error: " + e.getLocalizedMessage();
+        Color prevc = this.g2d.getColor();
+        this.g2d.setColor(Color.red);
+        this.g2d.drawString(message, this.getGameWinWidthCenter() - (10 + (this.g2d.getFontMetrics().stringWidth(message) / 2)), this.getGameWinHeightCenter());
+        this.g2d.setColor(prevc);
     }
 
     /**
@@ -482,6 +599,9 @@ public abstract class JGameEngineX extends Applet implements Runnable, JInputOut
         this.gameEnd();
     }
 
+    /**
+     *
+     */
     @Override
     public void updateIO() {
         repaint();
