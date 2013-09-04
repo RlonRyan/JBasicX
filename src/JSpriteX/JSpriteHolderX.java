@@ -49,7 +49,7 @@ final public class JSpriteHolderX implements Runnable {
     }
 
     synchronized final public void addTemplateSprite(String name, int type, int direction, int speed, int x, int y) {
-        JPicSpriteX spr = new JPicSpriteX(this.holder.getGameWinWidthCenter(), this.holder.getGameWinHeightCenter());
+        JPictureSpriteX spr = new JPictureSpriteX(this.holder.getGameWinWidthCenter(), this.holder.getGameWinHeightCenter());
         spr.setPosition(x, y);
         spr.setDirection(direction);
         spr.setSpeed(speed);
@@ -58,27 +58,27 @@ final public class JSpriteHolderX implements Runnable {
         this.templatespritesname.add(name);
     }
 
-    synchronized final public void addTemplateSprite(String name, int type, int x, int y) {
-        JPicSpriteX spr = new JPicSpriteX(this.holder.getGameWinWidthCenter(), this.holder.getGameWinHeightCenter());
+    /*synchronized final public void addTemplateSprite(String name, int type, int x, int y) {
+        JPictureSpriteX spr = new JPictureSpriteX(this.holder.getGameWinWidthCenter(), this.holder.getGameWinHeightCenter());
         spr.setPosition(x, y);
         spr.setType(type);
         this.templatesprites.add(spr);
         this.templatespritesname.add(name);
     }
 
-    synchronized final public void addTemplateSprite(JPicSpriteX sprite, String name) {
+    synchronized final public void addTemplateSprite(JPictureSpriteX sprite, String name) {
         this.templatesprites.add(sprite);
         this.templatespritesname.add(name);
     }
 
     synchronized final public void addTemplateSprite(String name) {
-        JPicSpriteX spr = new JPicSpriteX(this.holder.getGameWinWidthCenter(), this.holder.getGameWinHeightCenter());
+        JPictureSpriteX spr = new JPictureSpriteX(this.holder.getGameWinWidthCenter(), this.holder.getGameWinHeightCenter());
         this.templatesprites.add(spr);
         this.templatespritesname.add(name);
-    }
+    }*/
 
     synchronized final public void addSprite(int type, int direction, int speed, double x, double y) {
-        JPicSpriteX spr = new JPicSpriteX(this.holder.getGameWinWidthCenter(), this.holder.getGameWinHeightCenter());
+        JPictureSpriteX spr = new JPictureSpriteX(this.holder.getGameWinWidthCenter(), this.holder.getGameWinHeightCenter());
         spr.setPosition(x, y);
         spr.setDirection(direction);
         spr.setSpeed(speed);
@@ -87,14 +87,14 @@ final public class JSpriteHolderX implements Runnable {
     }
 
     synchronized final public void addSprite(int type, double x, double y) {
-        JPicSpriteX spr = new JPicSpriteX(this.holder.getGameWinWidthCenter(), this.holder.getGameWinHeightCenter());
+        JPictureSpriteX spr = new JPictureSpriteX(this.holder.getGameWinWidthCenter(), this.holder.getGameWinHeightCenter());
         spr.setPosition(x, y);
         spr.setType(type);
         this.sprites.add(spr);
     }
 
     synchronized final public void addSprite(int type) {
-        JPicSpriteX spr = new JPicSpriteX(this.holder.getGameWinWidthCenter(), this.holder.getGameWinHeightCenter());
+        JPictureSpriteX spr = new JPictureSpriteX(this.holder.getGameWinWidthCenter(), this.holder.getGameWinHeightCenter());
         spr.setType(type);
         this.sprites.add(spr);
     }
@@ -206,7 +206,7 @@ final public class JSpriteHolderX implements Runnable {
         }
     }
 
-    synchronized final public int checkCollisionsWith(JPicSpriteX sprite) {
+    synchronized final public int checkCollisionsWith(JPictureSpriteX sprite) {
         int c = 0;
         for (int i = 0; i < this.sprites.size(); i++) {
             if (this.sprites.get(i).collidesWith(sprite)) {
@@ -216,15 +216,7 @@ final public class JSpriteHolderX implements Runnable {
         return c;
     }
 
-    synchronized final public void checkCollisionWithAndRemove(JPicSpriteX sprite) {
-        for (int i = 0; i < this.sprites.size(); i++) {
-            if (this.sprites.get(i).collidesWith(sprite)) {
-                this.sprites.remove(i);
-            }
-        }
-    }
-
-    synchronized final public int checkCollisionWithAndRemoveAndReturnCollisions(JPicSpriteX sprite) {
+    synchronized final public int checkCollisionWithAndRemove(JPictureSpriteX sprite) {
         int c = 0;
         for (int i = 0; i < this.sprites.size(); i++) {
             if (this.sprites.get(i).collidesWith(sprite)) {
@@ -235,7 +227,7 @@ final public class JSpriteHolderX implements Runnable {
         return c;
     }
 
-    synchronized final public void checkCollisionAndRemove() {
+    synchronized final public void checkCollisionsAndRemove() {
         for (int i = 0; i < this.sprites.size(); i++) {
             for (int ii = 0; ii < this.sprites.size(); ii++) {
                 if (i != ii && this.sprites.get(i).collidesWith(this.sprites.get(ii))) {

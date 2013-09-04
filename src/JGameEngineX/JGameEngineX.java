@@ -576,17 +576,22 @@ public abstract class JGameEngineX extends Applet implements Runnable, JInputOut
                 this.g2d.drawString(e.getLocalizedMessage(), 0, 0);
             }
             this.gametime = System.currentTimeMillis() - gamestarttime;
-            if (this.gamestatus == gamemenu) {
-                gameMenu();
-            }
-            else if (this.gamestatus == gamerunning) {
-                gameUpdate();
-            }
-            else if (this.gamestatus == gamepaused) {
-                gamePaused();
-            }
-            else if (gamestatus == gamestopped) {
-                stop();
+            switch(this.gamestatus) {
+                case gamemenu:
+                    gameMenu();
+                    break;
+                case gamerunning:
+                    gameUpdate();
+                    break;
+                case gamepaused:
+                    gamePaused();
+                    break;
+                case gamestopped:
+                    stop();
+                    break;
+                default:
+                    System.err.println("Invalid game mode.");
+                    break;
             }
             repaint();
         }

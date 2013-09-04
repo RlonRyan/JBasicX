@@ -29,7 +29,7 @@ public final class JImageHandlerX extends Object {
         return this.images.get(this.names.indexOf(name));
     }
 
-    public Image getDefaultimage() {
+    public final Image getDefaultImage() {
         return defaultimage;
     }
 

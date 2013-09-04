@@ -1,5 +1,5 @@
 //RlonRyan
-//JBasicX JPicSpriteX
+//JBasicX JPictureSpriteX
 package JSpriteX;
 
 import JBasicX.JPoint2DX;
@@ -13,7 +13,7 @@ import java.awt.image.BufferedImage;
  *
  * @author Ryan
  */
-public final class JPicSpriteX extends JSpriteX {
+public final class JPictureSpriteX extends JSpriteX {
     //vars
 
     private Image picture;
@@ -28,19 +28,19 @@ public final class JPicSpriteX extends JSpriteX {
      *
      * @param holder
      */
-    public JPicSpriteX(Image picture, int x, int y) {
+    public JPictureSpriteX(Image picture, int x, int y) {
         this.picture = picture;
         this.setVisable(true);
         this.updateSize();
     }
 
-    public JPicSpriteX(String filename, int x, int y) {
+    public JPictureSpriteX(String filename, int x, int y) {
         this.loadPicture(filename);
         this.setVisable(true);
         this.updateSize();
     }
 
-    public JPicSpriteX(int x, int y) {
+    public JPictureSpriteX(int x, int y) {
         this.loadPicture(null);
         this.setVisable(true);
         this.updateSize();

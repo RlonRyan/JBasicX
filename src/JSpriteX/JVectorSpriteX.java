@@ -10,7 +10,7 @@ import java.awt.geom.*;
  *
  * @author Ryan
  */
-public class JVSpriteX extends JSpriteX {
+public class JVectorSpriteX extends JSpriteX {
 
     //Variables
     private Shape shape;
@@ -186,7 +186,7 @@ public class JVSpriteX extends JSpriteX {
     /**
      *
      */
-    public JVSpriteX() {
+    public JVectorSpriteX() {
         this.setColors(null);
         this.setShape(null);
         this.setPolygon(null);
