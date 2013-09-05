@@ -11,6 +11,8 @@ import java.awt.Graphics2D;
 import java.awt.Rectangle;
 import java.awt.geom.AffineTransform;
 
+import static java.lang.Math.*;
+
 public abstract class JSpriteX {
 
     //Status
@@ -24,7 +26,7 @@ public abstract class JSpriteX {
     private JPoint2DX centeroffset = new JPoint2DX();
     private JPoint2DX center = new JPoint2DX();
     //Speed
-    private int Speed = 0;
+    private int speed = 0;
     //Direction
     private int direction = 0;
     //Rotation
@@ -93,7 +95,7 @@ public abstract class JSpriteX {
     }
 
     public final int getSpeed() {
-        return Speed;
+        return speed;
     }
 
     public final int getDirection() {
@@ -208,7 +210,7 @@ public abstract class JSpriteX {
     }
 
     public final void setSpeed(int Speed) {
-        this.Speed = Speed;
+        this.speed = Speed;
     }
 
     public final void setDirection(int direction) {
@@ -336,8 +338,8 @@ public abstract class JSpriteX {
             this.lastupdate = System.currentTimeMillis();
             return;
         }
-        this.incX(((this.Speed * (Math.cos(this.direction * Math.PI / 180))) / 1000) * (System.currentTimeMillis() - this.lastupdate));
-        this.incY(((this.Speed * (Math.sin(this.direction * Math.PI / 180))) / 1000) * (System.currentTimeMillis() - this.lastupdate));
+        this.incX(((this.speed * (Math.cos(this.direction * Math.PI / 180))) / 1000) * (System.currentTimeMillis() - this.lastupdate));
+        this.incY(((this.speed * (Math.sin(this.direction * Math.PI / 180))) / 1000) * (System.currentTimeMillis() - this.lastupdate));
         this.lastupdate = System.currentTimeMillis();
     }
 
@@ -401,4 +403,22 @@ public abstract class JSpriteX {
     }
 
     protected abstract void drawSprite(Graphics2D g2d);
+//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+    // The Force, with you it is.
+    public final void applyForce(double force, double direction) {
+        double adjacent1 = force * cos(direction);
+        double opposite1 = force * sin(direction);
+        double adjacent2 = this.speed * cos(this.direction);
+        double opposite2 = this.speed * sin(this.direction);
+        double adjacent = adjacent1 + adjacent2;
+        double opposite = opposite1 + opposite2;
+        direction = atan(opposite / adjacent);
+        force = sqrt((opposite * opposite) + (adjacent * adjacent));
+        this.direction = (int)direction + this.direction;
+        this.speed = (int)force;
+    }
+//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+    //  TEH END
 }

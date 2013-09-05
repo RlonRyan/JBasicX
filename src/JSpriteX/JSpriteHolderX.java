@@ -30,22 +30,27 @@ final public class JSpriteHolderX implements Runnable {
     private int sups = 0;
     private long updatetime = 0;
     private int updatenumber = 0;
+    private boolean active = false;
 
     public JSpriteHolderX(JGameEngineX holder) {
         this.sprites = new LinkedList<JSpriteX>();
         this.holder = holder;
     }
 
-    public int getDsups() {
+    final public int getDsups() {
         return dsups;
     }
 
-    public int getSups() {
+    final public int getSups() {
         return sups;
     }
 
-    public void setDsups(int dsups) {
+    final public void setDsups(int dsups) {
         this.dsups = dsups;
+    }
+
+    public final boolean isActive(){
+        return active;
     }
 
     synchronized final public void addTemplateSprite(String name, int type, int direction, int speed, int x, int y) {
@@ -58,24 +63,10 @@ final public class JSpriteHolderX implements Runnable {
         this.templatespritesname.add(name);
     }
 
-    /*synchronized final public void addTemplateSprite(String name, int type, int x, int y) {
-        JPictureSpriteX spr = new JPictureSpriteX(this.holder.getGameWinWidthCenter(), this.holder.getGameWinHeightCenter());
-        spr.setPosition(x, y);
-        spr.setType(type);
-        this.templatesprites.add(spr);
-        this.templatespritesname.add(name);
-    }
-
-    synchronized final public void addTemplateSprite(JPictureSpriteX sprite, String name) {
+    synchronized final public void addTemplateSprite(JSpriteX sprite, String name) {
         this.templatesprites.add(sprite);
         this.templatespritesname.add(name);
     }
-
-    synchronized final public void addTemplateSprite(String name) {
-        JPictureSpriteX spr = new JPictureSpriteX(this.holder.getGameWinWidthCenter(), this.holder.getGameWinHeightCenter());
-        this.templatesprites.add(spr);
-        this.templatespritesname.add(name);
-    }*/
 
     synchronized final public void addSprite(int type, int direction, int speed, double x, double y) {
         JPictureSpriteX spr = new JPictureSpriteX(this.holder.getGameWinWidthCenter(), this.holder.getGameWinHeightCenter());
@@ -206,7 +197,16 @@ final public class JSpriteHolderX implements Runnable {
         }
     }
 
-    synchronized final public int checkCollisionsWith(JPictureSpriteX sprite) {
+    synchronized final public JSpriteX collidesWith(JSpriteX sprite) {
+        for (int i = 0; i < this.sprites.size(); i++) {
+            if (this.sprites.get(i).collidesWith(sprite)) {
+                return this.sprites.get(i);
+            }
+        }
+        return null;
+    }
+
+    synchronized final public int checkCollisionsWith(JSpriteX sprite) {
         int c = 0;
         for (int i = 0; i < this.sprites.size(); i++) {
             if (this.sprites.get(i).collidesWith(sprite)) {
@@ -216,7 +216,7 @@ final public class JSpriteHolderX implements Runnable {
         return c;
     }
 
-    synchronized final public int checkCollisionWithAndRemove(JPictureSpriteX sprite) {
+    synchronized final public int checkCollisionsWithAndRemove(JSpriteX sprite) {
         int c = 0;
         for (int i = 0; i < this.sprites.size(); i++) {
             if (this.sprites.get(i).collidesWith(sprite)) {
@@ -241,6 +241,7 @@ final public class JSpriteHolderX implements Runnable {
     final public void start() {
         this.spriteUpdateThread = new Thread(this);
         this.spriteUpdateThread.start();
+        this.active = true;
     }
 
     @Override
@@ -258,5 +259,6 @@ final public class JSpriteHolderX implements Runnable {
 
     final public void stop() {
         this.spriteUpdateThread = null;
+        this.active = false;
     }
 }

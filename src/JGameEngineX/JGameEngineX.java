@@ -27,15 +27,19 @@ public abstract class JGameEngineX extends Applet implements Runnable, JInputOut
     /**
      *
      */
-    public static final int gamemenu = 1;
+    public static final int gamestarting = 1;
     /**
      *
      */
-    public static final int gamerunning = 2;
+    public static final int gamemenu = 2;
     /**
      *
      */
-    public static final int gamepaused = 3;
+    public static final int gamerunning = 3;
+    /**
+     *
+     */
+    public static final int gamepaused = 4;
     /**
      *
      */
@@ -60,11 +64,11 @@ public abstract class JGameEngineX extends Applet implements Runnable, JInputOut
     protected JImageHandlerX images;
 // Private
     private boolean[] keys = new boolean[526];
-    private int gamestatus = 2;
-    private int winw = 250;
-    private int winh = 200;
-    private int winwc = 250 / 2;
-    private int winhc = 200 / 2;
+    private int gamestatus;
+    private int winw;
+    private int winh;
+    private int winwc;
+    private int winhc;
     private Thread gamemain;
     private int framenum = 0;
     private int fps = 0;
@@ -530,6 +534,7 @@ public abstract class JGameEngineX extends Applet implements Runnable, JInputOut
         this.winhc = height / 2;
         this.backbuffer = new BufferedImage(winw, winh, BufferedImage.TYPE_INT_RGB);
         this.g2d = backbuffer.createGraphics();
+        this.affinetransform = this.g2d.getTransform();
         super.resize(winw, winh);
         if (mouse != null) {
             mouse.clear();
@@ -538,31 +543,42 @@ public abstract class JGameEngineX extends Applet implements Runnable, JInputOut
 
     @Override
     public final void init() {
-        this.start();
-    }
 
-    @Override
-    public final void start() {
+        //  Set Game Atributes
+        this.setGameAtrib(50, 640, 480, gamestarting);
+
+        //  Resources
         this.mouse = new JMouseX(this);
         this.images = new JImageHandlerX();
         this.spriteholder = new JSpriteHolderX(this);
-        while (this.getSize() == new Dimension(0, 0)) {
-            this.backbuffer = new BufferedImage(winw, winh, BufferedImage.TYPE_INT_RGB);
-            this.g2d = backbuffer.createGraphics();
-        }
-        this.setGameAtrib(50, 640, 480, gamestopped);
-        this.frametime = System.currentTimeMillis();
-        this.gamestarttime = System.currentTimeMillis();
-        this.frametime = System.currentTimeMillis();
-        this.gamemain = new Thread(this);
-        this.gamemain.start();
-        this.spriteholder.start();
+
+        //  Listeners
         this.addKeyListener(this);
         this.addMouseListener(mouse);
         this.addMouseMotionListener(mouse);
         this.addMouseWheelListener(mouse);
-        this.gameStart();
-        this.affinetransform = this.g2d.getTransform();
+
+        // ???
+        // I have no clue why theese have to be here but they do...
+        start();
+
+        //  Start the game thread
+        this.gamemain = new Thread(this);
+        this.gamemain.start();
+
+        // Timing Stuff
+        this.gamestarttime = System.currentTimeMillis();
+        this.frametime = System.currentTimeMillis();
+    }
+
+    @Override
+    public final void start() {
+
+        //  Start-up Sprite holder
+        this.spriteholder.start();
+
+        //  Finally pass on control for pre-game stuff
+        gameStart();
     }
 
     @Override
@@ -588,6 +604,9 @@ public abstract class JGameEngineX extends Applet implements Runnable, JInputOut
                     break;
                 case gamestopped:
                     stop();
+                    break;
+                case gamestarting:
+                    System.out.println("This system is slow.");
                     break;
                 default:
                     System.err.println("Invalid game mode.");
