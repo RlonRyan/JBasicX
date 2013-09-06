@@ -25,8 +25,10 @@ public abstract class JSpriteX {
     private JPoint2DX position = new JPoint2DX();
     private JPoint2DX centeroffset = new JPoint2DX();
     private JPoint2DX center = new JPoint2DX();
+    //Acceleration
+    private double accel = 0;
     //Speed
-    private int speed = 0;
+    private double vel = 0;
     //Direction
     private int direction = 0;
     //Rotation
@@ -94,8 +96,12 @@ public abstract class JSpriteX {
         return centeroffset.getY();
     }
 
-    public final int getSpeed() {
-        return speed;
+    public final double getAccel() {
+        return accel;
+    }
+
+    public final double getVel() {
+        return vel;
     }
 
     public final int getDirection() {
@@ -209,8 +215,12 @@ public abstract class JSpriteX {
         this.center.setY(yoffset);
     }
 
-    public final void setSpeed(int Speed) {
-        this.speed = Speed;
+    public final void setAccel(double accel) {
+        this.accel = accel;
+    }
+
+    public final void setVel(double vel) {
+        this.vel = vel;
     }
 
     public final void setDirection(int direction) {
@@ -320,6 +330,14 @@ public abstract class JSpriteX {
     public final void incY(double y) {
         this.setYPosition(this.getPosition().getY() + y);
     }
+
+    public final void incVel(double vel) {
+        this.setVel(this.getVel() + vel);
+    }
+
+    public final void incAccel(double accel) {
+        this.setAccel(this.getAccel() + accel);
+    }
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
     //Auto
@@ -338,8 +356,14 @@ public abstract class JSpriteX {
             this.lastupdate = System.currentTimeMillis();
             return;
         }
-        this.incX(((this.speed * (Math.cos(this.direction * Math.PI / 180))) / 1000) * (System.currentTimeMillis() - this.lastupdate));
-        this.incY(((this.speed * (Math.sin(this.direction * Math.PI / 180))) / 1000) * (System.currentTimeMillis() - this.lastupdate));
+        if (this.getVel() > 0) {
+            this.incVel((this.accel / 1000) * (System.currentTimeMillis() - this.lastupdate));
+        }
+        else {
+            this.setVel(0);
+        }
+        this.incX(((this.vel * (Math.cos(this.direction * Math.PI / 180))) / 1000) * (System.currentTimeMillis() - this.lastupdate));
+        this.incY(((this.vel * (Math.sin(this.direction * Math.PI / 180))) / 1000) * (System.currentTimeMillis() - this.lastupdate));
         this.lastupdate = System.currentTimeMillis();
     }
 
@@ -407,16 +431,16 @@ public abstract class JSpriteX {
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
     // The Force, with you it is.
     public final void applyForce(double force, double direction) {
-        double adjacent1 = force * cos(direction);
-        double opposite1 = force * sin(direction);
-        double adjacent2 = this.speed * cos(this.direction);
-        double opposite2 = this.speed * sin(this.direction);
-        double adjacent = adjacent1 + adjacent2;
-        double opposite = opposite1 + opposite2;
-        direction = atan(opposite / adjacent);
+        double adjacent1 = force * cos(toRadians(direction));
+        double opposite1 = force * sin(toRadians(direction));
+        double adjacent2 = this.vel * cos(toRadians(this.direction));
+        double opposite2 = this.vel * sin(toRadians(this.direction));
+        double adjacent = (adjacent1 + adjacent2);
+        double opposite = (opposite1 + opposite2);
+        direction = toDegrees(atan(opposite / adjacent));
         force = sqrt((opposite * opposite) + (adjacent * adjacent));
         this.direction = (int)direction + this.direction;
-        this.speed = (int)force;
+        this.vel = force;
     }
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

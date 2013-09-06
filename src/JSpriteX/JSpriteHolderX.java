@@ -53,11 +53,11 @@ final public class JSpriteHolderX implements Runnable {
         return active;
     }
 
-    synchronized final public void addTemplateSprite(String name, int type, int direction, int speed, int x, int y) {
+    synchronized final public void addTemplateSprite(String name, int type, int direction, double vel, double x, double y) {
         JPictureSpriteX spr = new JPictureSpriteX(this.holder.getGameWinWidthCenter(), this.holder.getGameWinHeightCenter());
         spr.setPosition(x, y);
         spr.setDirection(direction);
-        spr.setSpeed(speed);
+        spr.setVel(vel);
         spr.setType(type);
         this.templatesprites.add(spr);
         this.templatespritesname.add(name);
@@ -68,11 +68,11 @@ final public class JSpriteHolderX implements Runnable {
         this.templatespritesname.add(name);
     }
 
-    synchronized final public void addSprite(int type, int direction, int speed, double x, double y) {
+    synchronized final public void addSprite(int type, int direction, double vel, double x, double y) {
         JPictureSpriteX spr = new JPictureSpriteX(this.holder.getGameWinWidthCenter(), this.holder.getGameWinHeightCenter());
         spr.setPosition(x, y);
         spr.setDirection(direction);
-        spr.setSpeed(speed);
+        spr.setVel(vel);
         spr.setType(type);
         this.sprites.add(spr);
     }
@@ -94,11 +94,11 @@ final public class JSpriteHolderX implements Runnable {
         this.sprites.remove(index);
     }
 
-    synchronized final public void cloneTemplateSprite(String name, int direction, int speed, double x, double y) {
+    synchronized final public void cloneTemplateSprite(String name, int direction, double vel, double x, double y) {
         this.sprites.add(this.templatesprites.get(this.templatespritesname.indexOf(name)));
         this.sprites.getLast().setPosition(x, y);
         this.sprites.getLast().setDirection(direction);
-        this.sprites.getLast().setSpeed(speed);
+        this.sprites.getLast().setVel(vel);
     }
 
     synchronized final public void cloneTemplateSprite(String name, double x, double y) {
@@ -197,10 +197,27 @@ final public class JSpriteHolderX implements Runnable {
         }
     }
 
+    synchronized final public void drawSpriteBounds(Graphics2D g2d) {
+        for (int i = 0; i < this.sprites.size(); i++) {
+            this.sprites.get(i).drawBoundsTo(g2d);
+            this.holder.resetAffineTransform();
+            this.holder.resetDrawColor();
+        }
+    }
+
     synchronized final public JSpriteX collidesWith(JSpriteX sprite) {
         for (int i = 0; i < this.sprites.size(); i++) {
             if (this.sprites.get(i).collidesWith(sprite)) {
                 return this.sprites.get(i);
+            }
+        }
+        return null;
+    }
+
+    synchronized final public JSpriteX collidesWithAndRemove(JSpriteX sprite) {
+        for (int i = 0; i < this.sprites.size(); i++) {
+            if (this.sprites.get(i).collidesWith(sprite)) {
+                return this.sprites.remove(i);
             }
         }
         return null;
