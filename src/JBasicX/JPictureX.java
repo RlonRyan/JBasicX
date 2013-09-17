@@ -1,5 +1,11 @@
-//RlonRyan
-//JBasicX JPictureX
+/**
+ * @author  RlonRyan
+ * @name    JPictureX
+ * @version 1.0.0
+ * @date    Dec 17, 2011
+ * @info    Image class.
+**/
+
 package JBasicX;
 
 import java.awt.Image;

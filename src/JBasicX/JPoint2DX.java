@@ -1,13 +1,16 @@
 /**
- * RlonRyan
- ** JPoint2DX
- ** Dec 17, 2011
- *
- */
+ * @author  RlonRyan
+ * @name    JPoint2DX
+ * @version 1.0.0
+ * @date    Dec 17, 2011
+ * @info    Point class. Deprecated.
+**/
+
 package JBasicX;
 
 import java.awt.geom.Point2D;
 
+@Deprecated
 public class JPoint2DX {
 
     private double x;

@@ -1,9 +1,11 @@
 /**
- * RlonRyan
- ** JSpriteHolderX
- ** Jan 11, 2012
- *
- */
+ * @author  RlonRyan
+ * @name    JSpriteX
+ * @version 1.0.0
+ * @date    Jan 11, 2012
+ * @info    Sprite container class.
+**/
+
 package JSpriteX;
 
 import JGameEngineX.JGameEngineX;

@@ -1,9 +1,11 @@
 /**
- * RlonRyan
- ** JSoundX
- ** Dec 23, 2011
- *
- */
+ * @author  RlonRyan
+ * @name    JSoundX
+ * @version 1.0.0
+ * @date    Dec 23, 2011
+ * @info    Sound class.
+**/
+
 package JIOX;
 
 import java.net.URL;

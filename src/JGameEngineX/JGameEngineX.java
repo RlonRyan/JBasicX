@@ -3,7 +3,7 @@
  * @name JGameX
  * @version 1.0.2
  * @date September 11th, 2011
- */
+**/
 
 package JGameEngineX;
 

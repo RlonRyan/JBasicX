@@ -1,9 +1,11 @@
 /**
- * RlonRyan
- ** JMouseX
- ** Dec 17, 2011
- *
- */
+ * @author  RlonRyan
+ * @name    JSoundX
+ * @version 1.0.0
+ * @date    Dec 17, 2011
+ * @info    Mouse handler class.
+**/
+
 package JIOX;
 
 import JBasicX.*;

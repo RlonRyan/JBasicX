@@ -1,5 +1,11 @@
-//RlonRyan
-//JBasicX JPictureSpriteX
+/**
+ * @author  RlonRyan
+ * @name    JPictureSpriteX
+ * @version 1.0.0
+ * @date    Jan 11, 2012
+ * @info    Picture-based sprite class.
+**/
+
 package JSpriteX;
 
 import JBasicX.JPoint2DX;

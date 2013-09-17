@@ -1,15 +1,16 @@
-//RlonRyan
-//JSpriteX
-//Vector Sprite
+/**
+ * @author  RlonRyan
+ * @name    JVectorSpriteX
+ * @version 1.0.0
+ * @date    Dec 18, 2011
+ * @info    Vector sprite.
+**/
+
 package JSpriteX;
 
 import java.awt.*;
 import java.awt.geom.*;
 
-/**
- *
- * @author Ryan
- */
 public class JVectorSpriteX extends JSpriteX {
 
     //Variables

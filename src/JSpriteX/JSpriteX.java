@@ -1,16 +1,17 @@
 /**
- * RlonRyan
- ** JSpriteX
- ** Dec 18, 2011
- *
- */
+ * @author  RlonRyan
+ * @name    JSpriteX
+ * @version 1.0.0
+ * @date    Dec 18, 2011
+ * @info    Sprite base class.
+**/
+
 package JSpriteX;
 
 import JBasicX.JPoint2DX;
 import java.awt.Graphics2D;
 import java.awt.Rectangle;
 import java.awt.geom.AffineTransform;
-
 import static java.lang.Math.*;
 
 public abstract class JSpriteX {
@@ -395,7 +396,7 @@ public abstract class JSpriteX {
     }
 
     public final Boolean collidesWith(JSpriteX sprite) {
-        return this.boundsToRect().intersects(sprite.boundsToRect());
+        return (this != sprite) && (this.boundsToRect().intersects(sprite.boundsToRect()));
     }
 
     public final Boolean collidesWith(Rectangle rect) {

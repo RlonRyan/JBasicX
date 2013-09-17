@@ -1,15 +1,17 @@
-//RlonRyan
-//JBasicX JImageHandlerX
+/**
+ * @author  RlonRyan
+ * @name    JImageHandlerX
+ * @version 1.0.0
+ * @date    Dec 17, 2011
+ * @info    Image handler class.
+**/
+
 package JBasicX;
 
 import java.awt.Image;
 import java.awt.Toolkit;
 import java.util.LinkedList;
 
-/**
- *
- * @author RlonRyan
- */
 public final class JImageHandlerX extends Object {
 
     /**

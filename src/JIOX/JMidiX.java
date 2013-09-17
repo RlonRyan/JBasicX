@@ -1,9 +1,11 @@
 /**
- * RlonRyan
- ** JMidiX
- ** Dec 23, 2011
- *
- */
+ * @author  RlonRyan
+ * @name    JMidiX
+ * @version 1.0.0
+ * @date    Dec 23, 2011
+ * @info    Midi class.
+**/
+
 package JIOX;
 
 import java.net.URL;
