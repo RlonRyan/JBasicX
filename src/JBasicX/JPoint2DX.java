@@ -22,7 +22,7 @@ public class JPoint2DX {
     private double y;
 
     /**
-     *
+     * Creates a point with the coordinates (0,0).
      */
     public JPoint2DX() {
         this.x = 0;
@@ -30,19 +30,9 @@ public class JPoint2DX {
     }
 
     /**
-     *
-     * @param x
-     * @param y
-     */
-    public JPoint2DX(int x, int y) {
-        this.x = x;
-        this.y = y;
-    }
-
-    /**
-     *
-     * @param x
-     * @param y
+     * Creates a point with the coordinates (<code>x</code>, <code>y</code>).
+     * @param x The x-coordinate relative to the origin.
+     * @param y The y-coordinate relative to the origin.
      */
     public JPoint2DX(double x, double y) {
         this.x = x;
@@ -50,19 +40,9 @@ public class JPoint2DX {
     }
 
     /**
-     *
-     * @param x
-     * @param y
-     */
-    public JPoint2DX(float x, float y) {
-        this.x = x;
-        this.y = y;
-    }
-
-    /**
-     *
-     * @param x
-     * @param y
+     * Sets the point to the coordinates (<code>x</code>, <code>y</code>).
+     * @param x The x-coordinate relative to the origin.
+     * @param y The y-coordinate relative to the origin.
      */
     public void setPoint(double x, double y) {
         this.x = x;
@@ -70,28 +50,8 @@ public class JPoint2DX {
     }
 
     /**
-     *
-     * @param x
-     * @param y
-     */
-    public void setPoint(float x, float y) {
-        this.x = x;
-        this.y = y;
-    }
-
-    /**
-     *
-     * @param x
-     * @param y
-     */
-    public void setPoint(int x, int y) {
-        this.x = x;
-        this.y = y;
-    }
-
-    /**
-     *
-     * @param point
+     * Sets the point to another point.
+     * @param point The coordinates to be set to.
      */
     public void setPoint(JPoint2DX point) {
         this.x = point.getX();
@@ -99,8 +59,8 @@ public class JPoint2DX {
     }
 
     /**
-     *
-     * @param point
+     * Sets the point to another point.
+     * @param point The coordinates to be set to.
      */
     public void setPoint(Point2D point) {
         this.x = point.getX();
@@ -108,9 +68,9 @@ public class JPoint2DX {
     }
 
     /**
-     *
-     * @param x
-     * @param y
+     * Translates the point by the vector (<code>x</code>, <code>y</code>).
+     * @param x Distance to be translated in the x-dimension.
+     * @param y Distance to be translated in the y-dimension.
      */
     public void incPoint(double x, double y) {
         this.x += x;
@@ -118,28 +78,8 @@ public class JPoint2DX {
     }
 
     /**
-     *
-     * @param x
-     * @param y
-     */
-    public void incPoint(float x, float y) {
-        this.x += x;
-        this.y += y;
-    }
-
-    /**
-     *
-     * @param x
-     * @param y
-     */
-    public void incPoint(int x, int y) {
-        this.x += x;
-        this.y += y;
-    }
-
-    /**
-     *
-     * @param point
+     * Translates the point by the vector represented by another point.
+     * @param point The vector in the xy-plane to translate the point by.
      */
     public void incPoint(JPoint2DX point) {
         this.x += point.getX();
@@ -147,80 +87,32 @@ public class JPoint2DX {
     }
 
     /**
-     *
-     * @param x
+     * Sets the point's x-coordinate.
+     * @param x The x coordinate of the point relative to the origin.
      */
     public void setX(double x) {
         this.x = x;
     }
 
     /**
-     *
-     * @param x
-     */
-    public void setX(float x) {
-        this.x = x;
-    }
-
-    /**
-     *
-     * @param x
-     */
-    public void setX(int x) {
-        this.x = x;
-    }
-
-    /**
-     *
-     * @param y
+     * Sets the point's y-coordinate.
+     * @param y The y coordinate of the point relative to the origin.
      */
     public void setY(double y) {
         this.y = y;
     }
 
     /**
-     *
-     * @param y
-     */
-    public void setY(float y) {
-        this.y = y;
-    }
-
-    /**
-     *
-     * @param y
-     */
-    public void setY(int y) {
-        this.y = y;
-    }
-
-    /**
-     *
-     * @param x
+     * Translates the point's x-coordinate by the specified amount.
+     * @param x The distance in the x-dimension to translate the point.
      */
     public void incX(double x) {
         this.x += x;
     }
 
     /**
-     *
-     * @param x
-     */
-    public void incX(float x) {
-        this.x += x;
-    }
-
-    /**
-     *
-     * @param x
-     */
-    public void incX(int x) {
-        this.x += x;
-    }
-
-    /**
-     *
-     * @param y
+     * Translates the point's y-coordinate by the specified amount.
+     * @param y The distance in the y-dimension to translate the point.
      */
     public void incY(double y) {
         this.y += y;
@@ -228,23 +120,7 @@ public class JPoint2DX {
 
     /**
      *
-     * @param y
-     */
-    public void incY(float y) {
-        this.y += y;
-    }
-
-    /**
-     *
-     * @param y
-     */
-    public void incY(int y) {
-        this.y += y;
-    }
-
-    /**
-     *
-     * @return
+     * @return The point's x-coordinates relative to the origin.
      */
     public double getX() {
         return x;
@@ -258,6 +134,10 @@ public class JPoint2DX {
         return y;
     }
 
+    /**
+     *
+     * @return
+     */
     @Override
     public String toString() {
         return "(" + x + ", " + y + ") ";

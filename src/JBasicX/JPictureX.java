@@ -25,7 +25,7 @@ public final class JPictureX extends Object {
 
     /**
      *
-     * @return
+     * @return The <code>size<code> dimension of the image.
      */
     public final JPoint2DX getSize() {
         return this.size;
@@ -33,7 +33,7 @@ public final class JPictureX extends Object {
 
     /**
      *
-     * @return
+     * @return The width of the image.
      */
     public final double getWidth() {
         return this.size.getX();
@@ -41,7 +41,7 @@ public final class JPictureX extends Object {
 
     /**
      *
-     * @return
+     * @return The height of the image.
      */
     public final double getHeight() {
         return this.size.getY();
@@ -49,7 +49,7 @@ public final class JPictureX extends Object {
 
     /**
      *
-     * @return
+     * @return The internal <code>Image</code> object.
      */
     public final Image getPicture() {
         return this.picture;
@@ -57,7 +57,7 @@ public final class JPictureX extends Object {
 
     /**
      *
-     * @param filename
+     * @param filename The location to load the internal <code>Image</code> from.
      */
     public final void setPicture(String filename) {
         if (filename == null) {
@@ -76,7 +76,7 @@ public final class JPictureX extends Object {
     }
 
     /**
-     *
+     * Updates the <code>size</code> to the picture's size.
      */
     public final void updateSize() {
         size.setX(picture.getWidth(null));
@@ -84,8 +84,7 @@ public final class JPictureX extends Object {
     }
 
     /**
-     *
-     *
+     * Initializes the picture using the default <code>"JBasicX/nopic.png"</code> file.
      */
     public JPictureX() {
         this.setPicture("JBasicX/nopic.png");

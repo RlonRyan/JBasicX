@@ -12,10 +12,11 @@ import java.awt.Image;
 import java.awt.Toolkit;
 import java.util.LinkedList;
 
+
 /**
- * @author  RlonRyan
- * @name    JImageHandlerX
-**/
+ *
+ * @author RlonRyan
+ */
 public final class JImageHandlerX extends Object {
 
     /**
@@ -28,25 +29,27 @@ public final class JImageHandlerX extends Object {
     private ClassLoader cl = this.getClass().getClassLoader();
 
     /**
-     *
-     * @param name 
-     * @return
+     * Retrieves a previously imported image from the internal array based on its <code>name</code>
+     * @param name The name of the image to be retrieved from the internal array.
+     * @return The image held in memory under that name. If no image is found for that name, returns null.
      */
     public final Image getPicture(String name) {
         return this.images.get(this.names.indexOf(name));
     }
 
     /**
-     *
-     * @return
+     * Retrieves the default image from the internal array.
+     * Defaults to <code>"nopic.png"</code>
+     * @return Returns the default image.
      */
     public final Image getDefaultImage() {
         return defaultimage;
     }
 
     /**
-     *
-     * @param filename
+     * Imports an image from the <code>filename</code> location to the internal array.
+     * The image's <code>name</code> is set to match the <code>filename</code>.
+     * @param filename The path to the file.
      */
     public final void addPicture(String filename) {
         if (filename == null) {
@@ -62,9 +65,9 @@ public final class JImageHandlerX extends Object {
     }
 
     /**
-     *
-     * @param filename
-     * @param name  
+     * Imports an image from the <code>filename</code> location to the internal array.
+     * @param filename The path to the file.
+     * @param name  The name the retrieved image is to be referenced under.
      */
     public final void addPicture(String filename, String name) {
         if (filename == null) {
@@ -80,7 +83,8 @@ public final class JImageHandlerX extends Object {
     }
 
     /**
-     *
+     * Initializes the image handler.
+     * Sets the default image to <code>nopic.png</code>.
      */
     public JImageHandlerX() {
         tk = Toolkit.getDefaultToolkit();
