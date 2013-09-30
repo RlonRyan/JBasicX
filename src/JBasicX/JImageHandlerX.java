@@ -12,11 +12,10 @@ import java.awt.Image;
 import java.awt.Toolkit;
 import java.util.LinkedList;
 
-
 /**
- *
- * @author RlonRyan
- */
+ * @author  RlonRyan
+ * @name    JImageHandlerX
+**/
 public final class JImageHandlerX extends Object {
 
     /**
