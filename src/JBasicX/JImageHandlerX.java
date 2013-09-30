@@ -12,6 +12,10 @@ import java.awt.Image;
 import java.awt.Toolkit;
 import java.util.LinkedList;
 
+/**
+ * @author  RlonRyan
+ * @name    JImageHandlerX
+**/
 public final class JImageHandlerX extends Object {
 
     /**
@@ -25,12 +29,17 @@ public final class JImageHandlerX extends Object {
 
     /**
      *
+     * @param name 
      * @return
      */
     public final Image getPicture(String name) {
         return this.images.get(this.names.indexOf(name));
     }
 
+    /**
+     *
+     * @return
+     */
     public final Image getDefaultImage() {
         return defaultimage;
     }
@@ -55,6 +64,7 @@ public final class JImageHandlerX extends Object {
     /**
      *
      * @param filename
+     * @param name  
      */
     public final void addPicture(String filename, String name) {
         if (filename == null) {
@@ -69,6 +79,9 @@ public final class JImageHandlerX extends Object {
         }
     }
 
+    /**
+     *
+     */
     public JImageHandlerX() {
         tk = Toolkit.getDefaultToolkit();
         cl = this.getClass().getClassLoader();

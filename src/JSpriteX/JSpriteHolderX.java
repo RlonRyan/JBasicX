@@ -12,13 +12,32 @@ import JGameEngineX.JGameEngineX;
 import java.awt.Graphics2D;
 import java.util.LinkedList;
 
+/**
+ * @author  RlonRyan
+ * @name    JSpriteHolderX
+ */
 final public class JSpriteHolderX implements Runnable {
 
     // Constants
+    /**
+     *
+     */
     public static final int SPRITE_OTHER = 0;
+    /**
+     *
+     */
     public static final int SPRITE_BASIC = 1;
+    /**
+     *
+     */
     public static final int SPRITE_LOOPER = 2;
+    /**
+     *
+     */
     public static final int SPRITE_BOUNCER = 3;
+    /**
+     *
+     */
     public static final int SPRITE_STATIC = 4;
     // Public
 
@@ -34,27 +53,56 @@ final public class JSpriteHolderX implements Runnable {
     private int updatenumber = 0;
     private boolean active = false;
 
+    /**
+     *
+     * @param holder
+     */
     public JSpriteHolderX(JGameEngineX holder) {
         this.sprites = new LinkedList<JSpriteX>();
         this.holder = holder;
     }
 
+    /**
+     *
+     * @return
+     */
     final public int getDsups() {
         return dsups;
     }
 
+    /**
+     *
+     * @return
+     */
     final public int getSups() {
         return sups;
     }
 
+    /**
+     *
+     * @param dsups
+     */
     final public void setDsups(int dsups) {
         this.dsups = dsups;
     }
 
+    /**
+     *
+     * @return
+     */
     public final boolean isActive(){
         return active;
     }
 
+    /**
+     *
+     * @param name
+     * @param type
+     * @param direction
+     * @param vel
+     * @param x
+     * @param y
+     */
     synchronized final public void addTemplateSprite(String name, int type, int direction, double vel, double x, double y) {
         JPictureSpriteX spr = new JPictureSpriteX(this.holder.getGameWinWidthCenter(), this.holder.getGameWinHeightCenter());
         spr.setPosition(x, y);
@@ -65,11 +113,24 @@ final public class JSpriteHolderX implements Runnable {
         this.templatespritesname.add(name);
     }
 
+    /**
+     *
+     * @param sprite
+     * @param name
+     */
     synchronized final public void addTemplateSprite(JSpriteX sprite, String name) {
         this.templatesprites.add(sprite);
         this.templatespritesname.add(name);
     }
 
+    /**
+     *
+     * @param type
+     * @param direction
+     * @param vel
+     * @param x
+     * @param y
+     */
     synchronized final public void addSprite(int type, int direction, double vel, double x, double y) {
         JPictureSpriteX spr = new JPictureSpriteX(this.holder.getGameWinWidthCenter(), this.holder.getGameWinHeightCenter());
         spr.setPosition(x, y);
@@ -79,6 +140,12 @@ final public class JSpriteHolderX implements Runnable {
         this.sprites.add(spr);
     }
 
+    /**
+     *
+     * @param type
+     * @param x
+     * @param y
+     */
     synchronized final public void addSprite(int type, double x, double y) {
         JPictureSpriteX spr = new JPictureSpriteX(this.holder.getGameWinWidthCenter(), this.holder.getGameWinHeightCenter());
         spr.setPosition(x, y);
@@ -86,16 +153,32 @@ final public class JSpriteHolderX implements Runnable {
         this.sprites.add(spr);
     }
 
+    /**
+     *
+     * @param type
+     */
     synchronized final public void addSprite(int type) {
         JPictureSpriteX spr = new JPictureSpriteX(this.holder.getGameWinWidthCenter(), this.holder.getGameWinHeightCenter());
         spr.setType(type);
         this.sprites.add(spr);
     }
 
+    /**
+     *
+     * @param index
+     */
     synchronized final public void deleteSprite(int index) {
         this.sprites.remove(index);
     }
 
+    /**
+     *
+     * @param name
+     * @param direction
+     * @param vel
+     * @param x
+     * @param y
+     */
     synchronized final public void cloneTemplateSprite(String name, int direction, double vel, double x, double y) {
         this.sprites.add(this.templatesprites.get(this.templatespritesname.indexOf(name)));
         this.sprites.getLast().setPosition(x, y);
@@ -103,27 +186,46 @@ final public class JSpriteHolderX implements Runnable {
         this.sprites.getLast().setVel(vel);
     }
 
+    /**
+     *
+     * @param name
+     * @param x
+     * @param y
+     */
     synchronized final public void cloneTemplateSprite(String name, double x, double y) {
         this.sprites.add(this.templatesprites.get(this.templatespritesname.indexOf(name)));
         this.sprites.getLast().setPosition(x, y);
     }
 
+    /**
+     *
+     * @param name
+     */
     synchronized final public void cloneTemplateSprite(String name) {
         this.sprites.add(this.templatesprites.get(this.templatespritesname.indexOf(name)));
     }
 
+    /**
+     *
+     */
     synchronized final public void hideAll() {
         for (int i = 0; i < this.sprites.size(); i++) {
             this.sprites.get(i).hide();
         }
     }
 
+    /**
+     *
+     */
     synchronized final public void showAll() {
         for (int i = 0; i < this.sprites.size(); i++) {
             this.sprites.get(i).show();
         }
     }
 
+    /**
+     *
+     */
     synchronized final public void updateSprites() {
 
         for (int i = 0; i < this.sprites.size(); i++) {
@@ -191,6 +293,10 @@ final public class JSpriteHolderX implements Runnable {
         }
     }
 
+    /**
+     *
+     * @param g2d
+     */
     synchronized final public void drawSprites(Graphics2D g2d) {
         for (int i = 0; i < this.sprites.size(); i++) {
             this.sprites.get(i).draw(g2d);
@@ -199,6 +305,10 @@ final public class JSpriteHolderX implements Runnable {
         }
     }
 
+    /**
+     *
+     * @param g2d
+     */
     synchronized final public void drawSpriteBounds(Graphics2D g2d) {
         for (int i = 0; i < this.sprites.size(); i++) {
             this.sprites.get(i).drawBoundsTo(g2d);
@@ -207,6 +317,11 @@ final public class JSpriteHolderX implements Runnable {
         }
     }
 
+    /**
+     *
+     * @param sprite
+     * @return
+     */
     synchronized final public JSpriteX collidesWith(JSpriteX sprite) {
         for (int i = 0; i < this.sprites.size(); i++) {
             if (this.sprites.get(i).collidesWith(sprite)) {
@@ -216,6 +331,11 @@ final public class JSpriteHolderX implements Runnable {
         return null;
     }
 
+    /**
+     *
+     * @param sprite
+     * @return
+     */
     synchronized final public JSpriteX collidesWithAndRemove(JSpriteX sprite) {
         for (int i = 0; i < this.sprites.size(); i++) {
             if (this.sprites.get(i).collidesWith(sprite)) {
@@ -225,6 +345,11 @@ final public class JSpriteHolderX implements Runnable {
         return null;
     }
 
+    /**
+     *
+     * @param sprite
+     * @return
+     */
     synchronized final public int checkCollisionsWith(JSpriteX sprite) {
         int c = 0;
         for (int i = 0; i < this.sprites.size(); i++) {
@@ -235,6 +360,11 @@ final public class JSpriteHolderX implements Runnable {
         return c;
     }
 
+    /**
+     *
+     * @param sprite
+     * @return
+     */
     synchronized final public int checkCollisionsWithAndRemove(JSpriteX sprite) {
         int c = 0;
         for (int i = 0; i < this.sprites.size(); i++) {
@@ -246,6 +376,9 @@ final public class JSpriteHolderX implements Runnable {
         return c;
     }
 
+    /**
+     *
+     */
     synchronized final public void checkCollisionsAndRemove() {
         for (int i = 0; i < this.sprites.size(); i++) {
             for (int ii = 0; ii < this.sprites.size(); ii++) {
@@ -257,6 +390,9 @@ final public class JSpriteHolderX implements Runnable {
         }
     }
 
+    /**
+     *
+     */
     final public void start() {
         this.spriteUpdateThread = new Thread(this);
         this.spriteUpdateThread.start();
@@ -276,6 +412,9 @@ final public class JSpriteHolderX implements Runnable {
         }
     }
 
+    /**
+     *
+     */
     final public void stop() {
         this.spriteUpdateThread = null;
         this.active = false;

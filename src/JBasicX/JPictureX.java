@@ -12,9 +12,9 @@ import java.awt.Image;
 import java.awt.Toolkit;
 
 /**
- *
- * @author Ryan
- */
+ * @author  RlonRyan
+ * @name    JPictureX
+**/
 public final class JPictureX extends Object {
 
     /**

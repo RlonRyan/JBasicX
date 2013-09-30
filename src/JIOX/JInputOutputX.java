@@ -8,8 +8,15 @@
 
 package JIOX;
 
+/**
+ * @author  RlonRyan
+ * @name    JInputOutputX
+ */
 public interface JInputOutputX {
 
+    /**
+     *
+     */
     public void updateIO();
 
 }

@@ -10,6 +10,10 @@ package JIOX;
 
 import java.net.URL;
 
+/**
+ * @author  RlonRyan
+ * @name    JMidiX
+ */
 public class JMidiX {
 
     private String file = "drwhotheme.wav";
@@ -25,14 +29,25 @@ public class JMidiX {
         return url;
     }
 
+    /**
+     *
+     * @return
+     */
     public String getFile() {
         return file;
     }
 
+    /**
+     *
+     * @param file
+     */
     public void setFile(String file) {
         this.file = file;
     }
 
+    /**
+     *
+     */
     public final void load() {
         try {
         }

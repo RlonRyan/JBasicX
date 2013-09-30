@@ -17,6 +17,10 @@ import java.awt.event.KeyListener;
 import java.awt.geom.AffineTransform;
 import java.awt.image.*;
 
+/**
+ * @author RlonRyan
+ * @name JGameX
+ */
 public abstract class JGameEngineX extends Applet implements Runnable, JInputOutputX, KeyListener {
 
 // Constants

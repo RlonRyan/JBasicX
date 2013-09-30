@@ -11,6 +11,10 @@ package JIOX;
 import JBasicX.*;
 import java.awt.event.*;
 
+/**
+ * @author  RlonRyan
+ * @name    JMouseX
+ */
 public class JMouseX implements MouseListener, MouseMotionListener, MouseWheelListener {
 
     private JInputOutputX user;
@@ -26,14 +30,30 @@ public class JMouseX implements MouseListener, MouseMotionListener, MouseWheelLi
     private Boolean mousedown = false;
     private Boolean mousedrag = false;
     private int mousebutton = 0;
+    /**
+     *
+     */
     public final int leftbutton = 1;
+    /**
+     *
+     */
     public final int rightbutton = 2;
+    /**
+     *
+     */
     public final int centerbutton = 3;
 
+    /**
+     *
+     * @param user
+     */
     public JMouseX(JInputOutputX user) {
         this.user = user;
     }
 
+    /**
+     *
+     */
     public void clear() {
         click = new JPoint2DX();
         press = new JPoint2DX();
@@ -48,28 +68,46 @@ public class JMouseX implements MouseListener, MouseMotionListener, MouseWheelLi
         mousebutton = 0;
     }
 
+    /**
+     *
+     */
     public void clearClick() {
         click = new JPoint2DX();
     }
 
+    /**
+     *
+     */
     public void clearPress() {
         press = new JPoint2DX();
         release = new JPoint2DX();
     }
 
+    /**
+     *
+     */
     public void clearEnter() {
         enter = new JPoint2DX();
         exit = new JPoint2DX();
     }
 
+    /**
+     *
+     */
     public void clearDrag() {
         drag = new JPoint2DX();
     }
 
+    /**
+     *
+     */
     public void clearMove() {
         move = new JPoint2DX();
     }
 
+    /**
+     *
+     */
     public void clearScroll() {
         scroll = 0;
     }
@@ -148,50 +186,98 @@ public class JMouseX implements MouseListener, MouseMotionListener, MouseWheelLi
         checkButton(e);
     }
 
+    /**
+     *
+     * @return
+     */
     public JPoint2DX getClick() {
         return click;
     }
 
+    /**
+     *
+     * @return
+     */
     public JPoint2DX getDrag() {
         return drag;
     }
 
+    /**
+     *
+     * @return
+     */
     public JPoint2DX getEnter() {
         return enter;
     }
 
+    /**
+     *
+     * @return
+     */
     public JPoint2DX getExit() {
         return exit;
     }
 
+    /**
+     *
+     * @return
+     */
     public JPoint2DX getMove() {
         return move;
     }
 
+    /**
+     *
+     * @return
+     */
     public JPoint2DX getPress() {
         return press;
     }
 
+    /**
+     *
+     * @return
+     */
     public JPoint2DX getRelease() {
         return release;
     }
 
+    /**
+     *
+     * @return
+     */
     public JPoint2DX getPosition() {
         return position;
     }
 
+    /**
+     *
+     * @return
+     */
     public int getMousebutton() {
         return mousebutton;
     }
 
+    /**
+     *
+     * @return
+     */
     public Boolean isMousedown() {
         return mousedown;
     }
 
+    /**
+     *
+     * @return
+     */
     public Boolean isMousedrag() {
         return mousedrag;
     }
 
+    /**
+     *
+     * @return
+     */
     public int getScroll() {
         return scroll;
     }

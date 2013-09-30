@@ -13,6 +13,10 @@ import javax.sound.sampled.AudioInputStream;
 import javax.sound.sampled.AudioSystem;
 import javax.sound.sampled.Clip;
 
+/**
+ * @author  RlonRyan
+ * @name    JSoundX
+ */
 public final class JSoundX {
 
     private String file = "gong.wav";
@@ -30,14 +34,25 @@ public final class JSoundX {
         return url;
     }
 
+    /**
+     *
+     * @return
+     */
     public String getFile() {
         return file;
     }
 
+    /**
+     *
+     * @param file
+     */
     public void setFile(String file) {
         this.file = file;
     }
 
+    /**
+     *
+     */
     public final void load() {
         try {
             ais = AudioSystem.getAudioInputStream(this.getUrl(file));
@@ -48,6 +63,9 @@ public final class JSoundX {
         }
     }
 
+    /**
+     *
+     */
     public final void play() {
         if (!this.clip.isRunning()) {
             this.clip.setMicrosecondPosition(0);
@@ -55,6 +73,9 @@ public final class JSoundX {
         }
     }
 
+    /**
+     *
+     */
     public final void pause() {
         if (this.clip.isRunning()) {
             this.pausedat = this.clip.getMicrosecondPosition();
@@ -62,6 +83,9 @@ public final class JSoundX {
         }
     }
 
+    /**
+     *
+     */
     public final void resume() {
         if (!this.clip.isRunning()) {
             this.clip.setMicrosecondPosition(pausedat);
@@ -70,12 +94,18 @@ public final class JSoundX {
         }
     }
 
+    /**
+     *
+     */
     public final void stop() {
         if (this.clip.isRunning()) {
             this.clip.stop();
         }
     }
 
+    /**
+     *
+     */
     public JSoundX() {
         this.load();
     }

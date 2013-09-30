@@ -16,8 +16,8 @@ import java.awt.Toolkit;
 import java.awt.image.BufferedImage;
 
 /**
- *
- * @author Ryan
+ * @author  RlonRyan
+ * @name    JPictureSpriteX
  */
 public final class JPictureSpriteX extends JSpriteX {
     //vars
@@ -32,7 +32,9 @@ public final class JPictureSpriteX extends JSpriteX {
 
     /**
      *
-     * @param holder
+     * @param picture
+     * @param x
+     * @param y  
      */
     public JPictureSpriteX(Image picture, int x, int y) {
         this.picture = picture;
@@ -40,12 +42,23 @@ public final class JPictureSpriteX extends JSpriteX {
         this.updateSize();
     }
 
+    /**
+     *
+     * @param filename
+     * @param x
+     * @param y
+     */
     public JPictureSpriteX(String filename, int x, int y) {
         this.loadPicture(filename);
         this.setVisable(true);
         this.updateSize();
     }
 
+    /**
+     *
+     * @param x
+     * @param y
+     */
     public JPictureSpriteX(int x, int y) {
         this.loadPicture(null);
         this.setVisable(true);
@@ -71,6 +84,10 @@ public final class JPictureSpriteX extends JSpriteX {
         this.picture = picture;
     }
 
+    /**
+     *
+     * @param filename
+     */
     public final void loadPicture(String filename) {
         if (filename == null) {
             filename = "JBasicX/nopic.png";
@@ -84,18 +101,34 @@ public final class JPictureSpriteX extends JSpriteX {
         }
     }
 
+    /**
+     *
+     * @param columns
+     */
     public final void setColumns(int columns) {
         this.columns = columns;
     }
 
+    /**
+     *
+     * @param currentframe
+     */
     public final void setCurrentframe(int currentframe) {
         this.currentframe = currentframe;
     }
 
+    /**
+     *
+     * @param totalframes
+     */
     public void setTotalframes(int totalframes) {
         this.totalframes = totalframes;
     }
 
+    /**
+     *
+     * @param i
+     */
     public final void incCurrentframe(int i) {
         this.currentframe += i;
         if (this.currentframe > this.totalframes) {
@@ -119,6 +152,9 @@ public final class JPictureSpriteX extends JSpriteX {
         }
     }
 
+    /**
+     *
+     */
     public final void updateFrameSize() {
         this.framedi.setX(this.picture.getWidth(null) / this.columns - 1);
         this.framedi.setY(this.picture.getHeight(null) / (this.totalframes / this.columns) - 1);
@@ -130,6 +166,7 @@ public final class JPictureSpriteX extends JSpriteX {
 
     /**
      *
+     * @param g2d 
      */
     @Override
     protected final void drawSprite(Graphics2D g2d) {

@@ -9,8 +9,11 @@
 package JSpriteX;
 
 import java.awt.*;
-import java.awt.geom.*;
 
+/**
+ * @author  RlonRyan
+ * @name    JVectorSpriteX
+**/
 public class JVectorSpriteX extends JSpriteX {
 
     //Variables
@@ -144,6 +147,7 @@ public class JVectorSpriteX extends JSpriteX {
 
     /**
      *
+     * @param g2d 
      */
     public final void drawSprite(Graphics2D g2d) {
         if (this.poly != null) {
