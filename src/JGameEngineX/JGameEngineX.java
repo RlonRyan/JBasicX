@@ -29,7 +29,7 @@ public abstract class JGameEngineX extends Applet implements Runnable, JInputOut
      */
     public static final int gamestopped = 0;
     /**
-     *
+     * 
      */
     public static final int gamestarting = 1;
     /**
@@ -136,25 +136,25 @@ public abstract class JGameEngineX extends Applet implements Runnable, JInputOut
     public abstract void gamePaused();
 
     /**
-     *
+     * Draws the game menu to the backbuffer.
      * @param g2d The graphics pointing to backbuffer to be drawn to.
      */
     public abstract void gameMenuPaint(Graphics2D g2d);
 
     /**
-     *
+     * Draws the main game screen to the backbuffer.
      * @param g2d The graphics pointing to backbuffer to be drawn to.
      */
     public abstract void gamePaint(Graphics2D g2d);
 
     /**
-     *
+     * Draws the game pause screen to the backbuffer.
      * @param g2d The graphics pointing to backbuffer to be drawn to.
      */
     public abstract void gamePausePaint(Graphics2D g2d);
 
     /**
-     *
+     * Draws the game stopped screen to the backbuffer.
      * @param g2d The graphics pointing to backbuffer to be drawn to.
      */
     public abstract void gameStoppedPaint(Graphics2D g2d);
@@ -172,104 +172,119 @@ public abstract class JGameEngineX extends Applet implements Runnable, JInputOut
     }
 
     /**
-     * M
+     * Method for getting the game screen width.
      * <p/>
-     * @return
+     * @return The game's width.
      */
     public final int getGameWinWidth() {
         return this.winw;
     }
 
     /**
-     *
-     * @return
+     * Method for getting the game screen height.
+     * <p/>
+     * @return The game's height.
      */
     public final int getGameWinHeight() {
         return this.winh;
     }
 
     /**
-     *
-     * @return
+     * Method for getting the game screen center in terms of width.
+     * <p/>
+     * @return The game's center in terms of width.
      */
     public final int getGameWinWidthCenter() {
         return this.winwc;
     }
 
     /**
-     *
-     * @return
+     * Method for getting the game screen center in terms of height.
+     * <p/>
+     * @return The game's center in terms of height.
      */
     public final int getGameWinHeightCenter() {
         return this.winhc;
     }
 
     /**
-     *
-     * @return
+     * Returns the game's backbuffer, a BufferedImage.
+     * @return The game's backbuffer.
      */
     public final BufferedImage getBackbuffer() {
         return this.backbuffer;
     }
 
     /**
-     *
-     * @return
+     * Returns the frames per second drawn to the screen (framerate).
+     * @return The game's framerate.
      */
     public final int getFPS() {
         return this.fps;
     }
 
     /**
-     *
-     * @return
+     * Returns the game's desired frames per second rate (desired framerate).
+     * @return The game's desired framerate.
      */
     public final double getDFPS() {
         return this.dfps;
     }
 
     /**
-     *
-     * @return
+     * Returns the game's graphics, which point to the backbuffer.
+     * @return The game's primary graphics.
      */
     public final Graphics2D getGameGraphics() {
         return this.g2d;
     }
 
     /**
-     *
-     * @return
+     * Returns the game's start time.
+     * @return The time the game first started.
      */
     public final long getGameStartTime() {
         return this.gamestarttime;
     }
 
     /**
-     *
-     * @return
+     * Returns the time elapsed since the game started.
+     * @return The game time.
      */
     public final long getGameTime() {
         return this.gametime;
     }
 
     /**
-     *
-     * @return
+     * Returns the total time spent in the game paused state.
+     * Returns 0 if not in the pause state.
+     * @return The total time spent in the game paused state.
      */
     public final long getTotalGamePauseTime() {
-        return ((this.gametime - this.gamepausedat) + this.gamepausetime);
+        if (this.gamestatus == gamepaused) {
+            return ((this.gametime - this.gamepausedat) + this.gamepausetime);
+        }
+        else {
+            return 0;
+        }
     }
 
     /**
-     *
-     * @return
+     * Returns the time elapsed since the game was last paused.
+     * Returns 0 if not in the pause state.
+     * @return The total time spent in the game paused state.
      */
     public final long getGamePauseTime() {
-        return this.gametime - this.gamepausedat;
+        if (this.gamestatus == gamepaused) {
+            return this.gametime - this.gamepausedat;
+        }
+        else {
+            return 0;
+        }
     }
 
     /**
-     *
+     * Returns the last time the game was paused.
      * @return
      */
     public final long getGameGameLastPausedAt() {
@@ -277,32 +292,34 @@ public abstract class JGameEngineX extends Applet implements Runnable, JInputOut
     }
 
     /**
-     *
-     * @return
+     * Returns the current draw color.
+     * The default starting color is <code>Color.WHITE</code>.
+     * @return The current draw color.
      */
     public final Color getDrawColor() {
         return drawcolor;
     }
 
     /**
-     *
-     * @return
+     * Returns the current background color.
+     * The default starting color is <code>Color.BLACK</code>.
+     * @return The current background color.
      */
     public final Color getBackgroundColor() {
         return backgroundcolor;
     }
 
     /**
-     *
-     * @return
+     * Returns the currently active keys.
+     * @return The active key array.
      */
     public final boolean[] getKeys() {
         return this.keys;
     }
 
     /**
-     *
-     * @return
+     * Returns the currently active keys as a string.
+     * @return The active key array as a string.
      */
     public final String getKeysDownString() {
         String keysdown = "Keys: ";
@@ -315,8 +332,8 @@ public abstract class JGameEngineX extends Applet implements Runnable, JInputOut
     }
 
     /**
-     *
-     * @param keycode
+     * Tests a key to see if it is currently active.
+     * @param keycode The key to test for its the state.
      * @return
      */
     public final boolean isKeyDown(int keycode) {
@@ -324,8 +341,8 @@ public abstract class JGameEngineX extends Applet implements Runnable, JInputOut
     }
 
     /**
-     *
-     * @param keycode
+     * Tests a key to see if it is currently active and if it is, removes it from the active key array.
+     * @param keycode The key to test for its the state.
      * @return
      */
     public final boolean isKeyDownAndRemove(int keycode) {

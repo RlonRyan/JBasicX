@@ -119,7 +119,7 @@ public class JPoint2DX {
     }
 
     /**
-     *
+     * Returns the point's x-coordinate relative to the origin.
      * @return The point's x-coordinates relative to the origin.
      */
     public double getX() {
@@ -127,16 +127,16 @@ public class JPoint2DX {
     }
 
     /**
-     *
-     * @return
+     * Returns the point's y-coordinate relative to the origin.
+     * @return The point's y-coordinates relative to the origin.
      */
     public double getY() {
         return y;
     }
 
     /**
-     *
-     * @return
+     * Returns the point as a string in the format "(x,y)".
+     * @return Returns the point as a string.
      */
     @Override
     public String toString() {
