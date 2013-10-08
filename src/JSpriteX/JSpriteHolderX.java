@@ -8,8 +8,11 @@
 
 package JSpriteX;
 
+import JBasicX.JImageHandlerX;
 import JGameEngineX.JGameEngineX;
 import java.awt.Graphics2D;
+import java.awt.Image;
+import java.awt.Toolkit;
 import java.util.LinkedList;
 
 /**
@@ -46,6 +49,7 @@ final public class JSpriteHolderX implements Runnable {
     private LinkedList<JSpriteX> sprites;
     private LinkedList<JSpriteX> templatesprites;
     private LinkedList<String> templatespritesname;
+    private JImageHandlerX images; 
     private JGameEngineX holder;
     private int dsups = 105;
     private int sups = 0;
@@ -59,6 +63,7 @@ final public class JSpriteHolderX implements Runnable {
      */
     public JSpriteHolderX(JGameEngineX holder) {
         this.sprites = new LinkedList<JSpriteX>();
+        this.images = new JImageHandlerX();
         this.holder = holder;
     }
 
@@ -78,6 +83,14 @@ final public class JSpriteHolderX implements Runnable {
         return sups;
     }
 
+    public final JSpriteX getSprite(int index) {
+        return this.sprites.get(index);
+    }
+    
+    public final Image getPicture(String name) {
+        return this.images.getPicture(name);
+    }
+    
     /**
      *
      * @param dsups
@@ -132,7 +145,16 @@ final public class JSpriteHolderX implements Runnable {
      * @param y
      */
     synchronized final public void addSprite(int type, int direction, double vel, double x, double y) {
-        JPictureSpriteX spr = new JPictureSpriteX(this.holder.getGameWinWidthCenter(), this.holder.getGameWinHeightCenter());
+        JPictureSpriteX spr = new JPictureSpriteX(this.images.getDefaultImage(), this.holder.getGameWinWidthCenter(), this.holder.getGameWinHeightCenter());
+        spr.setPosition(x, y);
+        spr.setDirection(direction);
+        spr.setVel(vel);
+        spr.setType(type);
+        this.sprites.add(spr);
+    }
+    
+    synchronized final public void addSprite(int type, int direction, double vel, double x, double y, String imagename) {
+        JPictureSpriteX spr = new JPictureSpriteX(this.images.getPicture(imagename), this.holder.getGameWinWidthCenter(), this.holder.getGameWinHeightCenter());
         spr.setPosition(x, y);
         spr.setDirection(direction);
         spr.setVel(vel);
@@ -161,6 +183,14 @@ final public class JSpriteHolderX implements Runnable {
         JPictureSpriteX spr = new JPictureSpriteX(this.holder.getGameWinWidthCenter(), this.holder.getGameWinHeightCenter());
         spr.setType(type);
         this.sprites.add(spr);
+    }
+    
+    synchronized final public void addPicture(String filename, String name) {
+        this.images.addPicture(filename, name);
+    }
+    
+    synchronized final public void addPicture(String filename) {
+        this.images.addPicture(filename);
     }
 
     /**
