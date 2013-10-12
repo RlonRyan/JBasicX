@@ -13,6 +13,7 @@ import JGameEngineX.JGameEngineX;
 import java.awt.Graphics2D;
 import java.awt.Image;
 import java.awt.Toolkit;
+import java.net.URL;
 import java.util.LinkedList;
 
 /**
@@ -49,7 +50,7 @@ final public class JSpriteHolderX implements Runnable {
     private LinkedList<JSpriteX> sprites;
     private LinkedList<JSpriteX> templatesprites;
     private LinkedList<String> templatespritesname;
-    private JImageHandlerX images; 
+    private JImageHandlerX images;
     private JGameEngineX holder;
     private int dsups = 105;
     private int sups = 0;
@@ -86,11 +87,11 @@ final public class JSpriteHolderX implements Runnable {
     public final JSpriteX getSprite(int index) {
         return this.sprites.get(index);
     }
-    
+
     public final Image getPicture(String name) {
         return this.images.getPicture(name);
     }
-    
+
     /**
      *
      * @param dsups
@@ -152,7 +153,7 @@ final public class JSpriteHolderX implements Runnable {
         spr.setType(type);
         this.sprites.add(spr);
     }
-    
+
     synchronized final public void addSprite(int type, int direction, double vel, double x, double y, String imagename) {
         JPictureSpriteX spr = new JPictureSpriteX(this.images.getPicture(imagename), this.holder.getGameWinWidthCenter(), this.holder.getGameWinHeightCenter());
         spr.setPosition(x, y);
@@ -184,13 +185,17 @@ final public class JSpriteHolderX implements Runnable {
         spr.setType(type);
         this.sprites.add(spr);
     }
-    
+
     synchronized final public void addPicture(String filename, String name) {
         this.images.addPicture(filename, name);
     }
     
     synchronized final public void addPicture(String filename) {
         this.images.addPicture(filename);
+    }
+
+    synchronized final public void addPicture(URL filepath) {
+        this.images.addPicture(filepath);
     }
 
     /**
