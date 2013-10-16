@@ -94,11 +94,11 @@ public final class JImageHandlerX extends Object {
      * <p/>
      * @param filename The path to the file.
      */
-    synchronized public final void addPicture(String filename) {
-        this.addPicture(filename, filename);
+    synchronized public final void addPicture(URL filepath) {
+        this.addPicture(filepath.toString());
     }
 
-    /**
+     /**
      * Imports an image from the
      * <code>filename</code> location to the internal array.
      * The image's
@@ -107,24 +107,10 @@ public final class JImageHandlerX extends Object {
      * <p/>
      * @param filename The path to the file.
      */
-    synchronized public final void addPicture(URL filepath) {
-        if(filepath == null) {
-            System.err.println("Null URL. Aborting image load.");
-            return;
-        }
-        try {
-            this.images.add(ImageIO.read(filepath));
-            /*this.images.add(tk.getImage(cl.getResource(filename)));
-            this.names.add(name);*/
-        }
-        catch (Exception e) {
-            System.err.println("Error loading image: " + filepath.getFile() + "...\nDefaulting...");
-            this.loadDefaultImage();
-            this.images.add(defaultimage);
-            this.names.add(filepath.getFile());
-        }
+    synchronized public final void addPicture(String filename) {
+        this.addPicture(filename, filename);
     }
-
+    
     /**
      * Imports an image from the
      * <code>filename</code> location to the internal array.
@@ -142,8 +128,7 @@ public final class JImageHandlerX extends Object {
             return;
         }
         try {
-            //this.images.add(ImageIO.read(new URL(filename)));
-            this.images.add(tk.getImage(cl.getResource(filename)));
+            this.images.add(ImageIO.read(JImageHandlerX.class.getResource(filename)));
             this.names.add(name);
         }
         catch (Exception e) {

@@ -10,6 +10,7 @@ package JBasicX;
 
 import java.awt.Image;
 import java.awt.Toolkit;
+import javax.imageio.ImageIO;
 
 /**
  * @author  RlonRyan
@@ -64,9 +65,7 @@ public final class JPictureX extends Object {
             filename = "JBasicX/nopic.png";
         }
         try {
-            Toolkit tk = Toolkit.getDefaultToolkit();
-            ClassLoader cl = this.getClass().getClassLoader();
-            this.picture = tk.getImage(cl.getResource(filename));
+            this.picture = ImageIO.read(JPictureX.class.getClassLoader().getResourceAsStream(filename));
             while (this.size.getX() <= 0 || this.size.getY() <= 0) {
                 this.updateSize();
             }
