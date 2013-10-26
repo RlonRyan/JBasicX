@@ -34,10 +34,10 @@ public final class JPictureSpriteX extends JSpriteX {
      *
      * @param picture
      * @param x
-     * @param y  
+     * @param y
      */
     public JPictureSpriteX(Image picture, int x, int y) {
-        this.picture = picture;
+        this.setPicture(picture);
         this.setVisable(true);
         this.updateSize();
     }
@@ -166,7 +166,7 @@ public final class JPictureSpriteX extends JSpriteX {
 
     /**
      *
-     * @param g2d 
+     * @param g2d
      */
     @Override
     protected final void drawSprite(Graphics2D g2d) {
