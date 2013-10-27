@@ -608,7 +608,7 @@ public abstract class JGameEngineX extends Applet implements Runnable, JInputOut
     public final void init() {
 
         //  Set Game Atributes
-        this.setGameAtrib(50, 640, 480, GAME_STATUS.GAME_STARTING);
+        this.setGameAtrib(fps, winw, winh, GAME_STATUS.GAME_STARTING);
 
         //  Resources
         this.mouse = new JMouseX(this);
@@ -739,4 +739,15 @@ public abstract class JGameEngineX extends Applet implements Runnable, JInputOut
                 break;
         }
     }
+
+    public JGameEngineX(int fps, int width, int height) throws HeadlessException {
+        //  Set Game Atributes
+        this.setGameAtrib(fps, width, height, GAME_STATUS.GAME_STARTING);
+    }
+
+    public JGameEngineX() throws HeadlessException {
+        //  Set Game Atributes
+        this.setGameAtrib(50, 640, 480, GAME_STATUS.GAME_STARTING);
+    }
+
 }
