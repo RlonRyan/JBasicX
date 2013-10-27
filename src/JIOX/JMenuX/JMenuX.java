@@ -27,6 +27,7 @@ public class JMenuX {
     public final static int ELEMENT_HIGHLIGHTED = 1;
     public final static int ELEMENT_SELECTED = 2;
     private List<JMenuListenerX> listeners = new ArrayList<>();
+    private String title;
     private List<String> elements = new ArrayList<>();
     private Point dimensions;
     private Point position;
@@ -34,39 +35,35 @@ public class JMenuX {
     private HashMap<String, Font> fontscheme;
     private int highlighted = 0;
 
-    synchronized public void draw(Graphics2D g2d) {
-        g2d.drawRoundRect(position.x, position.y, dimensions.x, dimensions.y, dimensions.x / 10, dimensions.y / 10);
-        g2d.setColor(new Color(255, 255, 255, 50));
-        g2d.fillRoundRect(position.x, position.y, dimensions.x, dimensions.y, dimensions.x / 10, dimensions.y / 10);
+    final public String getTitle() {
+        return this.title;
+    }
 
-        int x = position.x + dimensions.x / 100;
-        int y = position.y + dimensions.y / 100;
-
-        g2d.setColor(colorscheme.get("title"));
-        g2d.setFont(fontscheme.get("title"));
-        y += g2d.getFontMetrics().getHeight();
-        x += g2d.getFontMetrics().getHeight();
-        g2d.drawString(elements.get(0), x, y);
-
-        y += g2d.getFontMetrics().getHeight();
-        x += g2d.getFontMetrics().getHeight();
-
-        g2d.setColor(colorscheme.get("body"));
-        g2d.setFont(fontscheme.get("body"));
-        for (int i = 1; i < elements.size(); i++) {
-            if (i == highlighted) {
-                g2d.setColor(colorscheme.get("highlight"));
-                g2d.setFont(fontscheme.get("highlight"));
-                y += dimensions.y / 1000 + g2d.getFontMetrics().getHeight();
-                g2d.drawString(elements.get(i), x, y);
-                g2d.setColor(colorscheme.get("body"));
-                g2d.setFont(fontscheme.get("body"));
-            }
-            else {
-                y += dimensions.y / 1000 + g2d.getFontMetrics().getHeight();
-                g2d.drawString(elements.get(i), x, y);
-            }
+    synchronized public final String getMenuElement(int element) {
+        if (element < 0 || element > 0) {
+            return null;
         }
+        return this.elements.get(element);
+    }
+
+    synchronized public final void setColorScheme(HashMap<String, Color> colorscheme) {
+        this.colorscheme = colorscheme;
+        this.validate();
+    }
+
+    synchronized public final void setColorSchemeElement(String key, Color value) {
+        this.colorscheme.put(key, value);
+        this.validate();
+    }
+
+    synchronized public final void setFontScheme(HashMap<String, Font> fontscheme) {
+        this.fontscheme = fontscheme;
+        this.validate();
+    }
+
+    synchronized public final void setFontSchemeElement(String key, Color value) {
+        this.colorscheme.put(key, value);
+        this.validate();
     }
 
     synchronized public final void validate() {
@@ -80,6 +77,12 @@ public class JMenuX {
          */
         if (this.colorscheme == null) {
             this.colorscheme = new HashMap<>();
+        }
+        if (!this.colorscheme.containsKey("background") || this.colorscheme.get("background") == null) {
+            this.colorscheme.put("background", new Color(255, 255, 255, 100));
+        }
+        if (!this.colorscheme.containsKey("border") || this.colorscheme.get("background") == null) {
+            this.colorscheme.put("border", Color.WHITE);
         }
         if (!this.colorscheme.containsKey("title") || this.colorscheme.get("title") == null) {
             this.colorscheme.put("title", Color.WHITE);
@@ -104,9 +107,14 @@ public class JMenuX {
         }
     }
 
+    synchronized public final void highlight(int element) {
+        this.highlighted = element;
+        fireEvent(ELEMENT_HIGHLIGHTED, highlighted);
+    }
+
     synchronized public final void incrementHighlight() {
         this.highlighted += 1;
-        if (this.highlighted > elements.size() - 1) {
+        if (this.highlighted >= elements.size()) {
             this.highlighted = 0;
         }
         fireEvent(ELEMENT_HIGHLIGHTED, highlighted);
@@ -122,11 +130,9 @@ public class JMenuX {
 
     synchronized public final void incrementHighlight(int increment) {
         this.highlighted += increment;
-        if (this.highlighted > this.elements.size() - 1) {
-            this.highlighted %= (this.elements.size() - 1);
-        }
-        else if (this.highlighted < 0) {
-            this.highlighted = (this.highlighted % this.elements.size()) + this.elements.size() - 1;
+        this.highlighted %= (this.elements.size());
+        if (this.highlighted < 0) {
+            this.highlighted += this.elements.size();
         }
         fireEvent(ELEMENT_HIGHLIGHTED, highlighted);
     }
@@ -139,10 +145,48 @@ public class JMenuX {
         fireEvent(ELEMENT_SELECTED, element);
     }
 
+    synchronized public final void highlightNearest(Graphics2D g2d, int y) {
+        this.highlight(getNearest(g2d, y));
+    }
+
+    synchronized public final void selectNearest(Graphics2D g2d, int y) {
+        this.selectMenuElement(getNearest(g2d, y));
+    }
+
+    synchronized public final int getNearest(Graphics2D g2d, int y) {
+        Font temp = g2d.getFont();
+        int yy = position.y + dimensions.y / 100;
+        int distance = Math.abs(y - yy);
+        g2d.setFont(fontscheme.get("title"));
+        yy += g2d.getFontMetrics().getHeight() * 2;
+        int i;
+        g2d.setFont(fontscheme.get("body"));
+        for (i = 0; i < elements.size(); i++) {
+            if (distance >= Math.abs(y - yy) || i == 0) {
+                distance = Math.abs(y - yy);
+            }
+            else {
+                g2d.setFont(temp);
+                return i - 1;
+            }
+            if (i == highlighted) {
+                g2d.setFont(fontscheme.get("highlight"));
+                yy += g2d.getFontMetrics().getHeight();
+                g2d.setFont(fontscheme.get("body"));
+            }
+            else {
+                yy += g2d.getFontMetrics().getHeight();
+            }
+        }
+        g2d.setFont(temp);
+        return this.elements.size() - 1;
+    }
+
     public JMenuX(int width, int height, int x, int y, String... elements) {
         this.dimensions = new Point(width, height);
         this.position = new Point(x, y);
         this.elements.addAll(Arrays.asList(elements));
+        this.title = this.elements.remove(0);
         this.validate();
     }
 
@@ -150,7 +194,44 @@ public class JMenuX {
         this.dimensions = dimensions;
         this.position = position;
         this.elements.addAll(Arrays.asList(elements));
+        this.title = this.elements.remove(0);
         this.validate();
+    }
+
+    synchronized public void draw(Graphics2D g2d) {
+        g2d.setColor(colorscheme.get("background"));
+        g2d.fillRoundRect(position.x, position.y, dimensions.x, dimensions.y, dimensions.x / 10, dimensions.y / 10);
+        g2d.setColor(colorscheme.get("border"));
+        g2d.drawRoundRect(position.x, position.y, dimensions.x, dimensions.y, dimensions.x / 10, dimensions.y / 10);
+
+        int x = position.x + dimensions.x / 100;
+        int y = position.y + dimensions.y / 100;
+
+        g2d.setColor(colorscheme.get("title"));
+        g2d.setFont(fontscheme.get("title"));
+        y += g2d.getFontMetrics().getHeight();
+        x += g2d.getFontMetrics().getHeight();
+        g2d.drawString(title, x, y);
+
+        y += g2d.getFontMetrics().getHeight();
+        x += g2d.getFontMetrics().getHeight();
+
+        g2d.setColor(colorscheme.get("body"));
+        g2d.setFont(fontscheme.get("body"));
+        for (int i = 0; i < elements.size(); i++) {
+            if (i == highlighted) {
+                g2d.setColor(colorscheme.get("highlight"));
+                g2d.setFont(fontscheme.get("highlight"));
+                y += g2d.getFontMetrics().getHeight();
+                g2d.drawString(elements.get(i), x, y);
+                g2d.setColor(colorscheme.get("body"));
+                g2d.setFont(fontscheme.get("body"));
+            }
+            else {
+                y += g2d.getFontMetrics().getHeight();
+                g2d.drawString(elements.get(i), x, y);
+            }
+        }
     }
 
     synchronized public final void addEventListener(JMenuListenerX listener) {
@@ -167,12 +248,12 @@ public class JMenuX {
                 break;
             case ELEMENT_SELECTED:
                 for (JMenuListenerX e : this.listeners) {
-                    e.elementSelected(data[0]);
+                    e.elementSelected(this, data[0]);
                 }
                 break;
             case ELEMENT_HIGHLIGHTED:
                 for (JMenuListenerX e : this.listeners) {
-                    e.elementHighlighted(data[0]);
+                    e.elementHighlighted(this, data[0]);
                 }
                 break;
             default:

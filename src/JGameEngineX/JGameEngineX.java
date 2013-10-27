@@ -3,12 +3,13 @@
  * @name JGameX
  * @version 1.0.2
  * @date September 11th, 2011
-**/
-
+ *
+ */
 package JGameEngineX;
 
 import JBasicX.JImageHandlerX;
-import JIOX.*;
+import JIOX.JInputOutputX;
+import JIOX.JMouseX;
 import JSpriteX.JSpriteHolderX;
 import java.applet.Applet;
 import java.awt.*;
@@ -16,6 +17,8 @@ import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
 import java.awt.geom.AffineTransform;
 import java.awt.image.*;
+import java.util.ArrayList;
+import java.util.EventObject;
 
 /**
  * @author RlonRyan
@@ -23,30 +26,20 @@ import java.awt.image.*;
  */
 public abstract class JGameEngineX extends Applet implements Runnable, JInputOutputX, KeyListener {
 
-// Constants
-    /**
-     *
-     */
-    public static final int gamestopped = 0;
-    /**
-     * 
-     */
-    public static final int gamestarting = 1;
-    /**
-     *
-     */
-    public static final int gamemenu = 2;
-    /**
-     *
-     */
-    public static final int gamerunning = 3;
-    /**
-     *
-     */
-    public static final int gamepaused = 4;
-    /**
-     *
-     */
+    public static enum EVENT_TYPE {
+
+        STATE_CHANGE;
+    }
+
+    public static enum GAME_STATUS {
+
+        GAME_STOPPED,
+        GAME_STARTING,
+        GAME_MENU,
+        GAME_RUNNING,
+        GAME_PAUSED;
+    }
+    // Constants
     public static final Color defaultbackgroundcolor = Color.BLACK;
     /**
      *
@@ -68,7 +61,8 @@ public abstract class JGameEngineX extends Applet implements Runnable, JInputOut
     protected JImageHandlerX images;
 // Private
     private boolean[] keys = new boolean[526];
-    private int gamestatus;
+    private GAME_STATUS gamestatus;
+    private GAME_STATUS prevgamestatus;
     private int winw;
     private int winh;
     private int winwc;
@@ -78,7 +72,7 @@ public abstract class JGameEngineX extends Applet implements Runnable, JInputOut
     private int fps = 0;
     private long frametime = 0;
     private long dfps = 50;
-    private boolean showgamedata = true;
+    private boolean showgamedata = false;
     private BufferedImage backbuffer;
     private Graphics2D g2d;
     private AffineTransform affinetransform;
@@ -89,6 +83,8 @@ public abstract class JGameEngineX extends Applet implements Runnable, JInputOut
     private long gamepausetime = 0;
     private Color backgroundcolor = Color.BLACK;
     private Color drawcolor = Color.WHITE;
+    private Font font = new Font("Arial", Font.PLAIN, 10);
+    private java.util.List<JGameEngineListenerX> listeners = new ArrayList<>();
 
     /**
      * <code>gameStart</code> function to override in new instance.
@@ -137,24 +133,28 @@ public abstract class JGameEngineX extends Applet implements Runnable, JInputOut
 
     /**
      * Draws the game menu to the backbuffer.
+     * <p/>
      * @param g2d The graphics pointing to backbuffer to be drawn to.
      */
     public abstract void gameMenuPaint(Graphics2D g2d);
 
     /**
      * Draws the main game screen to the backbuffer.
+     * <p/>
      * @param g2d The graphics pointing to backbuffer to be drawn to.
      */
     public abstract void gamePaint(Graphics2D g2d);
 
     /**
      * Draws the game pause screen to the backbuffer.
+     * <p/>
      * @param g2d The graphics pointing to backbuffer to be drawn to.
      */
     public abstract void gamePausePaint(Graphics2D g2d);
 
     /**
      * Draws the game stopped screen to the backbuffer.
+     * <p/>
      * @param g2d The graphics pointing to backbuffer to be drawn to.
      */
     public abstract void gameStoppedPaint(Graphics2D g2d);
@@ -167,7 +167,7 @@ public abstract class JGameEngineX extends Applet implements Runnable, JInputOut
      * @return <code>gamestatus</code><br/>0 = stopped.<br/>1 = menu.<br/>2 =
      *         running.<br/>3 = paused.
      */
-    public final int getGameStatus() {
+    public final GAME_STATUS getGameStatus() {
         return this.gamestatus;
     }
 
@@ -209,6 +209,7 @@ public abstract class JGameEngineX extends Applet implements Runnable, JInputOut
 
     /**
      * Returns the game's backbuffer, a BufferedImage.
+     * <p/>
      * @return The game's backbuffer.
      */
     public final BufferedImage getBackbuffer() {
@@ -217,6 +218,7 @@ public abstract class JGameEngineX extends Applet implements Runnable, JInputOut
 
     /**
      * Returns the frames per second drawn to the screen (framerate).
+     * <p/>
      * @return The game's framerate.
      */
     public final int getFPS() {
@@ -225,6 +227,7 @@ public abstract class JGameEngineX extends Applet implements Runnable, JInputOut
 
     /**
      * Returns the game's desired frames per second rate (desired framerate).
+     * <p/>
      * @return The game's desired framerate.
      */
     public final double getDFPS() {
@@ -233,6 +236,7 @@ public abstract class JGameEngineX extends Applet implements Runnable, JInputOut
 
     /**
      * Returns the game's graphics, which point to the backbuffer.
+     * <p/>
      * @return The game's primary graphics.
      */
     public final Graphics2D getGameGraphics() {
@@ -241,6 +245,7 @@ public abstract class JGameEngineX extends Applet implements Runnable, JInputOut
 
     /**
      * Returns the game's start time.
+     * <p/>
      * @return The time the game first started.
      */
     public final long getGameStartTime() {
@@ -249,6 +254,7 @@ public abstract class JGameEngineX extends Applet implements Runnable, JInputOut
 
     /**
      * Returns the time elapsed since the game started.
+     * <p/>
      * @return The game time.
      */
     public final long getGameTime() {
@@ -258,10 +264,11 @@ public abstract class JGameEngineX extends Applet implements Runnable, JInputOut
     /**
      * Returns the total time spent in the game paused state.
      * Returns 0 if not in the pause state.
+     * <p/>
      * @return The total time spent in the game paused state.
      */
     public final long getTotalGamePauseTime() {
-        if (this.gamestatus == gamepaused) {
+        if (this.gamestatus == GAME_STATUS.GAME_STARTING) {
             return ((this.gametime - this.gamepausedat) + this.gamepausetime);
         }
         else {
@@ -272,10 +279,11 @@ public abstract class JGameEngineX extends Applet implements Runnable, JInputOut
     /**
      * Returns the time elapsed since the game was last paused.
      * Returns 0 if not in the pause state.
+     * <p/>
      * @return The total time spent in the game paused state.
      */
     public final long getGamePauseTime() {
-        if (this.gamestatus == gamepaused) {
+        if (this.gamestatus == GAME_STATUS.GAME_PAUSED) {
             return this.gametime - this.gamepausedat;
         }
         else {
@@ -285,6 +293,7 @@ public abstract class JGameEngineX extends Applet implements Runnable, JInputOut
 
     /**
      * Returns the last time the game was paused.
+     * <p/>
      * @return
      */
     public final long getGameGameLastPausedAt() {
@@ -293,7 +302,9 @@ public abstract class JGameEngineX extends Applet implements Runnable, JInputOut
 
     /**
      * Returns the current draw color.
-     * The default starting color is <code>Color.WHITE</code>.
+     * The default starting color is
+     * <code>Color.WHITE</code>.
+     * <p/>
      * @return The current draw color.
      */
     public final Color getDrawColor() {
@@ -302,7 +313,9 @@ public abstract class JGameEngineX extends Applet implements Runnable, JInputOut
 
     /**
      * Returns the current background color.
-     * The default starting color is <code>Color.BLACK</code>.
+     * The default starting color is
+     * <code>Color.BLACK</code>.
+     * <p/>
      * @return The current background color.
      */
     public final Color getBackgroundColor() {
@@ -311,6 +324,7 @@ public abstract class JGameEngineX extends Applet implements Runnable, JInputOut
 
     /**
      * Returns the currently active keys.
+     * <p/>
      * @return The active key array.
      */
     public final boolean[] getKeys() {
@@ -319,6 +333,7 @@ public abstract class JGameEngineX extends Applet implements Runnable, JInputOut
 
     /**
      * Returns the currently active keys as a string.
+     * <p/>
      * @return The active key array as a string.
      */
     public final String getKeysDownString() {
@@ -333,7 +348,9 @@ public abstract class JGameEngineX extends Applet implements Runnable, JInputOut
 
     /**
      * Tests a key to see if it is currently active.
+     * <p/>
      * @param keycode The key to test for its the state.
+     * <p/>
      * @return
      */
     public final boolean isKeyDown(int keycode) {
@@ -341,8 +358,11 @@ public abstract class JGameEngineX extends Applet implements Runnable, JInputOut
     }
 
     /**
-     * Tests a key to see if it is currently active and if it is, removes it from the active key array.
+     * Tests a key to see if it is currently active and if it is, removes it
+     * from the active key array.
+     * <p/>
      * @param keycode The key to test for its the state.
+     * <p/>
      * @return
      */
     public final boolean isKeyDownAndRemove(int keycode) {
@@ -366,8 +386,10 @@ public abstract class JGameEngineX extends Applet implements Runnable, JInputOut
      *
      * @param status
      */
-    public final void setGameStatus(int status) {
+    public final void setGameStatus(GAME_STATUS status) {
+        this.prevgamestatus = this.gamestatus;
         this.gamestatus = status;
+        fireEvent(EVENT_TYPE.STATE_CHANGE, this.gamestatus, this.prevgamestatus);
     }
 
     /**
@@ -395,16 +417,19 @@ public abstract class JGameEngineX extends Applet implements Runnable, JInputOut
     }
 
     /**
+     * Should only be called once.
      *
      * @param framerate
      * @param gamewindowwidth
      * @param gamewindowheight
      * @param status
      */
-    public final void setGameAtrib(int framerate, int gamewindowwidth, int gamewindowheight, int status) {
+    public final void setGameAtrib(int framerate, int gamewindowwidth, int gamewindowheight, GAME_STATUS status) {
         this.dfps = framerate;
+        this.prevgamestatus = this.gamestatus;
         this.gamestatus = status;
         this.resizeGame(gamewindowwidth, gamewindowheight);
+        fireEvent(EVENT_TYPE.STATE_CHANGE, this.prevgamestatus, this.gamestatus);
     }
 
     /**
@@ -444,14 +469,30 @@ public abstract class JGameEngineX extends Applet implements Runnable, JInputOut
     public final void resetAffineTransform() {
         this.g2d.setTransform(affinetransform);
     }
-    //Functions
 
+    /**
+     *
+     */
+    public final void resetFont() {
+        this.g2d.setFont(font);
+    }
+
+    /**
+     *
+     */
+    public final void resetGraphics() {
+        this.resetDrawColor();
+        this.resetAffineTransform();
+        this.resetFont();
+    }
+
+    //Functions
     /**
      *
      */
     public void pausegame() {
         this.gamepausedat = this.gametime;
-        this.gamestatus = gamepaused;
+        this.setGameStatus(GAME_STATUS.GAME_PAUSED);
     }
 
     /**
@@ -461,7 +502,7 @@ public abstract class JGameEngineX extends Applet implements Runnable, JInputOut
         this.gamepausetime += this.gametime - this.gamepausedat;
         this.gamelastpausedat = this.gametime;
         this.gamepausedat = 0;
-        this.gamestatus = gamerunning;
+        this.setGameStatus(GAME_STATUS.GAME_PAUSED);
     }
 
     @Override
@@ -474,22 +515,23 @@ public abstract class JGameEngineX extends Applet implements Runnable, JInputOut
         }
         clearBackbuffer();
         switch (this.gamestatus) {
-            case gamemenu:
+            case GAME_MENU:
                 gameMenuPaint(g2d);
                 break;
-            case gamepaused:
+            case GAME_PAUSED:
                 gamePausePaint(g2d);
                 break;
-            case gamerunning:
+            case GAME_RUNNING:
                 gamePaint(g2d);
                 break;
-            case gamestopped:
+            case GAME_STOPPED:
                 gameStoppedPaint(g2d);
                 break;
             default:
                 paintError("Invalid Game Mode.");
                 break;
         }
+        resetGraphics();
         if (showgamedata) {
             paintGameData();
         }
@@ -566,7 +608,7 @@ public abstract class JGameEngineX extends Applet implements Runnable, JInputOut
     public final void init() {
 
         //  Set Game Atributes
-        this.setGameAtrib(50, 640, 480, gamestarting);
+        this.setGameAtrib(50, 640, 480, GAME_STATUS.GAME_STARTING);
 
         //  Resources
         this.mouse = new JMouseX(this);
@@ -578,6 +620,7 @@ public abstract class JGameEngineX extends Applet implements Runnable, JInputOut
         this.addMouseListener(mouse);
         this.addMouseMotionListener(mouse);
         this.addMouseWheelListener(mouse);
+        this.addListener(spriteholder);
 
         // ???
         // I have no clue why theese have to be here but they do...
@@ -613,20 +656,20 @@ public abstract class JGameEngineX extends Applet implements Runnable, JInputOut
                 this.g2d.drawString(e.getLocalizedMessage(), 0, 0);
             }
             this.gametime = System.currentTimeMillis() - gamestarttime;
-            switch(this.gamestatus) {
-                case gamemenu:
+            switch (this.gamestatus) {
+                case GAME_MENU:
                     gameMenu();
                     break;
-                case gamerunning:
+                case GAME_RUNNING:
                     gameUpdate();
                     break;
-                case gamepaused:
+                case GAME_PAUSED:
                     gamePaused();
                     break;
-                case gamestopped:
+                case GAME_STOPPED:
                     stop();
                     break;
-                case gamestarting:
+                case GAME_STARTING:
                     System.out.println("This system is slow.");
                     break;
                 default:
@@ -653,6 +696,13 @@ public abstract class JGameEngineX extends Applet implements Runnable, JInputOut
     }
 
     @Override
+    public void lostFocus(EventObject e) {
+        if (this.gamestatus == GAME_STATUS.GAME_RUNNING) {
+            this.setGameStatus(GAME_STATUS.GAME_PAUSED);
+        }
+    }
+
+    @Override
     public void keyTyped(KeyEvent k) {
     }
 
@@ -664,5 +714,29 @@ public abstract class JGameEngineX extends Applet implements Runnable, JInputOut
     @Override
     public void keyReleased(KeyEvent k) {
         this.keys[k.getKeyCode()] = false;
+    }
+
+    synchronized protected void addListener(JGameEngineListenerX listener) {
+        if (!this.listeners.contains(listener)) {
+            this.listeners.add(listener);
+        }
+    }
+
+    synchronized protected void removeListener(JGameEngineListenerX listener) {
+        if (this.listeners.contains(listener)) {
+            this.listeners.remove(listener);
+        }
+    }
+
+    synchronized protected void fireEvent(EVENT_TYPE type, Object... args) {
+        switch (type) {
+            case STATE_CHANGE:
+                for (JGameEngineListenerX e : this.listeners) {
+                    e.gameStateChanged((GAME_STATUS)(args[0]), (GAME_STATUS)(args[1]));
+                }
+                break;
+            default:
+                break;
+        }
     }
 }

@@ -627,6 +627,10 @@ public abstract class JSpriteX {
         }
     }
 
+    public final void pause() {
+        this.lastupdate = 0;
+    }
+
     /**
      *
      */

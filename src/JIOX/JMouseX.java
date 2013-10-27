@@ -146,6 +146,7 @@ public class JMouseX implements MouseListener, MouseMotionListener, MouseWheelLi
     public void mouseExited(MouseEvent e) {
         exit.setPoint(e.getX(), e.getY());
         position.setPoint(e.getX(), e.getY());
+        user.lostFocus(e);
         checkButton(e);
     }
 

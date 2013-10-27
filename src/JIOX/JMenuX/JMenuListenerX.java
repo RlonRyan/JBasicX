@@ -14,8 +14,8 @@ package JIOX.JMenuX;
  */
 public interface JMenuListenerX {
 
-    public void elementSelected(int element);
+    public void elementSelected(Object source, int element);
 
-    public void elementHighlighted(int element);
+    public void elementHighlighted(Object source, int element);
 
 }

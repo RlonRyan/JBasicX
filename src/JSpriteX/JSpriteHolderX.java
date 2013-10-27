@@ -1,26 +1,26 @@
 /**
- * @author  RlonRyan
- * @name    JSpriteX
+ * @author RlonRyan
+ * @name JSpriteX
  * @version 1.0.0
- * @date    Jan 11, 2012
- * @info    Sprite container class.
-**/
-
+ * @date Jan 11, 2012
+ * @info Sprite container class.
+ *
+ */
 package JSpriteX;
 
 import JBasicX.JImageHandlerX;
+import JGameEngineX.JGameEngineListenerX;
 import JGameEngineX.JGameEngineX;
 import java.awt.Graphics2D;
 import java.awt.Image;
-import java.awt.Toolkit;
 import java.net.URL;
 import java.util.LinkedList;
 
 /**
- * @author  RlonRyan
- * @name    JSpriteHolderX
+ * @author RlonRyan
+ * @name JSpriteHolderX
  */
-final public class JSpriteHolderX implements Runnable {
+final public class JSpriteHolderX implements Runnable, JGameEngineListenerX {
 
     // Constants
     /**
@@ -44,7 +44,6 @@ final public class JSpriteHolderX implements Runnable {
      */
     public static final int SPRITE_STATIC = 4;
     // Public
-
     // Private
     private Thread spriteUpdateThread;
     private LinkedList<JSpriteX> sprites;
@@ -54,8 +53,8 @@ final public class JSpriteHolderX implements Runnable {
     private JGameEngineX holder;
     private int dsups = 105;
     private int sups = 0;
-    private long updatetime = 0;
-    private int updatenumber = 0;
+    private long updatetime;
+    private int updatenumber;
     private boolean active = false;
 
     /**
@@ -63,7 +62,7 @@ final public class JSpriteHolderX implements Runnable {
      * @param holder
      */
     public JSpriteHolderX(JGameEngineX holder) {
-        this.sprites = new LinkedList<JSpriteX>();
+        this.sprites = new LinkedList<>();
         this.images = new JImageHandlerX();
         this.holder = holder;
     }
@@ -104,7 +103,7 @@ final public class JSpriteHolderX implements Runnable {
      *
      * @return
      */
-    public final boolean isActive(){
+    public final boolean isActive() {
         return active;
     }
 
@@ -189,7 +188,7 @@ final public class JSpriteHolderX implements Runnable {
     synchronized final public void addPicture(String filename, String name) {
         this.images.addPicture(filename, name);
     }
-    
+
     synchronized final public void addPicture(String filename) {
         this.images.addPicture(filename);
     }
@@ -204,6 +203,14 @@ final public class JSpriteHolderX implements Runnable {
      */
     synchronized final public void deleteSprite(int index) {
         this.sprites.remove(index);
+    }
+
+    /**
+     *
+     *
+     */
+    synchronized final public void deleteAllSprites() {
+        this.sprites.clear();
     }
 
     /**
@@ -355,6 +362,7 @@ final public class JSpriteHolderX implements Runnable {
     /**
      *
      * @param sprite
+     * <p/>
      * @return
      */
     synchronized final public JSpriteX collidesWith(JSpriteX sprite) {
@@ -369,6 +377,7 @@ final public class JSpriteHolderX implements Runnable {
     /**
      *
      * @param sprite
+     * <p/>
      * @return
      */
     synchronized final public JSpriteX collidesWithAndRemove(JSpriteX sprite) {
@@ -383,6 +392,7 @@ final public class JSpriteHolderX implements Runnable {
     /**
      *
      * @param sprite
+     * <p/>
      * @return
      */
     synchronized final public int checkCollisionsWith(JSpriteX sprite) {
@@ -398,6 +408,7 @@ final public class JSpriteHolderX implements Runnable {
     /**
      *
      * @param sprite
+     * <p/>
      * @return
      */
     synchronized final public int checkCollisionsWithAndRemove(JSpriteX sprite) {
@@ -425,13 +436,23 @@ final public class JSpriteHolderX implements Runnable {
         }
     }
 
+    synchronized final public void pauseAll() {
+        for(JSpriteX e : sprites) {
+            e.pause();
+        }
+    }
     /**
      *
      */
     final public void start() {
+        if (this.isActive()) {
+            return;
+        }
         this.spriteUpdateThread = new Thread(this);
         this.spriteUpdateThread.start();
         this.active = true;
+        this.updatetime = 0;
+        this.updatenumber = 0;
     }
 
     @Override
@@ -453,5 +474,17 @@ final public class JSpriteHolderX implements Runnable {
     final public void stop() {
         this.spriteUpdateThread = null;
         this.active = false;
+    }
+
+    @Override
+    public void gameStateChanged(JGameEngineX.GAME_STATUS newstate, JGameEngineX.GAME_STATUS oldstate) {
+        if (oldstate == JGameEngineX.GAME_STATUS.GAME_RUNNING && this.isActive()) {
+            this.stop();
+            this.pauseAll();
+        }
+        if (newstate == JGameEngineX.GAME_STATUS.GAME_RUNNING && !this.isActive()) {
+            this.start();
+            this.pauseAll();
+        }
     }
 }

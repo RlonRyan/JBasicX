@@ -8,6 +8,8 @@
 
 package JIOX;
 
+import java.util.EventObject;
+
 /**
  * @author  RlonRyan
  * @name    JInputOutputX
@@ -18,5 +20,7 @@ public interface JInputOutputX {
      *
      */
     public void updateIO();
+
+    public void lostFocus(EventObject e);
 
 }
