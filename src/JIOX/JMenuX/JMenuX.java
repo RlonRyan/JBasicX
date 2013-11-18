@@ -29,6 +29,7 @@ public class JMenuX {
     private List<JMenuListenerX> listeners = new ArrayList<>();
     private String title;
     private List<String> elements = new ArrayList<>();
+    private String[][] options;
     private Point dimensions;
     private Point position;
     private HashMap<String, Color> colorscheme;
@@ -164,22 +165,45 @@ public class JMenuX {
         for (i = 0; i < elements.size(); i++) {
             if (distance >= Math.abs(y - yy) || i == 0) {
                 distance = Math.abs(y - yy);
-            }
-            else {
+            } else {
                 g2d.setFont(temp);
                 return i - 1;
             }
             if (i == highlighted) {
                 g2d.setFont(fontscheme.get("highlight"));
-                yy += g2d.getFontMetrics().getHeight();
+                yy += g2d.getFontMetrics().getHeight() * wrapToLines(elements.get(i), g2d, dimensions.x).size();
                 g2d.setFont(fontscheme.get("body"));
-            }
-            else {
-                yy += g2d.getFontMetrics().getHeight();
+            } else {
+                yy += g2d.getFontMetrics().getHeight() * wrapToLines(elements.get(i), g2d, dimensions.x).size();
             }
         }
         g2d.setFont(temp);
         return this.elements.size() - 1;
+    }
+
+    public static final List<String> wrapToLines(String line, Graphics2D context, int length) {
+        List<String> lines = new ArrayList<>();
+        for (int i = 0; i < context.getFontMetrics().stringWidth(line); i += length) {
+            int temp = length;
+            if (line.length() < length + i) {
+                temp = line.length();
+            }
+            lines.add(line.substring(i, i + temp));
+        }
+        return lines;
+    }
+
+    synchronized public final void wrap(Graphics2D context) {
+        for (int i = 0; i < elements.size(); i++) {
+            String line = this.elements.get(i);
+            int length = context.getFontMetrics().stringWidth(line);
+            for (int ii = 0; ii < context.getFontMetrics().stringWidth(line); ii += this.dimensions.x) {
+                if (length < line.length() + ii) {
+                    length = this.dimensions.x + 2 - ii;
+                }
+                options[i][ii] = (line.substring(ii, ii + length - 1));
+            }
+        }
     }
 
     public JMenuX(int width, int height, int x, int y, String... elements) {
@@ -187,6 +211,7 @@ public class JMenuX {
         this.position = new Point(x, y);
         this.elements.addAll(Arrays.asList(elements));
         this.title = this.elements.remove(0);
+        this.options = new String[this.elements.size()][10];
         this.validate();
     }
 
@@ -195,6 +220,7 @@ public class JMenuX {
         this.position = position;
         this.elements.addAll(Arrays.asList(elements));
         this.title = this.elements.remove(0);
+        this.options = new String[this.elements.size()][10];
         this.validate();
     }
 
@@ -222,14 +248,17 @@ public class JMenuX {
             if (i == highlighted) {
                 g2d.setColor(colorscheme.get("highlight"));
                 g2d.setFont(fontscheme.get("highlight"));
-                y += g2d.getFontMetrics().getHeight();
-                g2d.drawString(elements.get(i), x, y);
+                for (String e : wrapToLines(elements.get(i), g2d, dimensions.x - 2 * (dimensions.x / 100))) {
+                    y += g2d.getFontMetrics().getHeight();
+                    g2d.drawString(e, x, y);
+                }
                 g2d.setColor(colorscheme.get("body"));
                 g2d.setFont(fontscheme.get("body"));
-            }
-            else {
-                y += g2d.getFontMetrics().getHeight();
-                g2d.drawString(elements.get(i), x, y);
+            } else {
+                for (String e : wrapToLines(elements.get(i), g2d, dimensions.x - (2 * (dimensions.x / 100)))) {
+                    y += g2d.getFontMetrics().getHeight();
+                    g2d.drawString(e, x, y);
+                }
             }
         }
     }
