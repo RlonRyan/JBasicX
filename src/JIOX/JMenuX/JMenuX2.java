@@ -8,138 +8,75 @@
 
 package JIOX.JMenuX;
 
+import JBasicX.JStyleX;
+import JIOX.JMenuX.JMenuElementX.JMenuElementX;
 import java.awt.Color;
 import java.awt.Font;
 import java.awt.Graphics2D;
 import java.awt.Point;
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.HashMap;
 import java.util.List;
 
 /**
  * @author RlonRyan
  * @name JMenuX
  */
-public class JMenuX {
-
+public class JMenuX2 {
+    
     public final static int MENU_CHANGED = 0;
     public final static int ELEMENT_HIGHLIGHTED = 1;
     public final static int ELEMENT_SELECTED = 2;
-    private List<JMenuListenerX> listeners = new ArrayList<>();
+    
     private final String title;
-    private List<String> elements = new ArrayList<>();
-    private String[][] options;
-    private Point dimensions;
-    private Point position;
-    private HashMap<String, Color> colorscheme;
-    private HashMap<String, Font> fontscheme;
-    private int highlighted = 0;
-
+    private JStyleX style;
+    private List<JMenuElementX> elements;
+    private List<JMenuListenerX> listeners;
+    
+    private int index;
+    private int [] dimensions;
+    private int [] position;
+    
     final public String getTitle() {
         return this.title;
     }
 
-    synchronized public final String getMenuElement(int element) {
+    synchronized public final JMenuElementX getMenuElement(int element) {
         if (element < 0 || element > 0) {
             return null;
         }
         return this.elements.get(element);
     }
 
-    synchronized public final void setColorScheme(HashMap<String, Color> colorscheme) {
-        this.colorscheme = colorscheme;
-        this.validate();
+    synchronized public final void setStyle(JStyleX style) {
+        this.style = style;
     }
-
-    synchronized public final void setColorSchemeElement(String key, Color value) {
-        this.colorscheme.put(key, value);
-        this.validate();
-    }
-
-    synchronized public final void setFontScheme(HashMap<String, Font> fontscheme) {
-        this.fontscheme = fontscheme;
-        this.validate();
-    }
-
-    synchronized public final void setFontSchemeElement(String key, Color value) {
-        this.colorscheme.put(key, value);
-        this.validate();
-    }
-
-    synchronized public final void validate() {
-        /* // Offer up some fonts.
-         * GraphicsEnvironment ge =
-         * GraphicsEnvironment.getLocalGraphicsEnvironment();
-         * Font[] fonts = ge.getAllFonts();
-         * for (Font f : fonts) {
-         * System.out.println(f.getFontName());
-         * }
-         */
-        if (this.colorscheme == null) {
-            this.colorscheme = new HashMap<>();
-        }
-        if (!this.colorscheme.containsKey("background") || this.colorscheme.get("background") == null) {
-            this.colorscheme.put("background", new Color(255, 255, 255, 100));
-        }
-        if (!this.colorscheme.containsKey("border") || this.colorscheme.get("background") == null) {
-            this.colorscheme.put("border", Color.WHITE);
-        }
-        if (!this.colorscheme.containsKey("title") || this.colorscheme.get("title") == null) {
-            this.colorscheme.put("title", Color.WHITE);
-        }
-        if (!this.colorscheme.containsKey("body") || this.colorscheme.get("body") == null) {
-            this.colorscheme.put("body", Color.LIGHT_GRAY);
-        }
-        if (!this.colorscheme.containsKey("highlight") || this.colorscheme.get("highlight") == null) {
-            this.colorscheme.put("highlight", Color.YELLOW);
-        }
-        if (this.fontscheme == null) {
-            this.fontscheme = new HashMap<>();
-        }
-        if (!this.fontscheme.containsKey("title") || this.fontscheme.get("title") == null) {
-            this.fontscheme.put("title", new Font("Monospaced", Font.PLAIN, 16));
-        }
-        if (!this.fontscheme.containsKey("body") || this.fontscheme.get("body") == null) {
-            this.fontscheme.put("body", new Font("SansSerif", Font.PLAIN, 10));
-        }
-        if (!this.fontscheme.containsKey("highlight") || this.fontscheme.get("highlight") == null) {
-            this.fontscheme.put("highlight", new Font("Arial", Font.PLAIN, 10));
-        }
-    }
-
-    synchronized public final void highlight(int element) {
-        this.highlighted = element;
-        fireEvent(ELEMENT_HIGHLIGHTED, highlighted);
+    
+    synchronized public final void highlight(int index) {
+        this.index = index;
+        fireEvent(ELEMENT_HIGHLIGHTED, index);
     }
 
     synchronized public final void incrementHighlight() {
-        this.highlighted += 1;
-        if (this.highlighted >= elements.size()) {
-            this.highlighted = 0;
-        }
-        fireEvent(ELEMENT_HIGHLIGHTED, highlighted);
+        this.index = (this.index >= elements.size()) ? 0 : this.index + 1;
+        fireEvent(ELEMENT_HIGHLIGHTED, index);
     }
 
     synchronized public final void deincrementHighlight() {
-        this.highlighted -= 1;
-        if (this.highlighted < 0) {
-            this.highlighted = this.elements.size() - 1;
-        }
-        fireEvent(ELEMENT_HIGHLIGHTED, highlighted);
+        this.index = (this.index <= 0) ? this.elements.size() - 1 : this.index - 1;
+        fireEvent(ELEMENT_HIGHLIGHTED, index);
     }
 
     synchronized public final void incrementHighlight(int increment) {
-        this.highlighted += increment;
-        this.highlighted %= (this.elements.size());
-        if (this.highlighted < 0) {
-            this.highlighted += this.elements.size();
+        this.index = (this.index + increment) % (this.elements.size());
+        if (this.index < 0) {
+            this.index = this.index + this.elements.size();
         }
-        fireEvent(ELEMENT_HIGHLIGHTED, highlighted);
+        fireEvent(ELEMENT_HIGHLIGHTED, index);
     }
 
     synchronized public final void selectMenuElement() {
-        fireEvent(ELEMENT_SELECTED, highlighted);
+        fireEvent(ELEMENT_SELECTED, index);
     }
 
     synchronized public final void selectMenuElement(int element) {
@@ -156,9 +93,9 @@ public class JMenuX {
 
     synchronized public final int getNearest(Graphics2D g2d, int y) {
         Font temp = g2d.getFont();
-        int yy = position.y + dimensions.y / 100;
+        int yy = position[1] + dimensions[1] / 100;
         int distance = Math.abs(y - yy);
-        g2d.setFont(fontscheme.get("title"));
+        g2d.setFont(this.style.getFont("title"));
         yy += g2d.getFontMetrics().getHeight() * 2;
         int i;
         g2d.setFont(fontscheme.get("body"));
@@ -206,7 +143,7 @@ public class JMenuX {
         }
     }
 
-    public JMenuX(int width, int height, int x, int y, String... elements) {
+    public JMenuX2(int width, int height, int x, int y, String... elements) {
         this.dimensions = new Point(width, height);
         this.position = new Point(x, y);
         this.elements.addAll(Arrays.asList(elements));
@@ -215,7 +152,7 @@ public class JMenuX {
         this.validate();
     }
 
-    public JMenuX(Point dimensions, Point position, String[] elements) {
+    public JMenuX2(Point dimensions, Point position, String[] elements) {
         this.dimensions = dimensions;
         this.position = position;
         this.elements.addAll(Arrays.asList(elements));
@@ -277,12 +214,12 @@ public class JMenuX {
                 break;
             case ELEMENT_SELECTED:
                 for (JMenuListenerX e : this.listeners) {
-                    e.elementSelected(this, data[0]);
+                    e.elementSelected(this, data);
                 }
                 break;
             case ELEMENT_HIGHLIGHTED:
                 for (JMenuListenerX e : this.listeners) {
-                    e.elementHighlighted(this, data[0]);
+                    e.elementHighlighted(this, data);
                 }
                 break;
             default:

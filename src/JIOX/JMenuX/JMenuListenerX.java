@@ -8,14 +8,16 @@
  */
 package JIOX.JMenuX;
 
+import JIOX.JMenuX.JMenuElementX.JMenuElementX;
+
 /**
  * @author RlonRyan
  * @name JMenuX
  */
 public interface JMenuListenerX {
 
-    public void elementSelected(Object source, int element);
+    public void elementSelected(Object source, int... data);
 
-    public void elementHighlighted(Object source, int element);
+    public void elementHighlighted(Object source, int... data);
 
 }
