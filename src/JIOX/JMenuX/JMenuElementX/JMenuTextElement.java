@@ -19,10 +19,10 @@ public class JMenuTextElement implements JMenuElementX {
     /*
      *   State Constants
      */
-    public static short NO_STATE = 0;
-    public static short NORMAL = 1;
-    public static short HIGHLIGHTED = 2;
-    public static short SELECTED = 3;
+    public final static short NO_STATE = 0;
+    public final static short NORMAL = 1;
+    public final static short HIGHLIGHTED = 2;
+    public final static short SELECTED = 3;
 
     /*
      *   Variable Variables
@@ -58,24 +58,40 @@ public class JMenuTextElement implements JMenuElementX {
 
     @Override
     public void draw(Graphics2D g2d, int x, int y, int width) {
+        switch (state) {
+            case NORMAL:
+                g2d.setColor(this.style.getColor("body"));
+                g2d.setFont(this.style.getFont("body"));
+                break;
+            case HIGHLIGHTED:
+                g2d.setColor(this.style.getColor("highlight"));
+                g2d.setFont(this.style.getFont("highlight"));
+                break;
+            default:
+                g2d.setColor(this.style.getColor("body"));
+                g2d.setFont(this.style.getFont("body"));
+                break;
+        }
+        g2d.setColor(this.style.getColor(text));
         for (String e : wrapToLines(this.text, g2d, width)) {
             y += g2d.getFontMetrics().getHeight();
             g2d.drawString(e, x, y);
         }
     }
-    
+
     public static final List<String> wrapToLines(String line, Graphics2D context, int length) {
         List<String> lines = new ArrayList<>();
-        for (int i = 0; i < context.getFontMetrics().stringWidth(line); i += length) {
-            int temp = length;
-            if (line.length() < length + i) {
-                temp = line.length();
+        length = length / context.getFontMetrics().getMaxAdvance();
+        for (int i = 0; i < line.length(); i += length) {
+            if (line.length() < (i + length)) {
+                lines.add(line.substring(i));
+            } else {
+                lines.add(line.substring(i, i + length));
             }
-            lines.add(line.substring(i, i + temp));
         }
         return lines;
     }
-    
+
     /*
      *   Constructor
      */
@@ -84,5 +100,5 @@ public class JMenuTextElement implements JMenuElementX {
         this.style = style;
         this.state = 1;
     }
-    
+
 }

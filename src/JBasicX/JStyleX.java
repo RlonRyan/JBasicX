@@ -3,7 +3,7 @@ package JBasicX;
 
 import java.awt.Color;
 import java.awt.Font;
-import java.awt.GraphicsEnvironment;
+//import java.awt.GraphicsEnvironment;
 import java.util.HashMap;
 
 /**
@@ -47,50 +47,24 @@ public class JStyleX {
     }
     
     public void setDefaultColor(Color color) {
-        this.style.put("default_coltor", color);
+        this.style.put("default_color", color);
     }
     
     public void setStyle(HashMap style) {
         this.style = style;
     }
     
-    /*@Deprecated
-    public void validateStyle() {
-        if (this.style == null) {
-            this.style = new HashMap<>();
-        }
-        if (!this.style.containsKey("background") || this.style.get("background") == null) {
-            this.style.put("background", new Color(255, 255, 255, 100));
-        }
-        if (!this.style.containsKey("border") || this.style.get("background") == null) {
-            this.style.put("border", Color.WHITE);
-        }
-        if (!this.style.containsKey("title") || this.style.get("title") == null) {
-            this.style.put("title", Color.WHITE);
-        }
-        if (!this.style.containsKey("body") || this.style.get("body") == null) {
-            this.style.put("body", Color.LIGHT_GRAY);
-        }
-        if (!this.style.containsKey("highlight") || this.style.get("highlight") == null) {
-            this.style.put("highlight", Color.YELLOW);
-        }
-        if (this.style == null) {
-            this.style = new HashMap<>();
-        }
-        if (!this.style.containsKey("title") || this.style.get("title") == null) {
-            this.style.put("title", new Font("Monospaced", Font.PLAIN, 16));
-        }
-        if (!this.style.containsKey("body") || this.style.get("body") == null) {
-            this.style.put("body", new Font("SansSerif", Font.PLAIN, 10));
-        }
-        if (!this.style.containsKey("highlight") || this.style.get("highlight") == null) {
-            this.style.put("highlight", new Font("Arial", Font.PLAIN, 10));
-        }
-    }*/
+    public void setStyleElement(String name, Object element) {
+        this.style.put(name, element);
+    }
+    
+    public boolean hasStyleElement(String name) {
+        return this.style.containsKey(name);
+    }
 
     public JStyleX() {
         this.style = new HashMap<>();
-        this.style.put("default_font", Font.SANS_SERIF);
+        this.style.put("default_font", Font.getFont(Font.SANS_SERIF));
         this.style.put("default_colot", Color.WHITE);
     }
     
