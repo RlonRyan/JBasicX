@@ -9,7 +9,7 @@ package JIOX.JMenuX;
 
 import JBasicX.JStyleX;
 import JIOX.JMenuX.JMenuElementX.JMenuElementX;
-import JIOX.JMenuX.JMenuElementX.JMenuTextElement;
+import JIOX.JMenuX.JMenuElementX.JMenuTextElementX;
 import java.awt.Color;
 import java.awt.Font;
 import java.awt.Graphics2D;
@@ -57,7 +57,7 @@ public class JMenuX {
         this.style = new JStyleX();
         this.validateStyle();
         for (String e : elements) {
-            this.elements.add(new JMenuTextElement(e, this.style));
+            this.elements.add(new JMenuTextElementX(e, this.style));
         }
         this.index = this.elements.size();
     }
@@ -92,37 +92,59 @@ public class JMenuX {
         return this.title;
     }
 
-    synchronized public final JMenuElementX getMenuElement(int element) {
-        if (element < 0 || element > 0) {
+    synchronized public final JMenuElementX getMenuElement(int idex) {
+        if (index < 0 || index >= this.elements.size()) {
             return null;
         }
-        return this.elements.get(element);
+        return this.elements.get(index);
     }
 
     /*
      *   Incrementers Go Here
      */
     synchronized public final void incrementHighlight() {
-        this.index = (this.index >= elements.size()) ? 0 : this.index + 1;
-        if (this.index < this.elements.size()) {
-            this.elements.get(index).highlight();
-        }
-        fireEvent(ELEMENT_HIGHLIGHTED, index);
+        /*
+         *  Is this lazy? Or is this just maintainablity?
+         *
+         *   OLD:
+         *
+         *       this.index = (this.index >= elements.size()) ? 0 : this.index + 1;
+         if (this.index < this.elements.size()) {
+         this.elements.get(index).highlight();
+         }
+         fireEvent(ELEMENT_HIGHLIGHTED, index);
+         *
+         *   NEW:
+         */
+        this.incrementHighlight(1);
     }
 
     synchronized public final void deincrementHighlight() {
-        this.index = (this.index <= 0) ? this.elements.size() - 1 : this.index - 1;
-        if (this.index < this.elements.size()) {
-            this.elements.get(index).highlight();
-        }
-        fireEvent(ELEMENT_HIGHLIGHTED, index);
+        /*
+         *  This may or may not be bad for the stack.
+         */
+        this.incrementHighlight(-1);
     }
 
     synchronized public final void incrementHighlight(int increment) {
+        /*
+         *   Remove previous highlight.
+         */
+        if (this.index < this.elements.size()) {
+            this.elements.get(index).highlight();
+        }
+
+        /*
+         *  Increment the index.
+         */
         this.index = (this.index + increment) % (this.elements.size());
         if (this.index < 0) {
             this.index = this.index + this.elements.size();
         }
+
+        /*
+         *  Highlight the new element... if it exists... dun. Dun. DUN!
+         */
         if (this.index < this.elements.size()) {
             this.elements.get(index).highlight();
         }
@@ -132,6 +154,11 @@ public class JMenuX {
     /*
      *   Methods Go Here
      */
+    synchronized public final void selectMenuElement(int index) {
+        this.index = index;
+        selectMenuElement();
+    }
+
     synchronized public final void selectMenuElement() {
         if (this.index < this.elements.size()) {
             this.elements.get(index).select();
@@ -139,19 +166,18 @@ public class JMenuX {
         fireEvent(ELEMENT_SELECTED, this.index);
     }
 
-    synchronized public final void selectMenuElement(int index) {
-        if (this.index < this.elements.size()) {
-            this.elements.get(index).select();
-        }
-        fireEvent(ELEMENT_SELECTED, index);
-    }
-
     synchronized public final void highlight(int index) {
         this.index = index;
+    }
+
+    synchronized public final void highlight() {
+        /*
+         *  Check to see if the element is real... it may not be!
+         */
         if (this.index < this.elements.size()) {
             this.elements.get(index).highlight();
+            fireEvent(ELEMENT_HIGHLIGHTED, index, this.elements.get(index).getState());
         }
-        fireEvent(ELEMENT_HIGHLIGHTED, index);
     }
 
     synchronized public final void validateStyle() {

@@ -10,16 +10,16 @@ import java.util.List;
 
 /**
  * @author RlonRyan
- * @name JMenuTextElement
+ * @name JMenuTextElementX
  * @date Dec 4, 2013
  *
  */
-public class JMenuTextElement implements JMenuElementX {
+public class JMenuTextElementX implements JMenuElementX {
 
     /*
      *   State Constants
      */
-    public final static short NO_STATE = 0;
+    public final static short STATELESS = 0;
     public final static short NORMAL = 1;
     public final static short HIGHLIGHTED = 2;
     public final static short SELECTED = 3;
@@ -31,6 +31,11 @@ public class JMenuTextElement implements JMenuElementX {
     private JStyleX style;
     private short state;
 
+    @Override
+    public short getState() {
+        return state;
+    }
+    
     @Override
     public void validate() {
         throw new UnsupportedOperationException("Not supported yet. As far as I care, this element is valid.");
@@ -48,12 +53,12 @@ public class JMenuTextElement implements JMenuElementX {
 
     @Override
     public void highlight() {
-        this.state = HIGHLIGHTED;
+        this.state = (this.state == HIGHLIGHTED) ? NORMAL:HIGHLIGHTED;
     }
 
     @Override
     public void select() {
-        this.state = SELECTED;
+        this.state = (this.state == SELECTED) ? NORMAL:SELECTED;
     }
 
     @Override
@@ -95,10 +100,10 @@ public class JMenuTextElement implements JMenuElementX {
     /*
      *   Constructor
      */
-    public JMenuTextElement(String text, JStyleX style) {
+    public JMenuTextElementX(String text, JStyleX style) {
         this.text = text;
         this.style = style;
-        this.state = 1;
+        this.state = NORMAL;
     }
 
 }

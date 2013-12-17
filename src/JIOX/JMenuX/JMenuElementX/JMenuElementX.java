@@ -3,7 +3,6 @@ package JIOX.JMenuX.JMenuElementX;
 
 import JBasicX.JStyleX;
 import java.awt.Graphics2D;
-import java.util.HashMap;
 
 /**
  * @author RlonRyan
@@ -14,6 +13,12 @@ import java.util.HashMap;
  */
 public interface JMenuElementX {
 
+    /**
+     *  Retrieves the state of the element.
+     *  @return state
+     */
+    public short getState();
+    
     /**
      *  Checks to see if the element is valid to use.
      */
