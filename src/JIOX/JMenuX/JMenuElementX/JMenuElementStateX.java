@@ -10,8 +10,8 @@ package JIOX.JMenuX.JMenuElementX;
  * @date Dec 4, 2013
  */
 public enum JMenuElementStateX {
-    STATELESS;
-    NORMAL;
-    HIGHLIGHTED;
+    STATELESS,
+    NORMAL,
+    HIGHLIGHTED,
     SELECTED;
 }
