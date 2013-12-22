@@ -45,12 +45,24 @@ public class JMenuTextElementX implements JMenuElementX {
 
     @Override
     public void highlight() {
-        this.state = (this.state == JMenuElementStateX.HIGHLIGHTED) ? JMenuElementStateX.NORMAL:JMenuElementStateX.HIGHLIGHTED;
+        //this.state = (this.state == JMenuElementStateX.HIGHLIGHTED) ? JMenuElementStateX.NORMAL:JMenuElementStateX.HIGHLIGHTED;
+        this.state = JMenuElementStateX.HIGHLIGHTED;
+    }
+
+    @Override
+    public void dehighlight() {
+        this.state = JMenuElementStateX.NORMAL;
     }
 
     @Override
     public void select() {
-        this.state = (this.state == JMenuElementStateX.SELECTED) ? JMenuElementStateX.NORMAL:JMenuElementStateX.SELECTED;
+        //this.state = (this.state == JMenuElementStateX.SELECTED) ? JMenuElementStateX.NORMAL:JMenuElementStateX.SELECTED;
+        this.state = JMenuElementStateX.NORMAL;
+    }
+
+    @Override
+    public void deselect() {
+        this.state = JMenuElementStateX.NORMAL;
     }
 
     @Override
@@ -63,6 +75,10 @@ public class JMenuTextElementX implements JMenuElementX {
             case HIGHLIGHTED:
                 g2d.setColor(this.style.getColor("highlight"));
                 g2d.setFont(this.style.getFont("highlight"));
+                break;
+            case SELECTED:
+                g2d.setColor(this.style.getColor("selected"));
+                g2d.setFont(this.style.getFont("selected"));
                 break;
             default:
                 g2d.setColor(this.style.getColor("body"));

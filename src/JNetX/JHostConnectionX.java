@@ -12,7 +12,6 @@ import java.io.PrintWriter;
 import java.net.Socket;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Stack;
 
 /**
  *
@@ -26,7 +25,7 @@ public class JHostConnectionX extends Thread {
     private PrintWriter out;
     private JConnectionStateX state;
     private long timeout = 100000;
-    private long interval = 1000;
+    private long interval = 100;
     private List<JPackectX> stack;
 
     public void queuePacket(JPackectX packet) {
@@ -72,15 +71,16 @@ public class JHostConnectionX extends Thread {
                 /*
                  *  Check for any messages.
                  */
-                if (in.ready() && (data = in.readLine()) != null) {
+                while (in.ready() && (data = in.readLine()) != null) {
                     time = 0;
                     this.host.notifyListeners(new JPackectX(data));
+                    System.out.print("Got a packet!");
                 }
 
                 /*
                  *  Check to see if the client has timed out.
                  */
-                else if (time > timeout) {
+                if (time > timeout) {
                     this.state = JConnectionStateX.TIMED_OUT;
                 }
             }

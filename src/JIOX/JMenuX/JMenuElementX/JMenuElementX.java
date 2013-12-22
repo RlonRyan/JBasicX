@@ -13,6 +13,7 @@ import java.awt.Graphics2D;
 public interface JMenuElementX {
 
     public enum JMenuElementStateX {
+
         STATELESS,
         NORMAL,
         HIGHLIGHTED,
@@ -49,9 +50,19 @@ public interface JMenuElementX {
     public void highlight();
 
     /**
+     * Removes highlighting from the element.
+     */
+    public void dehighlight();
+
+    /**
      * Selects the element.
      */
     public void select();
+
+    /**
+     * Deselects the element.
+     */
+    public void deselect();
 
     /**
      * Renders the element using the given graphics.

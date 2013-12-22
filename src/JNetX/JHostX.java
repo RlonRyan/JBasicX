@@ -24,7 +24,11 @@ public class JHostX extends Thread {
         this.listeners = new ArrayList<>();
         this.connections = new ArrayList<>();
         this.port = port;
-        this.listening = true;
+        this.listening = false;
+    }
+
+    public boolean isListening() {
+        return listening;
     }
 
     public void addListener(JNetworkListenerX listener) {
@@ -51,12 +55,14 @@ public class JHostX extends Thread {
     public void run() {
         try (ServerSocket serverSocket = new ServerSocket(this.port)) {
             System.out.println("Listening on port: " + serverSocket.getLocalPort() + ".");
+            this.listening = true;
             while (listening) {
                 new JHostConnectionX(this, serverSocket.accept()).start();
             }
         }
         catch (IOException e) {
             System.err.println("Could not listen on port " + this.port + ".");
+            this.listening = false;
         }
     }
 }
