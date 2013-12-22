@@ -643,6 +643,8 @@ public abstract class JGameEngineX extends Applet implements Runnable, JInputOut
         this.gamestarttime = System.currentTimeMillis();
         this.frametime = System.currentTimeMillis();
 
+        System.out.println("\nStarted!");
+
     }
 
     @Override

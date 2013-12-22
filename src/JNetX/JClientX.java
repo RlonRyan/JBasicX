@@ -2,15 +2,16 @@
  * To change this template, choose Tools | Templates
  * and open the template in the editor.
  */
-package JNetworkingX;
+package JNetX;
 
+import JNetX.JPacketX.JPackectX;
 import java.io.BufferedReader;
+import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.PrintWriter;
 import java.net.Socket;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Scanner;
 
 /**
  *
@@ -20,9 +21,9 @@ public class JClientX extends Thread {
 
     private String ip;
     private int port;
-    public List<String> stack;
+    private List<JPackectX> stack;
     private List<JNetworkListenerX> listeners;
-    public int state = 1;
+    private JConnectionStateX state;
 
     public JClientX(String ip, int port) {
         super("JClientConnectionX");
@@ -30,7 +31,7 @@ public class JClientX extends Thread {
         this.port = port;
         this.stack = new ArrayList<>();
         this.listeners = new ArrayList<>();
-        this.state = 1;
+        this.state = JConnectionStateX.ACTIVE;
     }
 
     public void addListener(JNetworkListenerX listener) {
@@ -41,17 +42,21 @@ public class JClientX extends Thread {
         this.listeners.remove(listener);
     }
 
-    public void fireEvent(String message) {
+    public void notifyListners(JPackectX packet) {
         for(JNetworkListenerX e : listeners) {
-            e.onMessage(message);
+            e.onPacket(packet);
         }
+    }
+
+    public void queuePacket(JPackectX packet) {
+        this.stack.add(packet);
     }
 
     @Override
     public void run() {
         try(Socket socket = new Socket(ip, port); BufferedReader in = new BufferedReader(new InputStreamReader(socket.getInputStream())); PrintWriter out = new PrintWriter(socket.getOutputStream(), true);) {
             String message;
-            while(this.state == 1){
+            while(this.state == JConnectionStateX.ACTIVE){
                 try{
                     sleep(1000);
                 }
@@ -61,21 +66,22 @@ public class JClientX extends Thread {
                      */
                 }
                 while(in.ready() && (message = in.readLine()) != null) {
-                    System.out.println("Recieved a message!");
-                    this.fireEvent(message);
+                    this.notifyListners(new JPackectX(message));
                 }
                 while(!stack.isEmpty()) {
-                    System.out.println("Sending Messages!");
-                    out.println(stack.remove(0));
+                    out.println(stack.remove(0).encode());
                 }
             }
-            out.println("terminate");
+            out.println(new JPackectX(JPackectX.PACKET_TYPE.TERMINATE, "").encode());
         }
-        catch (Exception e) {
+        catch (IOException e) {
             System.err.println("Something went wrong connecting to the host.");
-            e.printStackTrace();
             System.exit(1);
         }
+    }
+
+    public void close() {
+        this.state = JConnectionStateX.TERMINATED;
     }
 
 }

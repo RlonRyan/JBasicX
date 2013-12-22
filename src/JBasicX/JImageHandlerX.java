@@ -10,9 +10,7 @@ package JBasicX;
 
 import java.awt.Image;
 import java.awt.Toolkit;
-import java.io.File;
 import java.net.URL;
-import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
@@ -52,7 +50,7 @@ public final class JImageHandlerX extends Object {
         }
         catch (Exception e) {
             System.err.println("Could not find image under name: " + name + ".\nAttempting to autorecover.");
-            List<Integer> matches = new ArrayList<Integer>();
+            List<Integer> matches = new ArrayList<>();
             for (int i = 0; i < this.images.size(); i++) {
                 if (this.names.get(i).toLowerCase().equals(name.toLowerCase())) {
                     System.err.println("Found lowercase match: " + this.names.get(i));
@@ -110,7 +108,7 @@ public final class JImageHandlerX extends Object {
     synchronized public final void addPicture(String filename) {
         this.addPicture(filename, filename);
     }
-    
+
     /**
      * Imports an image from the
      * <code>filename</code> location to the internal array.
@@ -148,7 +146,6 @@ public final class JImageHandlerX extends Object {
         if (defaultimage == null) {
             try {
                 defaultimage = tk.getImage(cl.getResource("JBasicX/nopic.png"));
-                System.out.println("Default image loaded.");
             }
             catch (Exception e) {
                 System.err.println("Error loading default image...");

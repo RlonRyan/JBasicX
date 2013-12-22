@@ -1,8 +1,9 @@
 /*
  * Blah
  */
-package JNetworkingX;
+package JNetX;
 
+import JNetX.JPacketX.JPackectX;
 import java.io.IOException;
 import java.net.ServerSocket;
 import java.util.ArrayList;
@@ -17,10 +18,11 @@ public class JHostX extends Thread {
     private int port;
     private boolean listening;
     private List<JNetworkListenerX> listeners;
-    private int id = 0;
+    private List<JHostConnectionX> connections;
 
     public JHostX(int port) {
         this.listeners = new ArrayList<>();
+        this.connections = new ArrayList<>();
         this.port = port;
         this.listening = true;
     }
@@ -33,9 +35,15 @@ public class JHostX extends Thread {
         this.listeners.remove(listener);
     }
 
-    public void notifyListeners(String message) {
+    public void notifyListeners(JPackectX packet) {
         for (JNetworkListenerX e : listeners) {
-            e.onMessage(message);
+            e.onPacket(packet);
+        }
+    }
+
+    public void sendPacket(JPackectX packet) {
+        for(JHostConnectionX e: connections) {
+            e.queuePacket(packet);
         }
     }
 
@@ -44,12 +52,11 @@ public class JHostX extends Thread {
         try (ServerSocket serverSocket = new ServerSocket(this.port)) {
             System.out.println("Listening on port: " + serverSocket.getLocalPort() + ".");
             while (listening) {
-                new JHostConnectionX(this, serverSocket.accept(), (id = id + 1)).start();
+                new JHostConnectionX(this, serverSocket.accept()).start();
             }
         }
         catch (IOException e) {
             System.err.println("Could not listen on port " + this.port + ".");
-            e.printStackTrace();
         }
     }
 }

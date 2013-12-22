@@ -2,14 +2,17 @@
  * To change this template, choose Tools | Templates
  * and open the template in the editor.
  */
-package JNetworkingX;
+package JNetX;
 
+import JNetX.JPacketX.JPackectX;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.PrintWriter;
 import java.net.Socket;
-import java.util.Scanner;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Stack;
 
 /**
  *
@@ -17,24 +20,23 @@ import java.util.Scanner;
  */
 public class JHostConnectionX extends Thread {
 
-    public static enum CONNECTION_STATE {
-
-        INACTIVE, ACTIVE, TIMED_OUT, TERMINATED, CLOSED
-    };
-    private final int ID;
     private JHostX host;
     private Socket socket = null;
     private BufferedReader in;
     private PrintWriter out;
-    private CONNECTION_STATE state;
+    private JConnectionStateX state;
     private long timeout = 100000;
     private long interval = 1000;
+    private List<JPackectX> stack;
 
-    public JHostConnectionX(JHostX host, Socket socket, int id) {
+    public void queuePacket(JPackectX packet) {
+        this.stack.add(packet);
+    }
+
+    public JHostConnectionX(JHostX host, Socket socket) {
         super("JHostConnectionX");
         this.host = host;
         this.socket = socket;
-        this.ID = id;
         try {
             this.in = new BufferedReader(new InputStreamReader(socket.getInputStream()));
             this.out = new PrintWriter(this.socket.getOutputStream());
@@ -43,8 +45,9 @@ public class JHostConnectionX extends Thread {
             System.err.println("Something went wrong connecting to client " + this.state.toString() + ".");
         }
 
+        this.stack = new ArrayList<>();
         this.out.println("Connection established!");
-        this.state = CONNECTION_STATE.ACTIVE;
+        this.state = JConnectionStateX.ACTIVE;
 
     }
 
@@ -52,22 +55,33 @@ public class JHostConnectionX extends Thread {
     public void run() {
 
         long time = 0;
+        String data;
 
-        while (this.state == CONNECTION_STATE.ACTIVE) {
+        while (this.state == JConnectionStateX.ACTIVE) {
             try {
                 sleep(interval);
                 time += interval;
-                String message;
-                if (in.ready() && (message = in.readLine()) != null) {
-                    time = 0;
-                    this.out.println("Message recieved!");
-                    if (message.equalsIgnoreCase("Terminate")) {
-                        this.state = CONNECTION_STATE.TERMINATED;
-                    }
-                    this.host.notifyListeners(message);
+
+                /*
+                 *  Distribute Packets!
+                 */
+                while(!stack.isEmpty()) {
+                    this.out.println(stack.remove(0).encode());
                 }
+
+                /*
+                 *  Check for any messages.
+                 */
+                if (in.ready() && (data = in.readLine()) != null) {
+                    time = 0;
+                    this.host.notifyListeners(new JPackectX(data));
+                }
+
+                /*
+                 *  Check to see if the client has timed out.
+                 */
                 else if (time > timeout) {
-                    this.state = CONNECTION_STATE.TIMED_OUT;
+                    this.state = JConnectionStateX.TIMED_OUT;
                 }
             }
             catch (InterruptedException e) {
@@ -93,6 +107,7 @@ public class JHostConnectionX extends Thread {
 
     public void close() {
         try {
+            this.out.println(new JPackectX(JPackectX.PACKET_TYPE.TERMINATE, "Connection Terminated."));
             this.in.close();
             this.out.close();
             this.socket.close();
@@ -106,6 +121,7 @@ public class JHostConnectionX extends Thread {
             this.in = null;
             this.out = null;
             this.socket = null;
+            this.host.notifyListeners(new JPackectX(JPackectX.PACKET_TYPE.TERMINATE, ""));
         }
     }
 }

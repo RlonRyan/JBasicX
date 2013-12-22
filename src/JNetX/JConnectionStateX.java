@@ -2,13 +2,14 @@
  * To change this template, choose Tools | Templates
  * and open the template in the editor.
  */
-package JNetworkingX;
+package JNetX;
 
 /**
  *
  * @author Ryan
  */
-public interface JNetworkListenerX {
+public enum JConnectionStateX {
 
-    public void onMessage(String message);
+        INACTIVE, ACTIVE, TIMED_OUT, TERMINATED, CLOSED;
+
 }

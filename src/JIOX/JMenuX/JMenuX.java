@@ -26,9 +26,9 @@ public class JMenuX {
     /*
      *   Constants for events
      */
-    public final static short MENU_CHANGED = 0;
-    public final static short ELEMENT_HIGHLIGHTED = 1;
-    public final static short ELEMENT_SELECTED = 2;
+    public enum JMenuStateX {
+        MENU_CHANGED, ELEMENT_HIGHLIGHTED, ELEMENT_SELECTED;
+    }
 
     /*
      *   Menu Properties
@@ -148,7 +148,7 @@ public class JMenuX {
         if (this.index < this.elements.size()) {
             this.elements.get(index).highlight();
         }
-        fireEvent(ELEMENT_HIGHLIGHTED, this.index);
+        fireEvent(JMenuStateX.ELEMENT_HIGHLIGHTED, this.index);
     }
 
     /*
@@ -163,7 +163,7 @@ public class JMenuX {
         if (this.index < this.elements.size()) {
             this.elements.get(index).select();
         }
-        fireEvent(ELEMENT_SELECTED, this.index);
+        fireEvent(JMenuStateX.ELEMENT_SELECTED, this.index);
     }
 
     synchronized public final void highlight(int index) {
@@ -176,7 +176,7 @@ public class JMenuX {
          */
         if (this.index < this.elements.size()) {
             this.elements.get(index).highlight();
-            fireEvent(ELEMENT_HIGHLIGHTED, index, this.elements.get(index).getState());
+            fireEvent(JMenuStateX.ELEMENT_HIGHLIGHTED, this.index);
         }
     }
 
@@ -272,7 +272,7 @@ public class JMenuX {
         listeners.remove(listener);
     }
 
-    synchronized public void fireEvent(int type, int... data) {
+    synchronized public void fireEvent(JMenuStateX type, int... data) {
         switch (type) {
             case MENU_CHANGED:
                 break;
