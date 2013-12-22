@@ -607,6 +607,8 @@ public abstract class JGameEngineX extends Applet implements Runnable, JInputOut
     @Override
     public final void init() {
 
+        System.out.print("Loading.");
+
         //  Set Game Atributes
         this.setGameAtrib(fps, winw, winh, GAME_STATUS.GAME_STARTING);
 
@@ -622,27 +624,25 @@ public abstract class JGameEngineX extends Applet implements Runnable, JInputOut
         this.addMouseWheelListener(mouse);
         this.addListener(spriteholder);
 
-        // ???
-        // I have no clue why theese have to be here but they do...
-        start();
-
-        //  Start the game thread
-        this.gamemain = new Thread(this);
-        this.gamemain.start();
-
-        // Timing Stuff
-        this.gamestarttime = System.currentTimeMillis();
-        this.frametime = System.currentTimeMillis();
     }
 
     @Override
     public final void start() {
+
+        //  Start the game thread
+        this.gamemain = new Thread(this);
+        this.gamemain.start();
 
         //  Start-up Sprite holder
         this.spriteholder.start();
 
         //  Finally pass on control for pre-game stuff
         gameStart();
+
+        // Timing Stuff
+        this.gamestarttime = System.currentTimeMillis();
+        this.frametime = System.currentTimeMillis();
+
     }
 
     @Override
@@ -670,7 +670,7 @@ public abstract class JGameEngineX extends Applet implements Runnable, JInputOut
                     stop();
                     break;
                 case GAME_STARTING:
-                    System.out.println("This system is slow.");
+                    System.out.print(".");
                     break;
                 default:
                     System.err.println("Invalid game mode.");
