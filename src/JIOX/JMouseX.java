@@ -10,6 +10,8 @@ package JIOX;
 
 import JBasicX.*;
 import java.awt.event.*;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * @author  RlonRyan
@@ -17,7 +19,7 @@ import java.awt.event.*;
  */
 public class JMouseX implements MouseListener, MouseMotionListener, MouseWheelListener {
 
-    private JInputOutputX user;
+    private List<JInputOutputX> listeners;
     private JPoint2DX click = new JPoint2DX();
     private JPoint2DX press = new JPoint2DX();
     private JPoint2DX release = new JPoint2DX();
@@ -47,8 +49,8 @@ public class JMouseX implements MouseListener, MouseMotionListener, MouseWheelLi
      *
      * @param user
      */
-    public JMouseX(JInputOutputX user) {
-        this.user = user;
+    public JMouseX() {
+        this.listeners = new ArrayList<>();
     }
 
     /**
@@ -125,7 +127,9 @@ public class JMouseX implements MouseListener, MouseMotionListener, MouseWheelLi
             default:
                 mousebutton = 0;
         }
-        user.updateIO();
+        for(JInputOutputX listener : listeners) {
+            listener.updateIO();
+        }
     }
 
     @Override
@@ -146,7 +150,9 @@ public class JMouseX implements MouseListener, MouseMotionListener, MouseWheelLi
     public void mouseExited(MouseEvent e) {
         exit.setPoint(e.getX(), e.getY());
         position.setPoint(e.getX(), e.getY());
-        user.lostFocus(e);
+        for(JInputOutputX listener : listeners) {
+            listener.lostFocus(e);
+        }
         checkButton(e);
     }
 
@@ -282,4 +288,22 @@ public class JMouseX implements MouseListener, MouseMotionListener, MouseWheelLi
     public int getScroll() {
         return scroll;
     }
+    
+    /*
+     * Event Methods Go Way Down Here
+     * Likely will be deprecated or removed, as the elements themselves will get
+     * their own events.
+     */
+    synchronized public final void addEventListener(JInputOutputX listener) {
+        listeners.add(listener);
+    }
+
+    synchronized public final void removeEventListener(JInputOutputX listener) {
+        listeners.remove(listener);
+    }
+
+    synchronized public void fireEvent() {
+        //fill!
+    }
+    
 }

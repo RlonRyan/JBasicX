@@ -8,10 +8,11 @@
 package JGameEngineX;
 
 import JBasicX.JImageHandlerX;
+import JGameHolderX.JGameHolderX;
 import JIOX.JInputOutputX;
+import JIOX.JKeyboardX;
 import JIOX.JMouseX;
 import JSpriteX.JSpriteHolderX;
-import java.applet.Applet;
 import java.awt.*;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
@@ -24,7 +25,7 @@ import java.util.EventObject;
  * @author RlonRyan
  * @name JGameX
  */
-public abstract class JGameEngineX extends Applet implements Runnable, JInputOutputX, KeyListener {
+public abstract class JGameEngineX implements Runnable, JInputOutputX {
 
     public static enum EVENT_TYPE {
 
@@ -49,18 +50,19 @@ public abstract class JGameEngineX extends Applet implements Runnable, JInputOut
     /**
      *
      */
-    public JSpriteHolderX spriteholder;
+    public JGameHolderX holder;
 // Protected
     /**
      *
      */
+    protected JSpriteHolderX spriteholder;
     protected JMouseX mouse;
+    protected JKeyboardX keyboard;
     /**
      *
      */
     protected JImageHandlerX images;
 // Private
-    private boolean[] keys = new boolean[526];
     private GAME_STATUS gamestatus;
     private GAME_STATUS prevgamestatus;
     private int winw;
@@ -73,8 +75,6 @@ public abstract class JGameEngineX extends Applet implements Runnable, JInputOut
     private long frametime = 0;
     private long dfps = 50;
     private boolean showgamedata = false;
-    private BufferedImage backbuffer;
-    private Graphics2D g2d;
     private AffineTransform affinetransform;
     private long gametime;
     private long gamestarttime;
@@ -208,15 +208,6 @@ public abstract class JGameEngineX extends Applet implements Runnable, JInputOut
     }
 
     /**
-     * Returns the game's backbuffer, a BufferedImage.
-     * <p/>
-     * @return The game's backbuffer.
-     */
-    public final BufferedImage getBackbuffer() {
-        return this.backbuffer;
-    }
-
-    /**
      * Returns the frames per second drawn to the screen (framerate).
      * <p/>
      * @return The game's framerate.
@@ -240,7 +231,7 @@ public abstract class JGameEngineX extends Applet implements Runnable, JInputOut
      * @return The game's primary graphics.
      */
     public final Graphics2D getGameGraphics() {
-        return this.g2d;
+        return this.holder.getGraphics();
     }
 
     /**
@@ -323,57 +314,6 @@ public abstract class JGameEngineX extends Applet implements Runnable, JInputOut
     }
 
     /**
-     * Returns the currently active keys.
-     * <p/>
-     * @return The active key array.
-     */
-    public final boolean[] getKeys() {
-        return this.keys;
-    }
-
-    /**
-     * Returns the currently active keys as a string.
-     * <p/>
-     * @return The active key array as a string.
-     */
-    public final String getKeysDownString() {
-        String keysdown = "Keys: ";
-        for (int i = 1; i < 525; i++) {
-            if (this.keys[i] == true) {
-                keysdown += " " + KeyEvent.getKeyText(i) + ";";
-            }
-        }
-        return keysdown;
-    }
-
-    /**
-     * Tests a key to see if it is currently active.
-     * <p/>
-     * @param keycode The key to test for its the state.
-     * <p/>
-     * @return
-     */
-    public final boolean isKeyDown(int keycode) {
-        return this.keys[keycode];
-    }
-
-    /**
-     * Tests a key to see if it is currently active and if it is, removes it
-     * from the active key array.
-     * <p/>
-     * @param keycode The key to test for its the state.
-     * <p/>
-     * @return
-     */
-    public final boolean isKeyDownAndRemove(int keycode) {
-        if (this.keys[keycode]) {
-            this.keys[keycode] = false;
-            return true;
-        }
-        return false;
-    }
-
-    /**
      *
      * @return
      */
@@ -453,28 +393,28 @@ public abstract class JGameEngineX extends Applet implements Runnable, JInputOut
      */
     public final void resetDrawColorToDefault() {
         this.drawcolor = defaultdrawcolor;
-        this.g2d.setColor(drawcolor);
+        this.holder.getGraphics().setColor(drawcolor);
     }
 
     /**
      *
      */
     public final void resetDrawColor() {
-        this.g2d.setColor(drawcolor);
+        this.holder.getGraphics().setColor(drawcolor);
     }
 
     /**
      *
      */
     public final void resetAffineTransform() {
-        this.g2d.setTransform(affinetransform);
+        this.holder.getGraphics().setTransform(affinetransform);
     }
 
     /**
      *
      */
     public final void resetFont() {
-        this.g2d.setFont(font);
+        this.holder.getGraphics().setFont(font);
     }
 
     /**
@@ -505,60 +445,50 @@ public abstract class JGameEngineX extends Applet implements Runnable, JInputOut
         this.setGameStatus(GAME_STATUS.GAME_PAUSED);
     }
 
-    @Override
-    public final void update(Graphics g) {
+    public final void paint() {
         framenum++;
         if (System.currentTimeMillis() > frametime + 1000) {
             frametime = System.currentTimeMillis();
             fps = framenum;
             framenum = 0;
         }
-        clearBackbuffer();
+        
+        this.holder.clearBackbuffer();
+        
+        resetGraphics();
+        
         switch (this.gamestatus) {
             case GAME_MENU:
-                gameMenuPaint(g2d);
+                gameMenuPaint(holder.getGraphics());
                 break;
             case GAME_PAUSED:
-                gamePausePaint(g2d);
+                gamePausePaint(holder.getGraphics());
                 break;
             case GAME_RUNNING:
-                gamePaint(g2d);
+                gamePaint(holder.getGraphics());
                 break;
             case GAME_STOPPED:
-                gameStoppedPaint(g2d);
+                gameStoppedPaint(holder.getGraphics());
                 break;
             default:
                 paintError("Invalid Game Mode.");
                 break;
         }
+        
         resetGraphics();
-        if (showgamedata) {
-            paintGameData();
-        }
-        paint(g);
-    }
-
-    @Override
-    public final void paint(Graphics g) {
-        g.drawImage(this.backbuffer, 0, 0, this);
-    }
-
-    /**
-     *
-     */
-    public final void clearBackbuffer() {
-        Color prev = g2d.getColor();
-        g2d.setPaint(this.backgroundcolor);
-        g2d.fillRect(0, 0, backbuffer.getWidth(), backbuffer.getHeight());
-        g2d.setColor(prev);
+        paintGameData();
+        
+        this.holder.flip();
     }
 
     /**
      *
      */
     public void paintGameData() {
-        g2d.drawString("FPS: " + this.fps, 10, backbuffer.getHeight() - 10);
-        g2d.drawString("Sups: " + this.spriteholder.getSups(), 100, this.getGameWinHeight() - 10);
+        if (showgamedata) {
+            holder.getGraphics().drawString("FPS: " + this.fps, 10, this.getGameWinHeight() - 10);
+            holder.getGraphics().drawString("Sups: " + this.spriteholder.getSups(), 100, this.getGameWinHeight() - 10);
+        }
     }
 
     /**
@@ -567,10 +497,10 @@ public abstract class JGameEngineX extends Applet implements Runnable, JInputOut
      */
     public void paintError(String desc) {
         String message = "Error: " + desc;
-        Color prevc = this.g2d.getColor();
-        this.g2d.setColor(Color.red);
-        this.g2d.drawString(message, this.getGameWinWidthCenter() - (10 + (this.g2d.getFontMetrics().stringWidth(message) / 2)), this.getGameWinHeightCenter());
-        this.g2d.setColor(prevc);
+        Color prevc = this.holder.getGraphics().getColor();
+        this.holder.getGraphics().setColor(Color.red);
+        this.holder.getGraphics().drawString(message, this.getGameWinWidthCenter() - (10 + (this.holder.getGraphics().getFontMetrics().stringWidth(message) / 2)), this.getGameWinHeightCenter());
+        this.holder.getGraphics().setColor(prevc);
     }
 
     /**
@@ -579,10 +509,10 @@ public abstract class JGameEngineX extends Applet implements Runnable, JInputOut
      */
     public void paintError(Exception e) {
         String message = "Error: " + e.getLocalizedMessage();
-        Color prevc = this.g2d.getColor();
-        this.g2d.setColor(Color.red);
-        this.g2d.drawString(message, this.getGameWinWidthCenter() - (10 + (this.g2d.getFontMetrics().stringWidth(message) / 2)), this.getGameWinHeightCenter());
-        this.g2d.setColor(prevc);
+        Color prevc = this.holder.getGraphics().getColor();
+        this.holder.getGraphics().setColor(Color.red);
+        this.holder.getGraphics().drawString(message, this.getGameWinWidthCenter() - (10 + (this.holder.getGraphics().getFontMetrics().stringWidth(message) / 2)), this.getGameWinHeightCenter());
+        this.holder.getGraphics().setColor(prevc);
     }
 
     /**
@@ -595,16 +525,12 @@ public abstract class JGameEngineX extends Applet implements Runnable, JInputOut
         this.winh = height;
         this.winwc = width / 2;
         this.winhc = height / 2;
-        this.backbuffer = new BufferedImage(winw, winh, BufferedImage.TYPE_INT_RGB);
-        this.g2d = backbuffer.createGraphics();
-        this.affinetransform = this.g2d.getTransform();
-        super.resize(winw, winh);
+        this.holder.resize(winw, winh);
         if (mouse != null) {
             mouse.clear();
         }
     }
 
-    @Override
     public final void init() {
 
         System.out.print("Loading.");
@@ -613,20 +539,18 @@ public abstract class JGameEngineX extends Applet implements Runnable, JInputOut
         this.setGameAtrib(fps, winw, winh, GAME_STATUS.GAME_STARTING);
 
         //  Resources
-        this.mouse = new JMouseX(this);
+        this.mouse = new JMouseX();
+        this.mouse.addEventListener(this);
+        this.keyboard = new JKeyboardX();
+        this.keyboard.addEventListener(this);
         this.images = new JImageHandlerX();
         this.spriteholder = new JSpriteHolderX(this);
 
         //  Listeners
-        this.addKeyListener(this);
-        this.addMouseListener(mouse);
-        this.addMouseMotionListener(mouse);
-        this.addMouseWheelListener(mouse);
         this.addListener(spriteholder);
 
     }
 
-    @Override
     public final void start() {
 
         //  Start the game thread
@@ -655,7 +579,7 @@ public abstract class JGameEngineX extends Applet implements Runnable, JInputOut
                 Thread.sleep(1000 / this.dfps);
             }
             catch (InterruptedException e) {
-                this.g2d.drawString(e.getLocalizedMessage(), 0, 0);
+                this.holder.getGraphics().drawString(e.getLocalizedMessage(), 0, 0);
             }
             this.gametime = System.currentTimeMillis() - gamestarttime;
             switch (this.gamestatus) {
@@ -678,23 +602,19 @@ public abstract class JGameEngineX extends Applet implements Runnable, JInputOut
                     System.err.println("Invalid game mode.");
                     break;
             }
-            repaint();
+            paint();
         }
     }
 
-    @Override
     public final void stop() {
         gamemain = null;
         this.spriteholder.stop();
         this.gameEnd();
     }
 
-    /**
-     *
-     */
     @Override
     public void updateIO() {
-        repaint();
+        // Ummm...
     }
 
     @Override
@@ -702,20 +622,6 @@ public abstract class JGameEngineX extends Applet implements Runnable, JInputOut
         if (this.gamestatus == GAME_STATUS.GAME_RUNNING) {
             this.setGameStatus(GAME_STATUS.GAME_PAUSED);
         }
-    }
-
-    @Override
-    public void keyTyped(KeyEvent k) {
-    }
-
-    @Override
-    public void keyPressed(KeyEvent k) {
-        this.keys[k.getKeyCode()] = true;
-    }
-
-    @Override
-    public void keyReleased(KeyEvent k) {
-        this.keys[k.getKeyCode()] = false;
     }
 
     synchronized protected void addListener(JGameEngineListenerX listener) {
