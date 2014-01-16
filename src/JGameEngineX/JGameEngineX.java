@@ -9,6 +9,7 @@ package JGameEngineX;
 
 import JBasicX.JImageHandlerX;
 import JGameHolderX.JGameHolderX;
+import JGameHolderX.JWindowHolderX;
 import JIOX.JInputOutputX;
 import JIOX.JKeyboardX;
 import JIOX.JMouseX;
@@ -548,6 +549,8 @@ public abstract class JGameEngineX implements Runnable, JInputOutputX {
 
         //  Listeners
         this.addListener(spriteholder);
+        
+        this.start();
 
     }
 
@@ -648,14 +651,20 @@ public abstract class JGameEngineX implements Runnable, JInputOutputX {
         }
     }
 
-    public JGameEngineX(int fps, int width, int height) throws HeadlessException {
-        //  Set Game Atributes
-        this.setGameAtrib(fps, width, height, GAME_STATUS.GAME_STARTING);
+    public JGameEngineX(String mode) throws HeadlessException {
+        this(mode, 50, 640, 480);
     }
-
-    public JGameEngineX() throws HeadlessException {
+    
+    public JGameEngineX(String mode, int fps, int width, int height) throws HeadlessException {
         //  Set Game Atributes
-        this.setGameAtrib(50, 640, 480, GAME_STATUS.GAME_STARTING);
+        switch(mode) {
+            case "windowed":
+                this.holder = new JWindowHolderX(width, height);
+                break;
+            default:
+                throw new UnsupportedOperationException("Modes other than windowed not yet supported at this time");
+        }
+        this.setGameAtrib(fps, width, height, GAME_STATUS.GAME_STARTING);
     }
 
 }
