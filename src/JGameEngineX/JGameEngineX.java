@@ -48,6 +48,7 @@ public abstract class JGameEngineX implements Runnable, JInputOutputX {
      */
     public static final Color defaultdrawcolor = Color.WHITE;
 // Public
+    public final String title;
     /**
      *
      */
@@ -358,22 +359,6 @@ public abstract class JGameEngineX implements Runnable, JInputOutputX {
     }
 
     /**
-     * Should only be called once.
-     *
-     * @param framerate
-     * @param gamewindowwidth
-     * @param gamewindowheight
-     * @param status
-     */
-    public final void setGameAtrib(int framerate, int gamewindowwidth, int gamewindowheight, GAME_STATUS status) {
-        this.dfps = framerate;
-        this.prevgamestatus = this.gamestatus;
-        this.gamestatus = status;
-        this.resizeGame(gamewindowwidth, gamewindowheight);
-        fireEvent(EVENT_TYPE.STATE_CHANGE, this.prevgamestatus, this.gamestatus);
-    }
-
-    /**
      *
      * @param dfps
      */
@@ -408,7 +393,7 @@ public abstract class JGameEngineX implements Runnable, JInputOutputX {
      *
      */
     public final void resetAffineTransform() {
-        this.holder.getGraphics().setTransform(affinetransform);
+        this.holder.getGraphics().setTransform(new AffineTransform());
     }
 
     /**
@@ -536,9 +521,6 @@ public abstract class JGameEngineX implements Runnable, JInputOutputX {
 
         System.out.print("Loading.");
 
-        //  Set Game Atributes
-        this.setGameAtrib(fps, winw, winh, GAME_STATUS.GAME_STARTING);
-
         //  Resources
         this.mouse = new JMouseX();
         this.mouse.addEventListener(this);
@@ -651,20 +633,24 @@ public abstract class JGameEngineX implements Runnable, JInputOutputX {
         }
     }
 
-    public JGameEngineX(String mode) throws HeadlessException {
-        this(mode, 50, 640, 480);
+    public JGameEngineX(String title, String mode) throws HeadlessException {
+        this(title, mode, 50, 640, 480);
     }
     
-    public JGameEngineX(String mode, int fps, int width, int height) throws HeadlessException {
+    public JGameEngineX(String title, String mode, int fps, int width, int height) throws HeadlessException {
         //  Set Game Atributes
-        switch(mode) {
+        this.title = title;
+        this.dfps = fps;
+        this.winw = width;
+        this.winh = height;
+        switch(mode.toLowerCase()) {
             case "windowed":
-                this.holder = new JWindowHolderX(width, height);
+                this.holder = new JWindowHolderX(this.title, width, height);
                 break;
             default:
                 throw new UnsupportedOperationException("Modes other than windowed not yet supported at this time");
         }
-        this.setGameAtrib(fps, width, height, GAME_STATUS.GAME_STARTING);
+        this.gamestatus = GAME_STATUS.GAME_STARTING;
     }
 
 }
