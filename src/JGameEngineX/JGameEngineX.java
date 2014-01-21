@@ -8,19 +8,21 @@
 package JGameEngineX;
 
 import JBasicX.JImageHandlerX;
+import JGameHolderX.JAppletHolderX;
 import JGameHolderX.JGameHolderX;
 import JGameHolderX.JWindowHolderX;
 import JIOX.JInputOutputX;
 import JIOX.JKeyboardX;
 import JIOX.JMouseX;
 import JSpriteX.JSpriteHolderX;
-import java.awt.*;
-import java.awt.event.KeyEvent;
-import java.awt.event.KeyListener;
+import java.awt.Color;
+import java.awt.Font;
+import java.awt.Graphics2D;
+import java.awt.HeadlessException;
 import java.awt.geom.AffineTransform;
-import java.awt.image.*;
 import java.util.ArrayList;
 import java.util.EventObject;
+import java.util.List;
 
 /**
  * @author RlonRyan
@@ -86,7 +88,7 @@ public abstract class JGameEngineX implements Runnable, JInputOutputX {
     private Color backgroundcolor = Color.BLACK;
     private Color drawcolor = Color.WHITE;
     private Font font = new Font("Arial", Font.PLAIN, 10);
-    private java.util.List<JGameEngineListenerX> listeners = new ArrayList<>();
+    private List<JGameEngineListenerX> listeners = new ArrayList<>();
 
     /**
      * <code>gameStart</code> function to override in new instance.
@@ -441,7 +443,7 @@ public abstract class JGameEngineX implements Runnable, JInputOutputX {
         
         this.holder.clearBackbuffer();
         
-        resetGraphics();
+        this.resetGraphics();
         
         switch (this.gamestatus) {
             case GAME_MENU:
@@ -461,8 +463,8 @@ public abstract class JGameEngineX implements Runnable, JInputOutputX {
                 break;
         }
         
-        resetGraphics();
-        paintGameData();
+        this.resetGraphics();
+        this.paintGameData();
         
         this.holder.flip();
     }
@@ -646,6 +648,9 @@ public abstract class JGameEngineX implements Runnable, JInputOutputX {
         switch(mode.toLowerCase()) {
             case "windowed":
                 this.holder = new JWindowHolderX(this.title, width, height);
+                break;
+            case "applet":
+                this.holder = new JAppletHolderX(width, height);
                 break;
             default:
                 throw new UnsupportedOperationException("Modes other than windowed not yet supported at this time");

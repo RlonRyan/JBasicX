@@ -9,6 +9,7 @@ package JGameHolderX;
 import java.awt.Color;
 import java.awt.Graphics2D;
 import java.awt.Image;
+import java.awt.image.BufferedImage;
 import javax.swing.JFrame;
 
 /**
@@ -21,7 +22,7 @@ public class JWindowHolderX implements JGameHolderX{
 
     JFrame frame;
     Graphics2D g2d;
-    Image buffer;
+    BufferedImage buffer;
     
     @Override
     public Graphics2D getGraphics() {
@@ -38,25 +39,25 @@ public class JWindowHolderX implements JGameHolderX{
 
     @Override
     public void flip() {
-        this.frame.getGraphics().drawImage(buffer, 0, 0, null);
+        this.frame.getGraphics().drawImage(this.buffer, 0, 0, this.frame);
     }
 
     @Override
     public void resize(int winw, int winh) {
         this.frame.setSize(winw, winh);
         this.frame.setVisible(true);
-        this.g2d = (Graphics2D)this.frame.createImage(winh, winh).getGraphics();
+        this.buffer = new BufferedImage(winw, winh, BufferedImage.TYPE_INT_ARGB);
+        this.g2d = (Graphics2D)this.buffer.getGraphics();
     }
 
     public JWindowHolderX(String title,int winw, int winh) {
         this.frame = new JFrame(title);
         this.frame.setSize(winw, winh);
         this.frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        this.frame.createBufferStrategy(1);
         this.frame.setResizable(false);
         this.frame.setVisible(true);
-        this.buffer = this.frame.createImage(winh, winh);
-        this.g2d = (Graphics2D)this.frame.createImage(winh, winh).getGraphics();
+        this.buffer = new BufferedImage(winw, winh, BufferedImage.TYPE_INT_ARGB); 
+        this.g2d = (Graphics2D)this.buffer.getGraphics();
     }
     
 }
