@@ -16,6 +16,7 @@ import java.util.List;
 public class JHostX extends Thread {
 
     private int port;
+    private int externalport;
     private boolean listening;
     private List<JNetworkListenerX> listeners;
     private List<JHostConnectionX> connections;
@@ -57,7 +58,7 @@ public class JHostX extends Thread {
             System.out.println("Listening on port: " + serverSocket.getLocalPort() + ".");
             this.listening = true;
             while (listening) {
-                new JHostConnectionX(this, serverSocket.accept()).start();
+                new JHostConnectionX(this, serverSocket.accept().getInetAddress(), externalport).start();
             }
         }
         catch (IOException e) {

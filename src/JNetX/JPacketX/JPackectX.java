@@ -4,6 +4,7 @@
  */
 package JNetX.JPacketX;
 
+import java.net.DatagramPacket;
 import java.util.Arrays;
 
 /**
@@ -12,13 +13,17 @@ import java.util.Arrays;
  */
 public class JPackectX {
 
-    public enum PACKET_TYPE {
-        INVALID(0),LOGON(1),UPDATE(2),MESSAGE(3),LOGOFF(4),TERMINATE(99);
-        public int id;
+    public static enum PACKET_TYPE {
+
+        
+        INVALID(0),LOGON(1),UPDATE(2),MESSAGE(3),LOGOFF(4),TERMINATE(5);
+        public byte id;
+        
         private PACKET_TYPE(int id) {
-            this.id = id;
+            this.id = (id < Byte.MAX_VALUE ? (byte)id : 0);
         }
-        public static PACKET_TYPE getForID(int id) {
+        
+        public static PACKET_TYPE getForID(byte id) {
             for(PACKET_TYPE e : values()) {
                 if(e.id == id) {
                     return e;
@@ -28,14 +33,14 @@ public class JPackectX {
         }
     }
 
-    private PACKET_TYPE type;
-    private Object[] data;
+    final private PACKET_TYPE type;
+    private byte[] data;
 
     public PACKET_TYPE getType() {
         return this.type;
     }
 
-    public Object[] getData() {
+    public byte[] getData() {
         return data;
     }
 
@@ -60,18 +65,24 @@ public class JPackectX {
         }
     }
 
-    public JPackectX(PACKET_TYPE type, Object... data) {
+    public JPackectX(PACKET_TYPE type, byte... data) {
         this.type = type;
         this.data = data;
     }
 
-    public JPackectX(String raw) {
-        try{
-            this.type = PACKET_TYPE.getForID(Integer.decode((String)(this.data = raw.split(" "))[0]));
+    public JPackectX(byte[] data) {
+        
+        PACKET_TYPE packet_type = PACKET_TYPE.INVALID;
+        
+        try {
+            packet_type = PACKET_TYPE.getForID(data[0]);
+            this.data = Arrays.copyOfRange(data, 1, data.length);
         }
-        catch (NumberFormatException e) {
-            this.type = PACKET_TYPE.INVALID;
-            this.data = raw.split(" ");
+        catch(Exception e) {
+            System.err.println("Malformed Packet Recieved!");
+        }
+        finally {
+            this.type = packet_type;
         }
     }
 

@@ -5,11 +5,10 @@
 package JNetX;
 
 import JNetX.JPacketX.JPackectX;
-import java.io.BufferedReader;
 import java.io.IOException;
-import java.io.InputStreamReader;
-import java.io.PrintWriter;
-import java.net.Socket;
+import java.net.DatagramPacket;
+import java.net.DatagramSocket;
+import java.net.InetAddress;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -20,9 +19,9 @@ import java.util.List;
 public class JHostConnectionX extends Thread {
 
     private JHostX host;
-    private Socket socket = null;
-    private BufferedReader in;
-    private PrintWriter out;
+    private InetAddress address;
+    private int port;
+    private DatagramSocket socket = null;
     private JConnectionStateX state;
     private long timeout = 100000;
     private long interval = 100;
@@ -32,22 +31,14 @@ public class JHostConnectionX extends Thread {
         this.stack.add(packet);
     }
 
-    public JHostConnectionX(JHostX host, Socket socket) {
+    public JHostConnectionX(JHostX host, InetAddress address, int port) {
         super("JHostConnectionX");
         this.host = host;
-        this.socket = socket;
-        try {
-            this.in = new BufferedReader(new InputStreamReader(socket.getInputStream()));
-            this.out = new PrintWriter(this.socket.getOutputStream());
-        }
-        catch (IOException e) {
-            System.err.println("Something went wrong connecting to client " + this.state.toString() + ".");
-        }
-
+        this.port = port;
+        this.address = address;
         this.stack = new ArrayList<>();
-        this.out.println("Connection established!");
+        System.out.println("Connection with: " + socket.getInetAddress().toString() + " established!");
         this.state = JConnectionStateX.ACTIVE;
-
     }
 
     @Override
@@ -65,7 +56,7 @@ public class JHostConnectionX extends Thread {
                  *  Distribute Packets!
                  */
                 while(!stack.isEmpty()) {
-                    this.out.println(stack.remove(0).encode());
+                    socket.send(new DatagramPacket(stack.remove(0).getData(), 256, this.address, this.port));
                 }
 
                 /*
@@ -118,8 +109,6 @@ public class JHostConnectionX extends Thread {
              */
         }
         finally {
-            this.in = null;
-            this.out = null;
             this.socket = null;
             this.host.notifyListeners(new JPackectX(JPackectX.PACKET_TYPE.TERMINATE, ""));
         }
