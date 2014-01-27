@@ -10,6 +10,6 @@ package JNetX;
  */
 public enum JConnectionStateX {
 
-        INACTIVE, ACTIVE, TIMED_OUT, TERMINATED, CLOSED;
+        INVALID, INACTIVE, ACTIVE, TIMEDOUT, TERMINATED;
 
 }

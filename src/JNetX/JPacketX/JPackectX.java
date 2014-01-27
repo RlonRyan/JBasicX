@@ -44,15 +44,8 @@ public class JPackectX {
         return data;
     }
 
-    public String encode(){
-        StringBuilder encoder = new StringBuilder();
-        encoder.append(type.id);
-        encoder.append(' ');
-        for (Object e : data) {
-            encoder.append(e);
-            encoder.append(' ');
-        }
-        return encoder.toString();
+    public DatagramPacket encode(){
+        return new DatagramPacket(this.data, data.length);
     }
 
     @Override

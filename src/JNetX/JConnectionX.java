@@ -18,24 +18,18 @@ import java.util.List;
  *
  * @author Ryan
  */
-public class JClientX extends Thread {
+public class JConnectionX extends Thread {
 
     private DatagramSocket socket;
     private DatagramPacket packet;
     private JConnectionStateX state;
     private List<JNetworkListenerX> listeners;
 
-    public final InetAddress address;
-    public final int port;
-
-    public JClientX(InetAddress address, int port) {
+    public JConnectionX(InetAddress address, int port) {
         this(address, port, 10000);
     }
 
-    public JClientX(InetAddress address, int port, int timeout) {
-        this.address = address;
-        this.port = port;
-
+    public JConnectionX(InetAddress address, int port, int timeout) {
         try {
             this.state = JConnectionStateX.INVALID;
             this.socket = new DatagramSocket(port, address);
@@ -44,22 +38,12 @@ public class JClientX extends Thread {
         } catch (SocketException e) {
             System.err.println("Well that's great...");
         }
-
     }
 
-    public boolean sendPacket(JPackectX packet) {
-        try {
-            this.socket.send(new DatagramPacket(packet.getData(), packet.getData().length, address, port));
-        } catch (IOException e) {
-            return false;
-        }
-        return true;
-    }
-
-    public JConnectionStateX getConnectionState() {
+    public JConnectionStateX getConnectionState(){
         return this.state;
     }
-
+    
     @Override
     public void run() {
         try {
@@ -102,20 +86,20 @@ public class JClientX extends Thread {
 
             case TIMEOUT:
                 for (JNetworkListenerX e : listeners) {
-                    e.onTimeout();
-                }
+                        e.onTimeout();
+                    }
                 break;
 
             case ERROR:
                 for (JNetworkListenerX e : listeners) {
-                    e.onError();
-                }
+                        e.onError();
+                    }
                 break;
-
+                
             case TERMINATE:
                 for (JNetworkListenerX e : listeners) {
-                    e.onTerminate();
-                }
+                        e.onTerminate();
+                    }
                 break;
 
             default:
