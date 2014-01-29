@@ -12,6 +12,8 @@ import java.net.DatagramSocket;
 import java.net.InetAddress;
 import java.net.SocketException;
 import java.net.SocketTimeoutException;
+import java.util.BitSet;
+import java.util.HashMap;
 import java.util.List;
 
 /**
@@ -24,6 +26,10 @@ public class JClientX extends Thread {
     private DatagramPacket packet;
     private JConnectionStateX state;
     private List<JNetworkListenerX> listeners;
+    private short id;
+    private BitSet ack;
+    private int lastid;
+    private HashMap<Integer, JPackectX> sent;
 
     public final InetAddress address;
     public final int port;
@@ -49,7 +55,8 @@ public class JClientX extends Thread {
 
     public boolean sendPacket(JPackectX packet) {
         try {
-            this.socket.send(new DatagramPacket(packet.getData(), packet.getData().length, address, port));
+            
+            this.socket.send(new DatagramPacket(packet.getData(), packet.getSize(), address, port));
         } catch (IOException e) {
             return false;
         }
@@ -64,6 +71,7 @@ public class JClientX extends Thread {
     public void run() {
         try {
             this.socket.receive(packet);
+            this.ack.set(this.packet.);
         } catch (SocketTimeoutException e) {
             System.err.println("Connection with " + this.socket.getInetAddress() + ":" + this.socket.getPort() + " timed out.");
             this.state = JConnectionStateX.TIMEDOUT;

@@ -5,7 +5,9 @@
 package JNetX.JPacketX;
 
 import java.net.DatagramPacket;
+import java.net.InetAddress;
 import java.util.Arrays;
+import java.util.HashMap;
 
 /**
  *
@@ -13,41 +15,50 @@ import java.util.Arrays;
  */
 public class JPackectX {
 
-    public static enum PACKET_TYPE {
-
-        
-        INVALID(0),LOGON(1),UPDATE(2),MESSAGE(3),LOGOFF(4),TERMINATE(5);
-        public byte id;
-        
-        private PACKET_TYPE(int id) {
-            this.id = (id < Byte.MAX_VALUE ? (byte)id : 0);
-        }
-        
-        public static PACKET_TYPE getForID(byte id) {
-            for(PACKET_TYPE e : values()) {
-                if(e.id == id) {
-                    return e;
-                }
-            }
-            return INVALID;
-        }
-    }
-
-    final private PACKET_TYPE type;
+    private final JPacketTypeX type;
+    private long timestamp;
+    
     private byte[] data;
+    private short size;
 
-    public PACKET_TYPE getType() {
+    private HashMap<String, Object> packet;
+    
+    public JPacketTypeX getType() {
         return this.type;
+    }
+    
+    public int getId() {
+        return this.id;
     }
 
     public byte[] getData() {
         return data;
     }
-
-    public DatagramPacket encode(){
-        return new DatagramPacket(this.data, data.length);
+    
+    public int getSize() {
+        if(this.size != 0) {
+            return size;
+        }
+        else {
+            return this.data.length;
+        }
+    }
+    
+    public long getTimestamp() {
+        return this.timestamp;
     }
 
+    public void timestamp() {
+        if (this.timestamp == 0) {
+            this.timestamp = System.currentTimeMillis();
+        }
+    }
+    
+    public DatagramPacket encode(InetAddress ip, int port){
+        this.timestamp();
+        return new DatagramPacket(this.data, data.length, ip, port);
+    }
+        
     @Override
     public String toString() {
         if(this.type != null && this.data != null) {
@@ -58,17 +69,23 @@ public class JPackectX {
         }
     }
 
-    public JPackectX(PACKET_TYPE type, byte... data) {
+    public JPackectX() {
+        this.type = null;
+        this.timestamp = 0;
+    }
+
+    public JPackectX(JPacketTypeX type, byte... data) {
         this.type = type;
         this.data = data;
+        this.packet = new HashMap<>();
     }
 
     public JPackectX(byte[] data) {
         
-        PACKET_TYPE packet_type = PACKET_TYPE.INVALID;
+        JPacketTypeX packet_type = JPacketTypeX.INVALID;
         
         try {
-            packet_type = PACKET_TYPE.getForID(data[0]);
+            packet_type = JPacketTypeX.getForID(data[0]);
             this.data = Arrays.copyOfRange(data, 1, data.length);
         }
         catch(Exception e) {
