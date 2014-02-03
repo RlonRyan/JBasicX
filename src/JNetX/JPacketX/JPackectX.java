@@ -6,7 +6,7 @@ package JNetX.JPacketX;
 
 import java.net.DatagramPacket;
 import java.net.InetAddress;
-import java.util.Arrays;
+import java.util.BitSet;
 import java.util.HashMap;
 
 /**
@@ -15,86 +15,51 @@ import java.util.HashMap;
  */
 public class JPackectX {
 
-    private final JPacketTypeX type;
-    private long timestamp;
-    
-    private byte[] data;
-    private short size;
+    private HashMap<String, byte[]> data;
+    /*
+     *   Does not include header size...
+     */
+    private byte size;
+    private byte id;
+    private byte type;
 
-    private HashMap<String, Object> packet;
-    
+    public byte getSize() {
+        return size;
+    }
+
+    public byte getId() {
+        return id;
+    }
+
     public JPacketTypeX getType() {
-        return this.type;
-    }
-    
-    public int getId() {
-        return this.id;
+        return JPacketTypeX.getForID(type);
     }
 
-    public byte[] getData() {
-        return data;
-    }
-    
-    public int getSize() {
-        if(this.size != 0) {
-            return size;
+    public DatagramPacket send(InetAddress ip, int port, byte ack, BitSet acks, byte id) {
+        byte[] bytes = new byte[7 + size];
+        bytes[0] = 112;
+        bytes[1] = 35;
+        bytes[2] = ack;
+        bytes[3] = acks.toByteArray()[0];
+        bytes[4] = id;
+        bytes[5] = size;
+        bytes[6] = type;
+        byte c = 7;
+        for (byte[] e : data.values()) {
+            for (byte b : e) {
+                if (c >= 256) {
+                    break;
+                }
+                bytes[c] = b;
+            }
         }
-        else {
-            return this.data.length;
-        }
-    }
-    
-    public long getTimestamp() {
-        return this.timestamp;
+        return new DatagramPacket(bytes, size + 2, ip, port);
     }
 
-    public void timestamp() {
-        if (this.timestamp == 0) {
-            this.timestamp = System.currentTimeMillis();
-        }
-    }
-    
-    public DatagramPacket encode(InetAddress ip, int port){
-        this.timestamp();
-        return new DatagramPacket(this.data, data.length, ip, port);
-    }
+    public JPackectX(JPacketTypeX type) {
+        this.size = 0;
+        this.type = type.id;
         
-    @Override
-    public String toString() {
-        if(this.type != null && this.data != null) {
-            return this.type.toString() + ": " + Arrays.toString(data);
-        }
-        else {
-            return "Invalid packet.";
-        }
     }
-
-    public JPackectX() {
-        this.type = null;
-        this.timestamp = 0;
-    }
-
-    public JPackectX(JPacketTypeX type, byte... data) {
-        this.type = type;
-        this.data = data;
-        this.packet = new HashMap<>();
-    }
-
-    public JPackectX(byte[] data) {
-        
-        JPacketTypeX packet_type = JPacketTypeX.INVALID;
-        
-        try {
-            packet_type = JPacketTypeX.getForID(data[0]);
-            this.data = Arrays.copyOfRange(data, 1, data.length);
-        }
-        catch(Exception e) {
-            System.err.println("Malformed Packet Recieved!");
-        }
-        finally {
-            this.type = packet_type;
-        }
-    }
-
 
 }

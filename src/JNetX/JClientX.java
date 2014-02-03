@@ -55,7 +55,6 @@ public class JClientX extends Thread {
 
     public boolean sendPacket(JPackectX packet) {
         try {
-            
             this.socket.send(new DatagramPacket(packet.getData(), packet.getSize(), address, port));
         } catch (IOException e) {
             return false;
