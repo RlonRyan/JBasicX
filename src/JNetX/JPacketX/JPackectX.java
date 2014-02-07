@@ -6,6 +6,7 @@ package JNetX.JPacketX;
 
 import java.net.DatagramPacket;
 import java.net.InetAddress;
+import java.util.Arrays;
 import java.util.BitSet;
 import java.util.HashMap;
 
@@ -34,6 +35,10 @@ public class JPackectX {
     public JPacketTypeX getType() {
         return JPacketTypeX.getForID(type);
     }
+    
+    public void set(String key, byte ... data){
+        size += data.length;
+    }
 
     public DatagramPacket send(InetAddress ip, int port, byte ack, BitSet acks, byte id) {
         byte[] bytes = new byte[7 + size];
@@ -59,7 +64,29 @@ public class JPackectX {
     public JPackectX(JPacketTypeX type) {
         this.size = 0;
         this.type = type.id;
-        
+    }
+
+    public JPackectX(byte[] data) {
+        this.id = data[4];
+        this.size = data[5];
+        this.type = data[6];
+        switch (JPacketTypeX.getForID(type)) {
+            case LOGOFF:
+                break;
+            case LOGON:
+                break;
+            case MESSAGE:
+                this.data.put("message", Arrays.copyOfRange(data, 7, data.length));
+                System.out.println(new String(this.data.get("message")));
+                break;
+            case TERMINATE:
+                break;
+            case UPDATE:
+                break;
+            case INVALID:
+            default:
+                break;
+        }
     }
 
 }

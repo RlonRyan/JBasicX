@@ -26,9 +26,9 @@ public class JClientX extends Thread {
     private DatagramPacket packet;
     private JConnectionStateX state;
     private List<JNetworkListenerX> listeners;
-    private short id;
-    private BitSet ack;
-    private int lastid;
+    private byte id;
+    private BitSet acks;
+    private byte ack;
     private HashMap<Integer, JPackectX> sent;
 
     public final InetAddress address;
@@ -46,6 +46,8 @@ public class JClientX extends Thread {
             this.state = JConnectionStateX.INVALID;
             this.socket = new DatagramSocket(port, address);
             this.socket.setSoTimeout(timeout);
+            this.acks = new BitSet(256);
+            this.ack = 0;
             this.state = JConnectionStateX.ACTIVE;
         } catch (SocketException e) {
             System.err.println("Well that's great...");
@@ -55,7 +57,7 @@ public class JClientX extends Thread {
 
     public boolean sendPacket(JPackectX packet) {
         try {
-            this.socket.send(new DatagramPacket(packet.getData(), packet.getSize(), address, port));
+            this.socket.send(packet.send(address, port, ack, acks, id));
         } catch (IOException e) {
             return false;
         }
@@ -70,7 +72,8 @@ public class JClientX extends Thread {
     public void run() {
         try {
             this.socket.receive(packet);
-            this.ack.set(this.packet.);
+            this.acks.set(packet.getData()[4], true);
+            System.out.println(this.ack + ": " + this.acks.toString());
         } catch (SocketTimeoutException e) {
             System.err.println("Connection with " + this.socket.getInetAddress() + ":" + this.socket.getPort() + " timed out.");
             this.state = JConnectionStateX.TIMEDOUT;
