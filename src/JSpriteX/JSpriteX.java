@@ -8,10 +8,12 @@
 
 package JSpriteX;
 
-import JBasicX.JPoint2DX;
+import java.awt.Color;
 import java.awt.Graphics2D;
+import java.awt.Point;
 import java.awt.Rectangle;
 import java.awt.geom.AffineTransform;
+import java.awt.geom.Point2D;
 import static java.lang.Math.*;
 
 /**
@@ -21,33 +23,26 @@ import static java.lang.Math.*;
 public abstract class JSpriteX {
 
     //Status
-    private boolean visable = true;
-    private boolean boundsvisable = false;
-    private int status = 0;
-    private int life = 100;
-    private int type = 0;
-    //Position
-    private JPoint2DX position = new JPoint2DX();
-    private JPoint2DX centeroffset = new JPoint2DX();
-    private JPoint2DX center = new JPoint2DX();
+    protected boolean visable = true;
+    protected boolean boundsvisable = false;
+    protected int status = 0;
+    protected int life = 100;
+    protected int type = 0;
     //Acceleration
-    private double accel = 0;
+    protected double accel = 0;
     //Speed
-    private double vel = 0;
+    protected double vel = 0;
     //Direction
-    private int direction = 0;
+    protected int direction = 0;
     //Rotation
-    private double rotation = 0;
-    private double rotationrate = 0;
+    protected double rotation = 0;
+    protected double rotationrate = 0;
     //Size
-    private JPoint2DX size = new JPoint2DX();
-    private JPoint2DX scalesize = new JPoint2DX();
-    private double scale = 1.0;
-    private Boolean usescale = false;
+    protected Rectangle bounds = new Rectangle();
     //AffineTransform
-    private AffineTransform translation;
+    protected AffineTransform translation;
     //Update Timer
-    private long lastupdate = 0;
+    protected long lastupdate = 0;
 
     /**
      *
@@ -85,74 +80,13 @@ public abstract class JSpriteX {
      *
      * @return
      */
-    public final JPoint2DX getPosition() {
-        return position;
+    public final Point2D getPosition() {
+        return bounds.getLocation();
     }
 
-    /**
-     *
-     * @return
-     */
-    public final double getXPosition() {
-        return position.getX();
+    public final Rectangle getBounds() {
+        return bounds;
     }
-
-    /**
-     *
-     * @return
-     */
-    public final double getYPosition() {
-        return position.getY();
-    }
-
-    /**
-     *
-     * @return
-     */
-    public final JPoint2DX getCenter() {
-        return center;
-    }
-
-    /**
-     *
-     * @return
-     */
-    public final double getXCenter() {
-        return center.getX();
-    }
-
-    /**
-     *
-     * @return
-     */
-    public final double getYCenter() {
-        return center.getY();
-    }
-
-    /**
-     *
-     * @return
-     */
-    public final JPoint2DX getCenterOffset() {
-        return centeroffset;
-    }
-
-    /**
-     *
-     * @return
-     */
-    public final double getXCenterOffset() {
-        return centeroffset.getX();
-    }
-
-    /**
-     *
-     * @return
-     */
-    public final double getYCenterOffset() {
-        return centeroffset.getY();
-    }
-
     /**
      *
      * @return
@@ -197,8 +131,8 @@ public abstract class JSpriteX {
      *
      * @return
      */
-    public final JPoint2DX getSize() {
-        return size;
+    public final Rectangle getSize() {
+        return bounds;
     }
 
     /**
@@ -206,7 +140,7 @@ public abstract class JSpriteX {
      * @return
      */
     public final double getWidth() {
-        return size.getX();
+        return bounds.getX();
     }
 
     /**
@@ -214,47 +148,7 @@ public abstract class JSpriteX {
      * @return
      */
     public final double getHeight() {
-        return size.getY();
-    }
-
-    /**
-     *
-     * @return
-     */
-    public final JPoint2DX getScalesize() {
-        return scalesize;
-    }
-
-    /**
-     *
-     * @return
-     */
-    public final double getScaleWidth() {
-        return scalesize.getX();
-    }
-
-    /**
-     *
-     * @return
-     */
-    public final double getScaleHeight() {
-        return scalesize.getY();
-    }
-
-    /**
-     *
-     * @return
-     */
-    public final double getScale() {
-        return scale;
-    }
-
-    /**
-     *
-     * @return
-     */
-    public final Boolean usingScale() {
-        return usescale;
+        return bounds.getY();
     }
 
     /**
@@ -318,9 +212,8 @@ public abstract class JSpriteX {
      *
      * @param position
      */
-    public final void setPosition(JPoint2DX position) {
-        this.position = position;
-        this.autoSetCenter();
+    public final void setPosition(Point2D position) {
+        this.bounds.setLocation((Point)position);
     }
 
     /**
@@ -328,60 +221,8 @@ public abstract class JSpriteX {
      * @param x
      * @param y
      */
-    public final void setPosition(double x, double y) {
-        this.position.setPoint(x, y);
-        this.autoSetCenter();
-    }
-
-    /**
-     *
-     * @param x
-     */
-    public final void setXPosition(double x) {
-        this.position.setX(x);
-        this.autoSetCenter();
-    }
-
-    /**
-     *
-     * @param y
-     */
-    public final void setYPosition(double y) {
-        this.position.setY(y);
-        this.autoSetCenter();
-    }
-
-    /**
-     *
-     * @param centeroffset
-     */
-    public final void setCenterOffset(JPoint2DX centeroffset) {
-        this.centeroffset = centeroffset;
-    }
-
-    /**
-     *
-     * @param xoffset
-     * @param yoffset
-     */
-    public final void setCenterOffset(double xoffset, double yoffset) {
-        this.center.setPoint(xoffset, yoffset);
-    }
-
-    /**
-     *
-     * @param xoffset
-     */
-    public final void setXCenterOffset(double xoffset) {
-        this.center.setX(xoffset);
-    }
-
-    /**
-     *
-     * @param yoffset
-     */
-    public final void setYCenterOffset(double yoffset) {
-        this.center.setY(yoffset);
+    public final void setPosition(int x, int y) {
+        this.bounds.setLocation(x, y);
     }
 
     /**
@@ -434,107 +275,12 @@ public abstract class JSpriteX {
      *
      * @param size
      */
-    public final void setSize(JPoint2DX size) {
-        this.size = size;
+    public final void setSize(Rectangle size) {
+        this.bounds = size;
     }
 
-    /**
-     *
-     * @param width
-     * @param height
-     */
-    public final void setSize(double width, double height) {
-        this.size.setPoint(width, height);
-        this.autoSetCenter();
-    }
-
-    /**
-     *
-     * @param width
-     */
-    public final void setWidth(double width) {
-        this.size.setX(width);
-        this.autoSetCenter();
-    }
-
-    /**
-     *
-     * @param height
-     */
-    public final void setHeight(double height) {
-        this.size.setY(height);
-        this.autoSetCenter();
-    }
-
-    /**
-     *
-     * @param scalesize
-     */
-    public final void setScalesize(JPoint2DX scalesize) {
-        this.scalesize = scalesize;
-        this.autoSetCenter();
-    }
-
-    /**
-     *
-     * @param width
-     * @param height
-     */
-    public final void setScaleSize(double width, double height) {
-        this.scalesize.setPoint(width, height);
-        this.autoSetCenter();
-    }
-
-    /**
-     *
-     * @param width
-     */
-    public final void setScaleWidth(double width) {
-        this.scalesize.setX(width);
-        this.autoSetCenter();
-    }
-
-    /**
-     *
-     * @param height
-     */
-    public final void setScaleHeight(double height) {
-        this.scalesize.setY(height);
-        this.autoSetCenter();
-    }
-
-    /**
-     *
-     * @param scale
-     */
-    public final void setScale(double scale) {
-        this.scale = scale;
-        this.autoSetCenter();
-    }
-
-    /**
-     *
-     * @param usescale
-     */
-    public final void useScale(Boolean usescale) {
-        this.usescale = usescale;
-        this.autoSetCenter();
-    }
-
-    /**
-     *
-     */
-    public final void useScale() {
-        this.usescale = true;
-        this.autoSetCenter();
-    }
-
-    /**
-     *
-     */
-    public final void noScale() {
-        this.usescale = false;
-        this.autoSetCenter();
+    public final void setSize(int width, int height) {
+        this.bounds.setSize(width, height);
     }
 
     /**
@@ -574,26 +320,18 @@ public abstract class JSpriteX {
 
     /**
      *
-     * @param scale
-     */
-    public final void incScale(double scale) {
-        this.scale += scale;
-    }
-
-    /**
-     *
      * @param x
      */
-    public final void incX(double x) {
-        this.setXPosition(this.getPosition().getX() + x);
+    public final void incX(int x) {
+        this.bounds.x = this.bounds.x + x;
     }
 
     /**
      *
      * @param y
      */
-    public final void incY(double y) {
-        this.setYPosition(this.getPosition().getY() + y);
+    public final void incY(int y) {
+        this.bounds.x = this.bounds.x + y;
     }
 
     /**
@@ -615,18 +353,6 @@ public abstract class JSpriteX {
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
     //Auto
 
-    /**
-     *
-     */
-    public final void autoSetCenter() {
-        if (this.usescale) {
-            this.center = new JPoint2DX(this.getXPosition() + this.getWidth() / 2 + this.getXCenterOffset(), this.getYPosition() + this.getHeight() / 2 + this.getYCenterOffset());
-        }
-        else {
-            this.center = new JPoint2DX((this.getXPosition() + (this.getScaleWidth() / 2) + this.getXCenterOffset()), (this.getYPosition() + (this.getScaleHeight() / 2) + this.getYCenterOffset()));
-        }
-    }
-
     public final void pause() {
         this.lastupdate = 0;
     }
@@ -645,52 +371,28 @@ public abstract class JSpriteX {
         else {
             this.setVel(0);
         }
-        this.incX(((this.vel * (Math.cos(this.direction * Math.PI / 180))) / 1000) * (System.currentTimeMillis() - this.lastupdate));
-        this.incY(((this.vel * (Math.sin(this.direction * Math.PI / 180))) / 1000) * (System.currentTimeMillis() - this.lastupdate));
+        this.incX((int)(((this.vel * (Math.cos(this.direction * Math.PI / 180))) / 1000) * (System.currentTimeMillis() - this.lastupdate)));
+        this.incY((int)(((this.vel * (Math.sin(this.direction * Math.PI / 180))) / 1000) * (System.currentTimeMillis() - this.lastupdate)));
         this.lastupdate = System.currentTimeMillis();
     }
 
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
     //Scale
-    /**
-     *
-     */
-    public final void scale() {
-        this.usescale = true;
-        this.setScaleSize(this.getWidth() * scale, this.getHeight() * scale);
-    }
+    
+    // TBI
 
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
     //Bounds
-    /**
-     *
-     * @return
-     */
-    public final Rectangle boundsToRect() {
-        this.autoSetCenter();
-        if (this.usingScale()) {
-            return new Rectangle((int) (this.getXPosition() - (this.getScaleWidth() / 2)),
-                    (int) (this.getYPosition() - (this.getScaleHeight() / 2)),
-                    (int) this.getScaleWidth(),
-                    (int) this.getScaleHeight());
-        }
-        else {
-            return new Rectangle((int) (this.getXPosition() - (this.getWidth() / 2)),
-                    (int) (this.getYPosition() - (this.getHeight() / 2)),
-                    (int) this.getWidth(),
-                    (int) this.getHeight());
-        }
-    }
-
+    
     /**
      *
      * @param sprite
      * @return
      */
     public final Boolean collidesWith(JSpriteX sprite) {
-        return (this != sprite) && (this.boundsToRect().intersects(sprite.boundsToRect()));
+        return (this != sprite) && (this.collidesWith(sprite.getBounds()));
     }
 
     /**
@@ -699,7 +401,7 @@ public abstract class JSpriteX {
      * @return
      */
     public final Boolean collidesWith(Rectangle rect) {
-        return this.boundsToRect().intersects(rect);
+        return this.bounds.intersects(rect);
     }
 
     /**
@@ -707,8 +409,8 @@ public abstract class JSpriteX {
      * @param point
      * @return
      */
-    public final Boolean collidesWith(JPoint2DX point) {
-        return this.boundsToRect().contains(point.getX(), point.getY());
+    public final Boolean collidesWith(Point2D point) {
+        return this.bounds.contains(point);
     }
 
     /**
@@ -716,7 +418,9 @@ public abstract class JSpriteX {
      * @param g2d
      */
     public final void drawBoundsTo(Graphics2D g2d) {
-        g2d.drawRect(this.boundsToRect().x, this.boundsToRect().y, this.boundsToRect().width, this.boundsToRect().height);
+        g2d.setTransform(new AffineTransform());
+        g2d.setColor(Color.WHITE);
+        g2d.drawRect(bounds.x, bounds.y, bounds.width, bounds.height);
     }
 
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -726,24 +430,8 @@ public abstract class JSpriteX {
      *
      * @param g2d
      */
-    public final void draw(Graphics2D g2d) {
-        if (usescale) {
-            g2d.scale(this.scale, this.scale);
-        }
-        if (this.boundsvisable) {
-            g2d.drawRect(this.boundsToRect().x, this.boundsToRect().y, this.boundsToRect().width, this.boundsToRect().height);
-        }
-        g2d.translate(this.getXPosition(), this.getYPosition());
-        g2d.rotate(Math.toRadians(this.rotation));
-        g2d.translate(-(this.getWidth() / 2), -(this.getHeight() / 2));
-        this.drawSprite(g2d);
-    }
+    public abstract void draw(Graphics2D g2d);
 
-    /**
-     *
-     * @param g2d
-     */
-    protected abstract void drawSprite(Graphics2D g2d);
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
     // The Force, with you it is.

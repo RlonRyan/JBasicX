@@ -13,6 +13,7 @@ import JGameEngineX.JGameEngineListenerX;
 import JGameEngineX.JGameEngineX;
 import java.awt.Graphics2D;
 import java.awt.Image;
+import java.awt.geom.AffineTransform;
 import java.net.URL;
 import java.util.LinkedList;
 
@@ -342,8 +343,6 @@ final public class JSpriteHolderX implements Runnable, JGameEngineListenerX {
     synchronized final public void drawSprites(Graphics2D g2d) {
         for (int i = 0; i < this.sprites.size(); i++) {
             this.sprites.get(i).draw(g2d);
-            this.holder.resetAffineTransform();
-            this.holder.resetDrawColor();
         }
     }
 
@@ -354,8 +353,6 @@ final public class JSpriteHolderX implements Runnable, JGameEngineListenerX {
     synchronized final public void drawSpriteBounds(Graphics2D g2d) {
         for (int i = 0; i < this.sprites.size(); i++) {
             this.sprites.get(i).drawBoundsTo(g2d);
-            this.holder.resetAffineTransform();
-            this.holder.resetDrawColor();
         }
     }
 

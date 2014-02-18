@@ -9,6 +9,7 @@
 package JSpriteX;
 
 import java.awt.*;
+import java.awt.geom.AffineTransform;
 
 /**
  * @author  RlonRyan
@@ -149,7 +150,16 @@ public class JVectorSpriteX extends JSpriteX {
      *
      * @param g2d 
      */
-    public final void drawSprite(Graphics2D g2d) {
+    @Override
+    public final void draw(Graphics2D g2d) {
+        if (!this.visable) {
+            return;
+        }
+        
+        g2d.setTransform(new AffineTransform());
+        g2d.translate(this.position.getX(), this.position.getY());
+        g2d.rotate(Math.toRadians(this.rotation));
+        
         if (this.poly != null) {
             if (this.linecolor == null) {
                 g2d.setColor(Color.red);

@@ -6,9 +6,11 @@
 
 package JGameHolderX;
 
+import JIOX.JKeyboardX;
+import JIOX.JMouseX;
 import java.awt.Color;
 import java.awt.Graphics2D;
-import java.awt.Image;
+import java.awt.geom.AffineTransform;
 import java.awt.image.BufferedImage;
 import javax.swing.JFrame;
 
@@ -23,6 +25,8 @@ public class JWindowHolderX implements JGameHolderX{
     JFrame frame;
     Graphics2D g2d;
     BufferedImage buffer;
+    Color background_color;
+    Color draw_color;
     
     @Override
     public Graphics2D getGraphics() {
@@ -31,10 +35,20 @@ public class JWindowHolderX implements JGameHolderX{
 
     @Override
     public final void clearBackbuffer() {
-        Color prev = g2d.getColor();
-        g2d.setPaint(Color.BLACK);
+        g2d.setPaint(background_color);
         g2d.fillRect(0, 0, this.frame.getWidth(), this.frame.getHeight());
-        g2d.setColor(prev);
+    }
+    
+    @Override
+    public void resetGraphics() {
+        this.g2d.setTransform(new AffineTransform());
+        this.g2d.setBackground(background_color);
+        this.g2d.setColor(draw_color);
+    }
+
+    @Override
+    public void setBackgroundColor(Color color) {
+        this.background_color = color;
     }
 
     @Override
@@ -48,6 +62,8 @@ public class JWindowHolderX implements JGameHolderX{
         this.frame.setVisible(true);
         this.buffer = new BufferedImage(winw, winh, BufferedImage.TYPE_INT_ARGB);
         this.g2d = (Graphics2D)this.buffer.getGraphics();
+        this.g2d.setBackground(background_color);
+        this.g2d.setColor(draw_color);
     }
 
     public JWindowHolderX(String title,int winw, int winh) {
@@ -56,8 +72,22 @@ public class JWindowHolderX implements JGameHolderX{
         this.frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         this.frame.setResizable(false);
         this.frame.setVisible(true);
-        this.buffer = new BufferedImage(winw, winh, BufferedImage.TYPE_INT_ARGB); 
+        this.buffer = new BufferedImage(winw, winh, BufferedImage.TYPE_INT_ARGB);
         this.g2d = (Graphics2D)this.buffer.getGraphics();
+        this.background_color = Color.BLACK;
+        this.draw_color = Color.WHITE;
+    }
+
+    @Override
+    public void addKeyListener(JKeyboardX listener) {
+        this.frame.addKeyListener(listener);
     }
     
+    @Override
+    public void addMouseListener(JMouseX listener) {
+        this.frame.addMouseListener(listener);
+        this.frame.addMouseMotionListener(listener);
+        this.frame.addMouseWheelListener(listener);
+    }
+
 }

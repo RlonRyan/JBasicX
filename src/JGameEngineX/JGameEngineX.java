@@ -19,7 +19,6 @@ import java.awt.Color;
 import java.awt.Font;
 import java.awt.Graphics2D;
 import java.awt.HeadlessException;
-import java.awt.geom.AffineTransform;
 import java.util.ArrayList;
 import java.util.EventObject;
 import java.util.List;
@@ -31,30 +30,23 @@ import java.util.List;
 public abstract class JGameEngineX implements Runnable, JInputOutputX {
 
     public static enum EVENT_TYPE {
-
         STATE_CHANGE;
     }
 
     public static enum GAME_STATUS {
 
         GAME_STOPPED,
+        GAME_INTIALIZING,
         GAME_STARTING,
         GAME_MENU,
         GAME_RUNNING,
         GAME_PAUSED;
     }
-    // Constants
-    public static final Color defaultbackgroundcolor = Color.BLACK;
-    /**
-     *
-     */
-    public static final Color defaultdrawcolor = Color.WHITE;
 // Public
     public final String title;
     /**
      *
      */
-    public JGameHolderX holder;
 // Protected
     /**
      *
@@ -67,6 +59,7 @@ public abstract class JGameEngineX implements Runnable, JInputOutputX {
      */
     protected JImageHandlerX images;
 // Private
+    private JGameHolderX holder;
     private GAME_STATUS gamestatus;
     private GAME_STATUS prevgamestatus;
     private int winw;
@@ -79,14 +72,11 @@ public abstract class JGameEngineX implements Runnable, JInputOutputX {
     private long frametime = 0;
     private long dfps = 50;
     private boolean showgamedata = false;
-    private AffineTransform affinetransform;
     private long gametime;
     private long gamestarttime;
     private long gamepausedat;
     private long gamelastpausedat = 0;
     private long gamepausetime = 0;
-    private Color backgroundcolor = Color.BLACK;
-    private Color drawcolor = Color.WHITE;
     private Font font = new Font("Arial", Font.PLAIN, 10);
     private List<JGameEngineListenerX> listeners = new ArrayList<>();
 
@@ -295,27 +285,6 @@ public abstract class JGameEngineX implements Runnable, JInputOutputX {
         return this.gamelastpausedat;
     }
 
-    /**
-     * Returns the current draw color.
-     * The default starting color is
-     * <code>Color.WHITE</code>.
-     * <p/>
-     * @return The current draw color.
-     */
-    public final Color getDrawColor() {
-        return drawcolor;
-    }
-
-    /**
-     * Returns the current background color.
-     * The default starting color is
-     * <code>Color.BLACK</code>.
-     * <p/>
-     * @return The current background color.
-     */
-    public final Color getBackgroundColor() {
-        return backgroundcolor;
-    }
 
     /**
      *
@@ -326,6 +295,13 @@ public abstract class JGameEngineX implements Runnable, JInputOutputX {
     }
     //Mutators
 
+    /**
+     * 
+     */
+    public final void setBackgroundColor(Color color) {
+        this.holder.setBackgroundColor(color);
+    }
+    
     /**
      *
      * @param status
@@ -346,56 +322,10 @@ public abstract class JGameEngineX implements Runnable, JInputOutputX {
 
     /**
      *
-     * @param drawcolor
-     */
-    public final void setDrawColor(Color drawcolor) {
-        this.drawcolor = drawcolor;
-    }
-
-    /**
-     *
-     * @param backgroundcolor
-     */
-    public final void setBackgroundColor(Color backgroundcolor) {
-        this.backgroundcolor = backgroundcolor;
-    }
-
-    /**
-     *
      * @param dfps
      */
     public final void setDFPS(long dfps) {
         this.dfps = dfps;
-    }
-
-    //Reset
-    /**
-     *
-     */
-    public final void resetBackgroundColorToDefault() {
-        this.backgroundcolor = defaultbackgroundcolor;
-    }
-
-    /**
-     *
-     */
-    public final void resetDrawColorToDefault() {
-        this.drawcolor = defaultdrawcolor;
-        this.holder.getGraphics().setColor(drawcolor);
-    }
-
-    /**
-     *
-     */
-    public final void resetDrawColor() {
-        this.holder.getGraphics().setColor(drawcolor);
-    }
-
-    /**
-     *
-     */
-    public final void resetAffineTransform() {
-        this.holder.getGraphics().setTransform(new AffineTransform());
     }
 
     /**
@@ -403,15 +333,6 @@ public abstract class JGameEngineX implements Runnable, JInputOutputX {
      */
     public final void resetFont() {
         this.holder.getGraphics().setFont(font);
-    }
-
-    /**
-     *
-     */
-    public final void resetGraphics() {
-        this.resetDrawColor();
-        this.resetAffineTransform();
-        this.resetFont();
     }
 
     //Functions
@@ -443,8 +364,6 @@ public abstract class JGameEngineX implements Runnable, JInputOutputX {
         
         this.holder.clearBackbuffer();
         
-        this.resetGraphics();
-        
         switch (this.gamestatus) {
             case GAME_MENU:
                 gameMenuPaint(holder.getGraphics());
@@ -463,7 +382,6 @@ public abstract class JGameEngineX implements Runnable, JInputOutputX {
                 break;
         }
         
-        this.resetGraphics();
         this.paintGameData();
         
         this.holder.flip();
@@ -522,11 +440,16 @@ public abstract class JGameEngineX implements Runnable, JInputOutputX {
     public final void init() {
 
         System.out.print("Loading.");
+        
+        //  State
+        this.gamestatus = GAME_STATUS.GAME_INTIALIZING;
 
         //  Resources
         this.mouse = new JMouseX();
+        this.holder.addMouseListener(this.mouse);
         this.mouse.addEventListener(this);
         this.keyboard = new JKeyboardX();
+        this.holder.addKeyListener(this.keyboard);
         this.keyboard.addEventListener(this);
         this.images = new JImageHandlerX();
         this.spriteholder = new JSpriteHolderX(this);
@@ -541,6 +464,7 @@ public abstract class JGameEngineX implements Runnable, JInputOutputX {
     public final void start() {
 
         //  Start the game thread
+        this.gamestatus = GAME_STATUS.GAME_STARTING;
         this.gamemain = new Thread(this);
         this.gamemain.start();
 
@@ -556,6 +480,7 @@ public abstract class JGameEngineX implements Runnable, JInputOutputX {
 
         System.out.println("\nStarted!");
 
+        this.gamestatus = GAME_STATUS.GAME_MENU;
     }
 
     @Override
@@ -582,6 +507,7 @@ public abstract class JGameEngineX implements Runnable, JInputOutputX {
                 case GAME_STOPPED:
                     stop();
                     break;
+                case GAME_INTIALIZING:
                 case GAME_STARTING:
                     System.out.print(".");
                     break;
@@ -641,10 +567,13 @@ public abstract class JGameEngineX implements Runnable, JInputOutputX {
     
     public JGameEngineX(String title, String mode, int fps, int width, int height) throws HeadlessException {
         //  Set Game Atributes
+        this.gamestatus = GAME_STATUS.GAME_INTIALIZING;
         this.title = title;
         this.dfps = fps;
         this.winw = width;
         this.winh = height;
+        this.winwc = width / 2;
+        this.winhc = height / 2;
         switch(mode.toLowerCase()) {
             case "windowed":
                 this.holder = new JWindowHolderX(this.title, width, height);
@@ -655,7 +584,6 @@ public abstract class JGameEngineX implements Runnable, JInputOutputX {
             default:
                 throw new UnsupportedOperationException("Modes other than windowed not yet supported at this time");
         }
-        this.gamestatus = GAME_STATUS.GAME_STARTING;
     }
 
 }
