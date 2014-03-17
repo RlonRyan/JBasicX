@@ -13,7 +13,6 @@ import JGameEngineX.JGameEngineListenerX;
 import JGameEngineX.JGameEngineX;
 import java.awt.Graphics2D;
 import java.awt.Image;
-import java.awt.geom.AffineTransform;
 import java.net.URL;
 import java.util.LinkedList;
 
@@ -276,46 +275,46 @@ final public class JSpriteHolderX implements Runnable, JGameEngineListenerX {
             switch (spr.getType()) {
                 case SPRITE_BASIC:
                     spr.update();
-                    if ((spr.getXPosition() < 0) || (spr.getXPosition() > this.holder.getGameWinWidth()) || (spr.getYPosition() < 0) || (spr.getYPosition() > this.holder.getGameWinHeight())) {
+                    if ((spr.getX() < 0) || (spr.getX() > this.holder.getGameWinWidth()) || (spr.getY() < 0) || (spr.getY() > this.holder.getGameWinHeight())) {
                         this.sprites.remove(i);
                     }
                     break;
                 case SPRITE_LOOPER:
 
-                    if (spr.getXPosition() < 0) {
-                        spr.setXPosition(this.holder.getGameWinWidth());
+                    if (spr.getX() < 0) {
+                        spr.setX(this.holder.getGameWinWidth());
                     }
-                    else if (spr.getXPosition() > this.holder.getGameWinWidth()) {
-                        spr.setXPosition(0);
+                    else if (spr.getX() > this.holder.getGameWinWidth()) {
+                        spr.setX(0);
                     }
-                    else if (spr.getYPosition() < 0) {
-                        spr.setYPosition(this.holder.getGameWinHeight());
+                    else if (spr.getY() < 0) {
+                        spr.setY(this.holder.getGameWinHeight());
                     }
-                    else if (spr.getYPosition() > this.holder.getGameWinHeight()) {
-                        spr.setYPosition(0);
+                    else if (spr.getY() > this.holder.getGameWinHeight()) {
+                        spr.setY(0);
                     }
                     spr.update();
                     break;
                 case SPRITE_BOUNCER:
-                    if (spr.getXPosition() < 0) {
+                    if (spr.getX() < 0) {
                         spr.setDirection(180 - spr.getDirection());
                         spr.setRotation(spr.getDirection() - 90);
-                        spr.setXPosition(0);
+                        spr.setX(0);
                     }
-                    else if (spr.getXPosition() > this.holder.getGameWinWidth()) {
+                    else if (spr.getX() > this.holder.getGameWinWidth()) {
                         spr.setDirection(180 - spr.getDirection());
                         spr.setRotation(spr.getDirection() - 90);
-                        spr.setXPosition(this.holder.getGameWinWidth());
+                        spr.setX(this.holder.getGameWinWidth());
                     }
-                    else if (spr.getYPosition() < 0) {
+                    else if (spr.getY() < 0) {
                         spr.setDirection(360 - spr.getDirection());
                         spr.setRotation(spr.getDirection() - 90);
-                        spr.setYPosition(0);
+                        spr.setY(0);
                     }
-                    else if (spr.getYPosition() > this.holder.getGameWinHeight()) {
+                    else if (spr.getY() > this.holder.getGameWinHeight()) {
                         spr.setDirection(360 - spr.getDirection());
                         spr.setRotation(spr.getDirection() - 90);
-                        spr.setYPosition(this.holder.getGameWinHeight());
+                        spr.setY(this.holder.getGameWinHeight());
                     }
                     spr.update();
                     break;

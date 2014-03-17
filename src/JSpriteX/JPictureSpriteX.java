@@ -8,7 +8,6 @@
  */
 package JSpriteX;
 
-import JBasicX.JPoint2DX;
 import java.awt.Graphics2D;
 import java.awt.Image;
 import java.awt.Rectangle;
@@ -28,7 +27,6 @@ public final class JPictureSpriteX extends JSpriteX {
     private int totalframes = 0;
     private int columns = 0;
     private Rectangle frame = new Rectangle();
-    private JPoint2DX framedi = new JPoint2DX();
     //Constructors
 
     /**
@@ -143,7 +141,7 @@ public final class JPictureSpriteX extends JSpriteX {
     public final void updateSize() {
         if (this.columns != 0) {
             this.updateFrameSize();
-            this.setSize(this.framedi.getX(), this.framedi.getY());
+            this.setSize(this.frame.width, this.frame.height);
         } else {
             this.setSize(this.picture.getWidth(null), this.picture.getHeight(null));
         }
@@ -153,12 +151,10 @@ public final class JPictureSpriteX extends JSpriteX {
      *
      */
     public final void updateFrameSize() {
-        this.framedi.setX(this.picture.getWidth(null) / this.columns - 1);
-        this.framedi.setY(this.picture.getHeight(null) / (this.totalframes / this.columns) - 1);
-        this.frame.x = (this.currentframe % this.columns) * (int) this.framedi.getX();
-        this.frame.y = (this.currentframe / this.columns) * (int) this.framedi.getY();
-        this.frame.width = (int) this.framedi.getX();
-        this.frame.height = (int) this.framedi.getY();
+        this.frame.width = ((int)(this.picture.getWidth(null) / this.columns - 1));
+        this.frame.height = ((int)(this.picture.getHeight(null) / (this.totalframes / this.columns) - 1));
+        this.frame.x = (this.currentframe % this.columns) * (int) this.frame.width;
+        this.frame.y = (this.currentframe / this.columns) * (int) this.frame.height;
     }
 
     /**
@@ -172,7 +168,7 @@ public final class JPictureSpriteX extends JSpriteX {
         }
         
         g2d.setTransform(new AffineTransform());
-        g2d.translate(this.position.getX(), this.position.getY());
+        g2d.translate(this.bounds.x, this.bounds.y);
         g2d.rotate(Math.toRadians(this.rotation));
         
         if (this.columns != 0) {

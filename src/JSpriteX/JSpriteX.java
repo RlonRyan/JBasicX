@@ -37,13 +37,16 @@ public abstract class JSpriteX {
     //Rotation
     protected double rotation = 0;
     protected double rotationrate = 0;
-    //Size
+    //Bounds
     protected Rectangle bounds = new Rectangle();
     //AffineTransform
     protected AffineTransform translation;
     //Update Timer
     protected long lastupdate = 0;
 
+//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+    //Booleans
     /**
      *
      * @return
@@ -51,7 +54,10 @@ public abstract class JSpriteX {
     public final boolean isVisable() {
         return visable;
     }
-
+    
+//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+    //Getters
     /**
      *
      * @return
@@ -139,8 +145,24 @@ public abstract class JSpriteX {
      *
      * @return
      */
-    public final double getWidth() {
+    public final double getX() {
         return bounds.getX();
+    }
+    
+    /**
+     *
+     * @return
+     */
+    public final double getY() {
+        return bounds.getY();
+    }
+    
+    /**
+     *
+     * @return
+     */
+    public final double getWidth() {
+        return bounds.getWidth();
     }
 
     /**
@@ -148,7 +170,7 @@ public abstract class JSpriteX {
      * @return
      */
     public final double getHeight() {
-        return bounds.getY();
+        return bounds.getHeight();
     }
 
     /**
@@ -207,25 +229,8 @@ public abstract class JSpriteX {
     public final void setLife(int life) {
         this.life = life;
     }
-
-    /**
-     *
-     * @param position
-     */
-    public final void setPosition(Point2D position) {
-        this.bounds.setLocation((Point)position);
-    }
-
-    /**
-     *
-     * @param x
-     * @param y
-     */
-    public final void setPosition(int x, int y) {
-        this.bounds.setLocation(x, y);
-    }
-
-    /**
+    
+        /**
      *
      * @param accel
      */
@@ -270,6 +275,48 @@ public abstract class JSpriteX {
     public final void setRotationrate(double rotationrate) {
         this.rotationrate = rotationrate;
     }
+    
+    /**
+     *
+     * @param position
+     */
+    public final void setPosition(Point2D position) {
+        this.bounds.setLocation((Point)position);
+    }
+
+    /**
+     *
+     * @param x
+     * @param y
+     */
+    public final void setPosition(int x, int y) {
+        this.bounds.setLocation(x, y);
+    }
+
+    /**
+     *
+     * @param x
+     * @param y
+     */
+    public final void setPosition(double x, double y) {
+        this.bounds.setLocation((int)x, (int)y);
+    }
+    
+    /**
+     *
+     * @param x
+     */
+    public final void setX(int x) {
+        this.bounds.x = x;
+    }
+    
+     /**
+     *
+     * @param y
+     */
+    public final void setY(int y) {
+        this.bounds.y = y;
+    }
 
     /**
      *
@@ -281,6 +328,26 @@ public abstract class JSpriteX {
 
     public final void setSize(int width, int height) {
         this.bounds.setSize(width, height);
+    }
+    
+    public final void setSize(double width, double height) {
+        this.bounds.setSize((int)width, (int)height);
+    }
+    
+    /**
+     *
+     * @param width 
+     */
+    public final void setWidth(int width) {
+        this.bounds.width = width;
+    }
+    
+     /**
+     *
+     * @param height 
+     */
+    public final void setHeight(int height) {
+        this.bounds.height = height;
     }
 
     /**
@@ -306,16 +373,16 @@ public abstract class JSpriteX {
      *
      * @param rotation
      */
-    public final void incRotation(double rotation) {
+    public final void incRot(double rotation) {
         this.rotation += rotation;
     }
 
     /**
      *
-     * @param rotationrate
+     * @param inc
      */
-    public final void incRotationrate(double rotationrate) {
-        this.rotationrate += rotationrate;
+    public final void incRotRate(double inc) {
+        this.rotationrate += inc;
     }
 
     /**

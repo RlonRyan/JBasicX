@@ -20,6 +20,7 @@ public class JVectorSpriteX extends JSpriteX {
     //Variables
     private Shape shape;
     private Polygon poly;
+    private int scale;
     private int[] xpoints;
     private int[] ypoints;
     private Color linecolor;
@@ -40,6 +41,14 @@ public class JVectorSpriteX extends JSpriteX {
      */
     public final Polygon getPolygon() {
         return this.poly;
+    }
+    
+    /**
+     *
+     * @return
+     */
+    public final int getScale() {
+        return this.scale;
     }
 
     /**
@@ -90,6 +99,14 @@ public class JVectorSpriteX extends JSpriteX {
     public final void setPolygon(Polygon polygon) {
         this.poly = polygon;
     }
+    
+    /**
+     *
+     * @param scale
+     */
+    public final void setPolygon(int scale) {
+        this.scale = scale;
+    }
 
     /**
      *
@@ -107,7 +124,7 @@ public class JVectorSpriteX extends JSpriteX {
      *
      */
     public final void updatesize() {
-        this.setSize((int) (this.poly.getBounds2D().getWidth() * this.getScale()), (int) (this.poly.getBounds2D().getHeight() * this.getScale()));
+        this.setSize((int) (this.poly.getBounds2D().getWidth() * this.scale), (int) (this.poly.getBounds2D().getHeight() * this.scale));
     }
 
     /**
@@ -157,7 +174,7 @@ public class JVectorSpriteX extends JSpriteX {
         }
         
         g2d.setTransform(new AffineTransform());
-        g2d.translate(this.position.getX(), this.position.getY());
+        g2d.translate(this.bounds.x, this.bounds.y);
         g2d.rotate(Math.toRadians(this.rotation));
         
         if (this.poly != null) {
@@ -205,5 +222,6 @@ public class JVectorSpriteX extends JSpriteX {
         this.setColors(null);
         this.setShape(null);
         this.setPolygon(null);
+        this.scale = 1;
     }
 }
