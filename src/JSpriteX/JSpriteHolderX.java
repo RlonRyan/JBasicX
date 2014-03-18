@@ -51,7 +51,7 @@ final public class JSpriteHolderX implements Runnable, JGameEngineListenerX {
     private LinkedList<String> templatespritesname;
     private JImageHandlerX images;
     private JGameEngineX holder;
-    private int dsups = 105;
+    private int dsups = 100;
     private int sups = 0;
     private long updatetime;
     private int updatenumber;
@@ -116,8 +116,8 @@ final public class JSpriteHolderX implements Runnable, JGameEngineListenerX {
      * @param x
      * @param y
      */
-    synchronized final public void addTemplateSprite(String name, int type, int direction, double vel, double x, double y) {
-        JPictureSpriteX spr = new JPictureSpriteX(this.holder.getGameWinWidthCenter(), this.holder.getGameWinHeightCenter());
+    synchronized final public void addTemplateSprite(String name, int type, int direction, double vel, int x, int y) {
+        JPictureSpriteX spr = new JPictureSpriteX(this.holder.getCenterX(), this.holder.getCenterY());
         spr.setPosition(x, y);
         spr.setDirection(direction);
         spr.setVel(vel);
@@ -144,8 +144,8 @@ final public class JSpriteHolderX implements Runnable, JGameEngineListenerX {
      * @param x
      * @param y
      */
-    synchronized final public void addSprite(int type, int direction, double vel, double x, double y) {
-        JPictureSpriteX spr = new JPictureSpriteX(this.images.getDefaultImage(), this.holder.getGameWinWidthCenter(), this.holder.getGameWinHeightCenter());
+    synchronized final public void addSprite(int type, int direction, double vel, int x, int y) {
+        JPictureSpriteX spr = new JPictureSpriteX(this.images.getDefaultImage(), this.holder.getCenterX(), this.holder.getCenterY());
         spr.setPosition(x, y);
         spr.setDirection(direction);
         spr.setVel(vel);
@@ -153,8 +153,8 @@ final public class JSpriteHolderX implements Runnable, JGameEngineListenerX {
         this.sprites.add(spr);
     }
 
-    synchronized final public void addSprite(int type, int direction, double vel, double x, double y, String imagename) {
-        JPictureSpriteX spr = new JPictureSpriteX(this.images.getPicture(imagename), this.holder.getGameWinWidthCenter(), this.holder.getGameWinHeightCenter());
+    synchronized final public void addSprite(int type, int direction, double vel, int x, int y, String imagename) {
+        JPictureSpriteX spr = new JPictureSpriteX(this.images.getPicture(imagename), this.holder.getCenterX(), this.holder.getCenterY());
         spr.setPosition(x, y);
         spr.setDirection(direction);
         spr.setVel(vel);
@@ -169,7 +169,7 @@ final public class JSpriteHolderX implements Runnable, JGameEngineListenerX {
      * @param y
      */
     synchronized final public void addSprite(int type, double x, double y) {
-        JPictureSpriteX spr = new JPictureSpriteX(this.holder.getGameWinWidthCenter(), this.holder.getGameWinHeightCenter());
+        JPictureSpriteX spr = new JPictureSpriteX(this.holder.getCenterX(), this.holder.getCenterY());
         spr.setPosition(x, y);
         spr.setType(type);
         this.sprites.add(spr);
@@ -180,7 +180,7 @@ final public class JSpriteHolderX implements Runnable, JGameEngineListenerX {
      * @param type
      */
     synchronized final public void addSprite(int type) {
-        JPictureSpriteX spr = new JPictureSpriteX(this.holder.getGameWinWidthCenter(), this.holder.getGameWinHeightCenter());
+        JPictureSpriteX spr = new JPictureSpriteX(this.holder.getCenterX(), this.holder.getCenterY());
         spr.setType(type);
         this.sprites.add(spr);
     }
@@ -221,7 +221,7 @@ final public class JSpriteHolderX implements Runnable, JGameEngineListenerX {
      * @param x
      * @param y
      */
-    synchronized final public void cloneTemplateSprite(String name, int direction, double vel, double x, double y) {
+    synchronized final public void cloneTemplateSprite(String name, int direction, double vel, int x, int y) {
         this.sprites.add(this.templatesprites.get(this.templatespritesname.indexOf(name)));
         this.sprites.getLast().setPosition(x, y);
         this.sprites.getLast().setDirection(direction);
@@ -234,7 +234,7 @@ final public class JSpriteHolderX implements Runnable, JGameEngineListenerX {
      * @param x
      * @param y
      */
-    synchronized final public void cloneTemplateSprite(String name, double x, double y) {
+    synchronized final public void cloneTemplateSprite(String name, int x, int y) {
         this.sprites.add(this.templatesprites.get(this.templatespritesname.indexOf(name)));
         this.sprites.getLast().setPosition(x, y);
     }

@@ -16,9 +16,11 @@ import JIOX.JKeyboardX;
 import JIOX.JMouseX;
 import JSpriteX.JSpriteHolderX;
 import java.awt.Color;
+import java.awt.Dimension;
 import java.awt.Font;
 import java.awt.Graphics2D;
 import java.awt.HeadlessException;
+import java.awt.Point;
 import java.util.ArrayList;
 import java.util.EventObject;
 import java.util.List;
@@ -30,6 +32,7 @@ import java.util.List;
 public abstract class JGameEngineX implements Runnable, JInputOutputX {
 
     public static enum EVENT_TYPE {
+
         STATE_CHANGE;
     }
 
@@ -62,10 +65,8 @@ public abstract class JGameEngineX implements Runnable, JInputOutputX {
     private JGameHolderX holder;
     private GAME_STATUS gamestatus;
     private GAME_STATUS prevgamestatus;
-    private int winw;
-    private int winh;
-    private int winwc;
-    private int winhc;
+    private Dimension dimensions;
+    private Point center;
     private Thread gamemain;
     private int framenum = 0;
     private int fps = 0;
@@ -171,7 +172,7 @@ public abstract class JGameEngineX implements Runnable, JInputOutputX {
      * @return The game's width.
      */
     public final int getGameWinWidth() {
-        return this.winw;
+        return this.dimensions.width;
     }
 
     /**
@@ -180,7 +181,7 @@ public abstract class JGameEngineX implements Runnable, JInputOutputX {
      * @return The game's height.
      */
     public final int getGameWinHeight() {
-        return this.winh;
+        return this.dimensions.height;
     }
 
     /**
@@ -188,8 +189,8 @@ public abstract class JGameEngineX implements Runnable, JInputOutputX {
      * <p/>
      * @return The game's center in terms of width.
      */
-    public final int getGameWinWidthCenter() {
-        return this.winwc;
+    public final int getCenterX() {
+        return this.center.x;
     }
 
     /**
@@ -197,8 +198,8 @@ public abstract class JGameEngineX implements Runnable, JInputOutputX {
      * <p/>
      * @return The game's center in terms of height.
      */
-    public final int getGameWinHeightCenter() {
-        return this.winhc;
+    public final int getCenterY() {
+        return this.center.y;
     }
 
     /**
@@ -285,7 +286,6 @@ public abstract class JGameEngineX implements Runnable, JInputOutputX {
         return this.gamelastpausedat;
     }
 
-
     /**
      *
      * @return
@@ -296,12 +296,12 @@ public abstract class JGameEngineX implements Runnable, JInputOutputX {
     //Mutators
 
     /**
-     * 
+     *
      */
     public final void setBackgroundColor(Color color) {
         this.holder.setBackgroundColor(color);
     }
-    
+
     /**
      *
      * @param status
@@ -361,9 +361,9 @@ public abstract class JGameEngineX implements Runnable, JInputOutputX {
             fps = framenum;
             framenum = 0;
         }
-        
+
         this.holder.clearBackbuffer();
-        
+
         switch (this.gamestatus) {
             case GAME_MENU:
                 gameMenuPaint(holder.getGraphics());
@@ -381,9 +381,9 @@ public abstract class JGameEngineX implements Runnable, JInputOutputX {
                 paintError("Invalid Game Mode.");
                 break;
         }
-        
+
         this.paintGameData();
-        
+
         this.holder.flip();
     }
 
@@ -405,7 +405,7 @@ public abstract class JGameEngineX implements Runnable, JInputOutputX {
         String message = "Error: " + desc;
         Color prevc = this.holder.getGraphics().getColor();
         this.holder.getGraphics().setColor(Color.red);
-        this.holder.getGraphics().drawString(message, this.getGameWinWidthCenter() - (10 + (this.holder.getGraphics().getFontMetrics().stringWidth(message) / 2)), this.getGameWinHeightCenter());
+        this.holder.getGraphics().drawString(message, this.getCenterX() - (10 + (this.holder.getGraphics().getFontMetrics().stringWidth(message) / 2)), this.getCenterY());
         this.holder.getGraphics().setColor(prevc);
     }
 
@@ -417,7 +417,7 @@ public abstract class JGameEngineX implements Runnable, JInputOutputX {
         String message = "Error: " + e.getLocalizedMessage();
         Color prevc = this.holder.getGraphics().getColor();
         this.holder.getGraphics().setColor(Color.red);
-        this.holder.getGraphics().drawString(message, this.getGameWinWidthCenter() - (10 + (this.holder.getGraphics().getFontMetrics().stringWidth(message) / 2)), this.getGameWinHeightCenter());
+        this.holder.getGraphics().drawString(message, this.getCenterX() - (10 + (this.holder.getGraphics().getFontMetrics().stringWidth(message) / 2)), this.getCenterY());
         this.holder.getGraphics().setColor(prevc);
     }
 
@@ -427,11 +427,9 @@ public abstract class JGameEngineX implements Runnable, JInputOutputX {
      * @param height
      */
     public final void resizeGame(int width, int height) {
-        this.winw = width;
-        this.winh = height;
-        this.winwc = width / 2;
-        this.winhc = height / 2;
-        this.holder.resize(winw, winh);
+        this.dimensions.setSize(width, height);
+        this.center.setLocation(width / 2, height / 2);
+        this.holder.resize(width, height);
         if (mouse != null) {
             mouse.clear();
         }
@@ -440,7 +438,7 @@ public abstract class JGameEngineX implements Runnable, JInputOutputX {
     public final void init() {
 
         System.out.print("Loading.");
-        
+
         //  State
         this.gamestatus = GAME_STATUS.GAME_INTIALIZING;
 
@@ -456,17 +454,21 @@ public abstract class JGameEngineX implements Runnable, JInputOutputX {
 
         //  Listeners
         this.addListener(spriteholder);
-        
+
+        //  Start the game thread
+        this.gamestatus = GAME_STATUS.GAME_STARTING;
+        this.gamemain = new Thread(this);
+        this.gamemain.start();
+
         this.start();
 
     }
 
     public final void start() {
 
-        //  Start the game thread
-        this.gamestatus = GAME_STATUS.GAME_STARTING;
-        this.gamemain = new Thread(this);
-        this.gamemain.start();
+        // Timing Stuff
+        this.gamestarttime = System.currentTimeMillis();
+        this.frametime = System.currentTimeMillis();
 
         //  Start-up Sprite holder
         this.spriteholder.start();
@@ -474,13 +476,8 @@ public abstract class JGameEngineX implements Runnable, JInputOutputX {
         //  Finally pass on control for pre-game stuff
         gameStart();
 
-        // Timing Stuff
-        this.gamestarttime = System.currentTimeMillis();
-        this.frametime = System.currentTimeMillis();
-
         System.out.println("\nStarted!");
 
-        this.gamestatus = GAME_STATUS.GAME_MENU;
     }
 
     @Override
@@ -553,7 +550,7 @@ public abstract class JGameEngineX implements Runnable, JInputOutputX {
         switch (type) {
             case STATE_CHANGE:
                 for (JGameEngineListenerX e : this.listeners) {
-                    e.gameStateChanged((GAME_STATUS)(args[0]), (GAME_STATUS)(args[1]));
+                    e.gameStateChanged((GAME_STATUS) (args[0]), (GAME_STATUS) (args[1]));
                 }
                 break;
             default:
@@ -564,17 +561,15 @@ public abstract class JGameEngineX implements Runnable, JInputOutputX {
     public JGameEngineX(String title, String mode) throws HeadlessException {
         this(title, mode, 50, 640, 480);
     }
-    
+
     public JGameEngineX(String title, String mode, int fps, int width, int height) throws HeadlessException {
         //  Set Game Atributes
         this.gamestatus = GAME_STATUS.GAME_INTIALIZING;
         this.title = title;
         this.dfps = fps;
-        this.winw = width;
-        this.winh = height;
-        this.winwc = width / 2;
-        this.winhc = height / 2;
-        switch(mode.toLowerCase()) {
+        this.dimensions = new Dimension(width, height);
+        this.center = new Point(width / 2, height / 2);
+        switch (mode.toLowerCase()) {
             case "windowed":
                 this.holder = new JWindowHolderX(this.title, width, height);
                 break;
@@ -582,8 +577,7 @@ public abstract class JGameEngineX implements Runnable, JInputOutputX {
                 this.holder = new JAppletHolderX(width, height);
                 break;
             default:
-                throw new UnsupportedOperationException("Modes other than windowed not yet supported at this time");
+                throw new UnsupportedOperationException("Modes other than windowed and applet not yet supported at this time");
         }
     }
-
 }

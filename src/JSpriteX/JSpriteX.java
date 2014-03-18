@@ -28,10 +28,12 @@ public abstract class JSpriteX {
     protected int status = 0;
     protected int life = 100;
     protected int type = 0;
+    //Position
+    protected Point2D position = new Point.Double();
+    //Velocity
+    protected double vel = 0;
     //Acceleration
     protected double accel = 0;
-    //Speed
-    protected double vel = 0;
     //Direction
     protected int direction = 0;
     //Rotation
@@ -39,8 +41,6 @@ public abstract class JSpriteX {
     protected double rotationrate = 0;
     //Bounds
     protected Rectangle bounds = new Rectangle();
-    //AffineTransform
-    protected AffineTransform translation;
     //Update Timer
     protected long lastupdate = 0;
 
@@ -54,7 +54,7 @@ public abstract class JSpriteX {
     public final boolean isVisable() {
         return visable;
     }
-    
+
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
     //Getters
@@ -87,7 +87,7 @@ public abstract class JSpriteX {
      * @return
      */
     public final Point2D getPosition() {
-        return bounds.getLocation();
+        return position;
     }
 
     public final Rectangle getBounds() {
@@ -146,17 +146,17 @@ public abstract class JSpriteX {
      * @return
      */
     public final double getX() {
-        return bounds.getX();
+        return position.getX();
     }
-    
+
     /**
      *
      * @return
      */
     public final double getY() {
-        return bounds.getY();
+        return position.getY();
     }
-    
+
     /**
      *
      * @return
@@ -171,14 +171,6 @@ public abstract class JSpriteX {
      */
     public final double getHeight() {
         return bounds.getHeight();
-    }
-
-    /**
-     *
-     * @return
-     */
-    public AffineTransform getTranslation() {
-        return translation;
     }
 
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -229,7 +221,7 @@ public abstract class JSpriteX {
     public final void setLife(int life) {
         this.life = life;
     }
-    
+
         /**
      *
      * @param accel
@@ -251,6 +243,7 @@ public abstract class JSpriteX {
      * @param direction
      */
     public final void setDirection(int direction) {
+        direction = direction % 360;
         if (direction < 0) {
             direction = direction + 360;
         }
@@ -275,22 +268,13 @@ public abstract class JSpriteX {
     public final void setRotationrate(double rotationrate) {
         this.rotationrate = rotationrate;
     }
-    
+
     /**
      *
      * @param position
      */
-    public final void setPosition(Point2D position) {
-        this.bounds.setLocation((Point)position);
-    }
-
-    /**
-     *
-     * @param x
-     * @param y
-     */
-    public final void setPosition(int x, int y) {
-        this.bounds.setLocation(x, y);
+    public final void setPosition(Point.Double position) {
+        this.position = position;
     }
 
     /**
@@ -299,63 +283,47 @@ public abstract class JSpriteX {
      * @param y
      */
     public final void setPosition(double x, double y) {
-        this.bounds.setLocation((int)x, (int)y);
+        this.position.setLocation(x, y);
     }
-    
+
     /**
      *
      * @param x
      */
-    public final void setX(int x) {
-        this.bounds.x = x;
+    public final void setX(double x) {
+        this.position.setLocation(x, this.position.getY());
     }
-    
+
      /**
      *
      * @param y
      */
     public final void setY(int y) {
-        this.bounds.y = y;
-    }
-
-    /**
-     *
-     * @param size
-     */
-    public final void setSize(Rectangle size) {
-        this.bounds = size;
+        this.position.setLocation(this.position.getX(), y);
     }
 
     public final void setSize(int width, int height) {
         this.bounds.setSize(width, height);
     }
-    
+
     public final void setSize(double width, double height) {
         this.bounds.setSize((int)width, (int)height);
-    }
-    
-    /**
-     *
-     * @param width 
-     */
-    public final void setWidth(int width) {
-        this.bounds.width = width;
-    }
-    
-     /**
-     *
-     * @param height 
-     */
-    public final void setHeight(int height) {
-        this.bounds.height = height;
     }
 
     /**
      *
-     * @param translation
+     * @param width
      */
-    public void setTranslation(AffineTransform translation) {
-        this.translation = translation;
+    public final void setWidth(int width) {
+        this.bounds.width = width;
+    }
+
+     /**
+     *
+     * @param height
+     */
+    public final void setHeight(int height) {
+        this.bounds.height = height;
     }
 
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -389,16 +357,16 @@ public abstract class JSpriteX {
      *
      * @param x
      */
-    public final void incX(int x) {
-        this.bounds.x = this.bounds.x + x;
+    public final void incX(double x) {
+        this.setX(this.position.getX() + x);
     }
 
     /**
      *
      * @param y
      */
-    public final void incY(int y) {
-        this.bounds.x = this.bounds.x + y;
+    public final void incY(double y) {
+        this.setX(this.position.getY() + y);
     }
 
     /**
@@ -446,13 +414,13 @@ public abstract class JSpriteX {
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
     //Scale
-    
+
     // TBI
 
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
     //Bounds
-    
+
     /**
      *
      * @param sprite
@@ -487,7 +455,7 @@ public abstract class JSpriteX {
     public final void drawBoundsTo(Graphics2D g2d) {
         g2d.setTransform(new AffineTransform());
         g2d.setColor(Color.WHITE);
-        g2d.drawRect(bounds.x, bounds.y, bounds.width, bounds.height);
+        g2d.drawRect((int)this.position.getX(), (int)this.position.getY(), bounds.width, bounds.height);
     }
 
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
