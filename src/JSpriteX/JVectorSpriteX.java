@@ -42,7 +42,7 @@ public class JVectorSpriteX extends JSpriteX {
     public final Polygon getPolygon() {
         return this.poly;
     }
-    
+
     /**
      *
      * @return
@@ -99,7 +99,7 @@ public class JVectorSpriteX extends JSpriteX {
     public final void setPolygon(Polygon polygon) {
         this.poly = polygon;
     }
-    
+
     /**
      *
      * @param scale
@@ -165,18 +165,18 @@ public class JVectorSpriteX extends JSpriteX {
 
     /**
      *
-     * @param g2d 
+     * @param g2d
      */
     @Override
     public final void draw(Graphics2D g2d) {
         if (!this.visable) {
             return;
         }
-        
+
         g2d.setTransform(new AffineTransform());
-        g2d.translate(this.bounds.x, this.bounds.y);
+        g2d.translate(this.bounds.getX(), this.bounds.getY());
         g2d.rotate(Math.toRadians(this.rotation));
-        
+
         if (this.poly != null) {
             if (this.linecolor == null) {
                 g2d.setColor(Color.red);

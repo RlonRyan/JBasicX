@@ -14,6 +14,7 @@ import java.awt.Point;
 import java.awt.Rectangle;
 import java.awt.geom.AffineTransform;
 import java.awt.geom.Point2D;
+import java.awt.geom.Rectangle2D;
 import static java.lang.Math.*;
 
 /**
@@ -28,8 +29,6 @@ public abstract class JSpriteX {
     protected int status = 0;
     protected int life = 100;
     protected int type = 0;
-    //Position
-    protected Point2D position = new Point.Double();
     //Velocity
     protected double vel = 0;
     //Acceleration
@@ -40,7 +39,7 @@ public abstract class JSpriteX {
     protected double rotation = 0;
     protected double rotationrate = 0;
     //Bounds
-    protected Rectangle bounds = new Rectangle();
+    protected Rectangle2D bounds = new Rectangle.Double();
     //Update Timer
     protected long lastupdate = 0;
 
@@ -87,10 +86,10 @@ public abstract class JSpriteX {
      * @return
      */
     public final Point2D getPosition() {
-        return position;
+        return new Point.Double(bounds.getX(), bounds.getY());
     }
 
-    public final Rectangle getBounds() {
+    public final Rectangle2D getBounds() {
         return bounds;
     }
     /**
@@ -137,16 +136,8 @@ public abstract class JSpriteX {
      *
      * @return
      */
-    public final Rectangle getSize() {
-        return bounds;
-    }
-
-    /**
-     *
-     * @return
-     */
     public final double getX() {
-        return position.getX();
+        return bounds.getX();
     }
 
     /**
@@ -154,7 +145,7 @@ public abstract class JSpriteX {
      * @return
      */
     public final double getY() {
-        return position.getY();
+        return bounds.getY();
     }
 
     /**
@@ -273,8 +264,8 @@ public abstract class JSpriteX {
      *
      * @param position
      */
-    public final void setPosition(Point.Double position) {
-        this.position = position;
+    public final void setPosition(Point2D pos) {
+        this.bounds.setRect(pos.getX(), pos.getY(), this.bounds.getWidth(), this.bounds.getHeight());
     }
 
     /**
@@ -283,7 +274,7 @@ public abstract class JSpriteX {
      * @param y
      */
     public final void setPosition(double x, double y) {
-        this.position.setLocation(x, y);
+        this.bounds.setRect(x, y, this.bounds.getWidth(), this.bounds.getHeight());
     }
 
     /**
@@ -291,39 +282,35 @@ public abstract class JSpriteX {
      * @param x
      */
     public final void setX(double x) {
-        this.position.setLocation(x, this.position.getY());
+        this.setPosition(x, this.bounds.getY());
     }
 
      /**
      *
      * @param y
      */
-    public final void setY(int y) {
-        this.position.setLocation(this.position.getX(), y);
-    }
-
-    public final void setSize(int width, int height) {
-        this.bounds.setSize(width, height);
+    public final void setY(double y) {
+        this.setPosition(this.bounds.getX(), y);
     }
 
     public final void setSize(double width, double height) {
-        this.bounds.setSize((int)width, (int)height);
+        this.bounds.setRect(this.bounds.getX(), this.bounds.getY(), width, height);
     }
 
     /**
      *
      * @param width
      */
-    public final void setWidth(int width) {
-        this.bounds.width = width;
+    public final void setWidth(double width) {
+        this.setSize(width, this.bounds.getHeight());
     }
 
      /**
      *
      * @param height
      */
-    public final void setHeight(int height) {
-        this.bounds.height = height;
+    public final void setHeight(double height) {
+        this.setSize(this.bounds.getWidth(), height);
     }
 
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -358,7 +345,7 @@ public abstract class JSpriteX {
      * @param x
      */
     public final void incX(double x) {
-        this.setX(this.position.getX() + x);
+        this.setX(this.bounds.getX() + x);
     }
 
     /**
@@ -366,7 +353,7 @@ public abstract class JSpriteX {
      * @param y
      */
     public final void incY(double y) {
-        this.setX(this.position.getY() + y);
+        this.setX(this.bounds.getY() + y);
     }
 
     /**
@@ -435,7 +422,7 @@ public abstract class JSpriteX {
      * @param rect
      * @return
      */
-    public final Boolean collidesWith(Rectangle rect) {
+    public final Boolean collidesWith(Rectangle2D rect) {
         return this.bounds.intersects(rect);
     }
 
@@ -455,7 +442,7 @@ public abstract class JSpriteX {
     public final void drawBoundsTo(Graphics2D g2d) {
         g2d.setTransform(new AffineTransform());
         g2d.setColor(Color.WHITE);
-        g2d.drawRect((int)this.position.getX(), (int)this.position.getY(), bounds.width, bounds.height);
+        g2d.drawRect((int)this.bounds.getX(), (int)this.bounds.getY(), (int)this.bounds.getWidth(), (int)this.bounds.getHeight());
     }
 
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

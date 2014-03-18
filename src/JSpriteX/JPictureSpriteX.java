@@ -168,13 +168,13 @@ public final class JPictureSpriteX extends JSpriteX {
         }
 
         g2d.setTransform(new AffineTransform());
-        g2d.translate(this.getX() + (this.bounds.width/2), this.getY() + (this.bounds.height/2));
+        g2d.translate(this.getX() + (this.bounds.getCenterX()), this.getY() + (this.bounds.getCenterY()));
         g2d.rotate(Math.toRadians(this.rotation));
-        g2d.translate(-(this.bounds.width/2), -(this.bounds.height/2));
+        g2d.translate(-(this.bounds.getCenterX()), -(this.bounds.getCenterY()));
 
         if (this.columns != 0) {
             this.updateFrameSize();
-            BufferedImage tempimage = new BufferedImage((int) this.getSize().getX(), (int) this.getSize().getY(), BufferedImage.TRANSLUCENT);
+            BufferedImage tempimage = new BufferedImage((int) this.bounds.getX(), (int) this.bounds.getY(), BufferedImage.TRANSLUCENT);
             Graphics2D g2dc = tempimage.createGraphics();
             g2dc.drawImage(this.picture, 0, 0, (int) this.frame.getWidth(), (int) this.frame.getHeight(),
                     (int) this.frame.getX(), (int) this.frame.getY(), (int) this.frame.getX() + (int) this.frame.getWidth(), (int) this.frame.getY() + (int) this.frame.getHeight(), null);
