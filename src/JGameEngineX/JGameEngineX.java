@@ -16,11 +16,11 @@ import JIOX.JKeyboardX;
 import JIOX.JMouseX;
 import JSpriteX.JSpriteHolderX;
 import java.awt.Color;
-import java.awt.Dimension;
 import java.awt.Font;
 import java.awt.Graphics2D;
 import java.awt.HeadlessException;
-import java.awt.Point;
+import java.awt.Rectangle;
+import java.awt.geom.Rectangle2D;
 import java.util.ArrayList;
 import java.util.EventObject;
 import java.util.List;
@@ -65,8 +65,7 @@ public abstract class JGameEngineX implements Runnable, JInputOutputX {
     private JGameHolderX holder;
     private GAME_STATUS gamestatus;
     private GAME_STATUS prevgamestatus;
-    private Dimension dimensions;
-    private Point center;
+    private Rectangle2D dimensions;
     private Thread gamemain;
     private int framenum = 0;
     private int fps = 0;
@@ -82,9 +81,20 @@ public abstract class JGameEngineX implements Runnable, JInputOutputX {
     private List<JGameEngineListenerX> listeners = new ArrayList<>();
 
     /**
+     * <code>gameInit</code> function to override in new instance.
+     * <p/>
+     * Override function is to contain game initialization code.
+     * Variables should be initialized, but not set here.
+     * <br/>Called by the
+     * <code>init</code> function.
+     */
+    public abstract void gameInit();
+
+    /**
      * <code>gameStart</code> function to override in new instance.
      * <p/>
      * Override function is to contain game startup code.
+     * Starts the game playing.
      * <br/>Called by the
      * <code>init</code> function.
      */
@@ -171,8 +181,8 @@ public abstract class JGameEngineX implements Runnable, JInputOutputX {
      * <p/>
      * @return The game's width.
      */
-    public final int getGameWinWidth() {
-        return this.dimensions.width;
+    public final double getGameWinWidth() {
+        return this.dimensions.getWidth();
     }
 
     /**
@@ -180,8 +190,8 @@ public abstract class JGameEngineX implements Runnable, JInputOutputX {
      * <p/>
      * @return The game's height.
      */
-    public final int getGameWinHeight() {
-        return this.dimensions.height;
+    public final double getGameWinHeight() {
+        return this.dimensions.getHeight();
     }
 
     /**
@@ -189,8 +199,8 @@ public abstract class JGameEngineX implements Runnable, JInputOutputX {
      * <p/>
      * @return The game's center in terms of width.
      */
-    public final int getCenterX() {
-        return this.center.x;
+    public final double getCenterX() {
+        return this.dimensions.getCenterX();
     }
 
     /**
@@ -198,8 +208,8 @@ public abstract class JGameEngineX implements Runnable, JInputOutputX {
      * <p/>
      * @return The game's center in terms of height.
      */
-    public final int getCenterY() {
-        return this.center.y;
+    public final double getCenterY() {
+        return this.dimensions.getCenterY();
     }
 
     /**
@@ -392,8 +402,8 @@ public abstract class JGameEngineX implements Runnable, JInputOutputX {
      */
     public void paintGameData() {
         if (showgamedata) {
-            holder.getGraphics().drawString("FPS: " + this.fps, 10, this.getGameWinHeight() - 10);
-            holder.getGraphics().drawString("Sups: " + this.spriteholder.getSups(), 100, this.getGameWinHeight() - 10);
+            holder.getGraphics().drawString("FPS: " + this.fps, 10, (int)this.getGameWinHeight() - 10);
+            holder.getGraphics().drawString("Sups: " + this.spriteholder.getSups(), 100, (int)this.getGameWinHeight() - 10);
         }
     }
 
@@ -405,7 +415,7 @@ public abstract class JGameEngineX implements Runnable, JInputOutputX {
         String message = "Error: " + desc;
         Color prevc = this.holder.getGraphics().getColor();
         this.holder.getGraphics().setColor(Color.red);
-        this.holder.getGraphics().drawString(message, this.getCenterX() - (10 + (this.holder.getGraphics().getFontMetrics().stringWidth(message) / 2)), this.getCenterY());
+        this.holder.getGraphics().drawString(message, (int)this.getCenterX() - (10 + (this.holder.getGraphics().getFontMetrics().stringWidth(message) / 2)), (int)this.getCenterY());
         this.holder.getGraphics().setColor(prevc);
     }
 
@@ -417,7 +427,7 @@ public abstract class JGameEngineX implements Runnable, JInputOutputX {
         String message = "Error: " + e.getLocalizedMessage();
         Color prevc = this.holder.getGraphics().getColor();
         this.holder.getGraphics().setColor(Color.red);
-        this.holder.getGraphics().drawString(message, this.getCenterX() - (10 + (this.holder.getGraphics().getFontMetrics().stringWidth(message) / 2)), this.getCenterY());
+        this.holder.getGraphics().drawString(message, (int)this.getCenterX() - (10 + (this.holder.getGraphics().getFontMetrics().stringWidth(message) / 2)), (int)this.getCenterY());
         this.holder.getGraphics().setColor(prevc);
     }
 
@@ -427,8 +437,7 @@ public abstract class JGameEngineX implements Runnable, JInputOutputX {
      * @param height
      */
     public final void resizeGame(int width, int height) {
-        this.dimensions.setSize(width, height);
-        this.center.setLocation(width / 2, height / 2);
+        this.dimensions.setRect(0, 0, width, height);
         this.holder.resize(width, height);
         if (mouse != null) {
             mouse.clear();
@@ -437,7 +446,10 @@ public abstract class JGameEngineX implements Runnable, JInputOutputX {
 
     public final void init() {
 
-        System.out.print("Loading.");
+        System.out.print("Initializing.");
+
+        this.gamemain = new Thread(this);
+        this.gamemain.start();
 
         //  State
         this.gamestatus = GAME_STATUS.GAME_INTIALIZING;
@@ -455,16 +467,18 @@ public abstract class JGameEngineX implements Runnable, JInputOutputX {
         //  Listeners
         this.addListener(spriteholder);
 
-        //  Start the game thread
-        this.gamestatus = GAME_STATUS.GAME_STARTING;
-        this.gamemain = new Thread(this);
-        this.gamemain.start();
+        gameInit();
 
-        this.start();
+        System.out.println("Initialized!");
 
     }
 
     public final void start() {
+
+        System.out.print("Starting.");
+
+        //  Start the game thread
+        this.gamestatus = GAME_STATUS.GAME_STARTING;
 
         // Timing Stuff
         this.gamestarttime = System.currentTimeMillis();
@@ -476,7 +490,7 @@ public abstract class JGameEngineX implements Runnable, JInputOutputX {
         //  Finally pass on control for pre-game stuff
         gameStart();
 
-        System.out.println("\nStarted!");
+        System.out.println("Started!");
 
     }
 
@@ -567,8 +581,7 @@ public abstract class JGameEngineX implements Runnable, JInputOutputX {
         this.gamestatus = GAME_STATUS.GAME_INTIALIZING;
         this.title = title;
         this.dfps = fps;
-        this.dimensions = new Dimension(width, height);
-        this.center = new Point(width / 2, height / 2);
+        this.dimensions = new Rectangle(0, 0, width, height);
         switch (mode.toLowerCase()) {
             case "windowed":
                 this.holder = new JWindowHolderX(this.title, width, height);

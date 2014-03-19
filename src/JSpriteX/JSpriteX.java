@@ -344,16 +344,16 @@ public abstract class JSpriteX {
      *
      * @param x
      */
-    public final void incX(double x) {
-        this.setX(this.bounds.getX() + x);
+    public final void incX(double inc) {
+        this.setX(this.bounds.getX() + inc);
     }
 
     /**
      *
      * @param y
      */
-    public final void incY(double y) {
-        this.setX(this.bounds.getY() + y);
+    public final void incY(double inc) {
+        this.setY(this.bounds.getY() + inc);
     }
 
     /**
@@ -393,8 +393,8 @@ public abstract class JSpriteX {
         else {
             this.setVel(0);
         }
-        this.incX((int)(((this.vel * (Math.cos(this.direction * Math.PI / 180))) / 1000) * (System.currentTimeMillis() - this.lastupdate)));
-        this.incY((int)(((this.vel * (Math.sin(this.direction * Math.PI / 180))) / 1000) * (System.currentTimeMillis() - this.lastupdate)));
+        this.incX(((this.vel * (Math.cos(this.direction * Math.PI / 180))) / 1000) * (System.currentTimeMillis() - this.lastupdate));
+        this.incY(((this.vel * (Math.sin(this.direction * Math.PI / 180))) / 1000) * (System.currentTimeMillis() - this.lastupdate));
         this.lastupdate = System.currentTimeMillis();
     }
 

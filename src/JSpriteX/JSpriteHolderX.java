@@ -47,8 +47,6 @@ final public class JSpriteHolderX implements Runnable, JGameEngineListenerX {
     // Private
     private Thread spriteUpdateThread;
     private LinkedList<JSpriteX> sprites;
-    private LinkedList<JSpriteX> templatesprites;
-    private LinkedList<String> templatespritesname;
     private JImageHandlerX images;
     private JGameEngineX holder;
     private int dsups = 100;
@@ -62,8 +60,8 @@ final public class JSpriteHolderX implements Runnable, JGameEngineListenerX {
      * @param holder
      */
     public JSpriteHolderX(JGameEngineX holder) {
-        this.sprites = new LinkedList<>();
         this.images = new JImageHandlerX();
+        this.sprites = new LinkedList<>();
         this.holder = holder;
     }
 
@@ -109,53 +107,22 @@ final public class JSpriteHolderX implements Runnable, JGameEngineListenerX {
 
     /**
      *
-     * @param name
      * @param type
      * @param direction
      * @param vel
      * @param x
      * @param y
      */
-    synchronized final public void addTemplateSprite(String name, int type, int direction, double vel, int x, int y) {
-        JPictureSpriteX spr = new JPictureSpriteX(this.holder.getCenterX(), this.holder.getCenterY());
-        spr.setPosition(x, y);
-        spr.setDirection(direction);
-        spr.setVel(vel);
-        spr.setType(type);
-        this.templatesprites.add(spr);
-        this.templatespritesname.add(name);
-    }
-
-    /**
-     *
-     * @param sprite
-     * @param name
-     */
-    synchronized final public void addTemplateSprite(JSpriteX sprite, String name) {
-        this.templatesprites.add(sprite);
-        this.templatespritesname.add(name);
-    }
-
-    /**
-     *
-     * @param type
-     * @param direction
-     * @param vel
-     * @param x
-     * @param y
-     */
-    synchronized final public void addSprite(int type, int direction, double vel, int x, int y) {
-        JPictureSpriteX spr = new JPictureSpriteX(this.images.getDefaultImage(), this.holder.getCenterX(), this.holder.getCenterY());
-        spr.setPosition(x, y);
+    synchronized final public void addSprite(int type, int direction, double vel, double x, double y) {
+        JSpriteX spr = new JPictureSpriteX(this.images.getDefaultImage(), x, y);
         spr.setDirection(direction);
         spr.setVel(vel);
         spr.setType(type);
         this.sprites.add(spr);
     }
 
-    synchronized final public void addSprite(int type, int direction, double vel, int x, int y, String imagename) {
-        JPictureSpriteX spr = new JPictureSpriteX(this.images.getPicture(imagename), this.holder.getCenterX(), this.holder.getCenterY());
-        spr.setPosition(x, y);
+    synchronized final public void addSprite(int type, int direction, double vel, double x, double y, String imagename) {
+        JSpriteX spr = new JPictureSpriteX(this.images.getPicture(imagename), x, y);
         spr.setDirection(direction);
         spr.setVel(vel);
         spr.setType(type);
@@ -169,8 +136,7 @@ final public class JSpriteHolderX implements Runnable, JGameEngineListenerX {
      * @param y
      */
     synchronized final public void addSprite(int type, double x, double y) {
-        JPictureSpriteX spr = new JPictureSpriteX(this.holder.getCenterX(), this.holder.getCenterY());
-        spr.setPosition(x, y);
+        JSpriteX spr = new JPictureSpriteX(x, y);
         spr.setType(type);
         this.sprites.add(spr);
     }
@@ -180,7 +146,7 @@ final public class JSpriteHolderX implements Runnable, JGameEngineListenerX {
      * @param type
      */
     synchronized final public void addSprite(int type) {
-        JPictureSpriteX spr = new JPictureSpriteX(this.holder.getCenterX(), this.holder.getCenterY());
+        JSpriteX spr = new JPictureSpriteX(this.holder.getCenterX(), this.holder.getCenterY());
         spr.setType(type);
         this.sprites.add(spr);
     }
@@ -211,40 +177,6 @@ final public class JSpriteHolderX implements Runnable, JGameEngineListenerX {
      */
     synchronized final public void deleteAllSprites() {
         this.sprites.clear();
-    }
-
-    /**
-     *
-     * @param name
-     * @param direction
-     * @param vel
-     * @param x
-     * @param y
-     */
-    synchronized final public void cloneTemplateSprite(String name, int direction, double vel, int x, int y) {
-        this.sprites.add(this.templatesprites.get(this.templatespritesname.indexOf(name)));
-        this.sprites.getLast().setPosition(x, y);
-        this.sprites.getLast().setDirection(direction);
-        this.sprites.getLast().setVel(vel);
-    }
-
-    /**
-     *
-     * @param name
-     * @param x
-     * @param y
-     */
-    synchronized final public void cloneTemplateSprite(String name, int x, int y) {
-        this.sprites.add(this.templatesprites.get(this.templatespritesname.indexOf(name)));
-        this.sprites.getLast().setPosition(x, y);
-    }
-
-    /**
-     *
-     * @param name
-     */
-    synchronized final public void cloneTemplateSprite(String name) {
-        this.sprites.add(this.templatesprites.get(this.templatespritesname.indexOf(name)));
     }
 
     /**

@@ -35,7 +35,8 @@ public final class JPictureSpriteX extends JSpriteX {
      * @param x
      * @param y
      */
-    public JPictureSpriteX(Image picture, int x, int y) {
+    public JPictureSpriteX(Image picture, double x, double y) {
+        this.setPosition(x, y);
         this.setPicture(picture);
         this.setVisable(true);
         this.updateSize();
@@ -47,7 +48,8 @@ public final class JPictureSpriteX extends JSpriteX {
      * @param x
      * @param y
      */
-    public JPictureSpriteX(String filename, int x, int y) {
+    public JPictureSpriteX(String filename, double x, double y) {
+        this.setPosition(x, y);
         this.loadPicture(filename);
         this.setVisable(true);
         this.updateSize();
@@ -58,7 +60,8 @@ public final class JPictureSpriteX extends JSpriteX {
      * @param x
      * @param y
      */
-    public JPictureSpriteX(int x, int y) {
+    public JPictureSpriteX(double x, double y) {
+        this.setPosition(x, y);
         this.loadPicture(null);
         this.setVisable(true);
         this.updateSize();
@@ -95,6 +98,7 @@ public final class JPictureSpriteX extends JSpriteX {
             ClassLoader cl = this.getClass().getClassLoader();
             this.picture = tk.getImage(cl.getResource(filename));
         } catch (Exception e) {
+            System.err.printf("Sprite %1$ had issuses loading image %2$.", this.toString(), filename);
         }
     }
 
@@ -143,6 +147,9 @@ public final class JPictureSpriteX extends JSpriteX {
             this.updateFrameSize();
             this.setSize(this.frame.width, this.frame.height);
         } else {
+            while(this.picture.getWidth(null) == -1 || this.picture.getHeight(null) == -1) {
+                System.out.println("A Sprite is waiting to measure it's image.");
+            }
             this.setSize(this.picture.getWidth(null), this.picture.getHeight(null));
         }
     }
@@ -168,9 +175,8 @@ public final class JPictureSpriteX extends JSpriteX {
         }
 
         g2d.setTransform(new AffineTransform());
-        g2d.translate(this.getX() + (this.bounds.getCenterX()), this.getY() + (this.bounds.getCenterY()));
-        g2d.rotate(Math.toRadians(this.rotation));
-        g2d.translate(-(this.bounds.getCenterX()), -(this.bounds.getCenterY()));
+        g2d.translate(this.bounds.getX(), this.bounds.getY());
+        g2d.rotate(this.rotation, this.bounds.getWidth() / 2, this.bounds.getHeight()/2);
 
         if (this.columns != 0) {
             this.updateFrameSize();
