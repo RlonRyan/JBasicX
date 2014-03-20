@@ -11,9 +11,11 @@ package JSpriteX;
 import java.awt.Graphics2D;
 import java.awt.Image;
 import java.awt.Rectangle;
-import java.awt.Toolkit;
 import java.awt.geom.AffineTransform;
 import java.awt.image.BufferedImage;
+import java.io.File;
+import java.io.IOException;
+import javax.imageio.ImageIO;
 
 /**
  * @author RlonRyan
@@ -22,7 +24,7 @@ import java.awt.image.BufferedImage;
 public final class JPictureSpriteX extends JSpriteX {
     //vars
 
-    private Image picture;
+    private BufferedImage image;
     private int currentframe = 0;
     private int totalframes = 0;
     private int columns = 0;
@@ -31,13 +33,13 @@ public final class JPictureSpriteX extends JSpriteX {
 
     /**
      *
-     * @param picture
+     * @param image
      * @param x
      * @param y
      */
-    public JPictureSpriteX(Image picture, double x, double y) {
+    public JPictureSpriteX(BufferedImage image, double x, double y) {
         this.setPosition(x, y);
-        this.setPicture(picture);
+        this.setImage(image);
         this.setVisable(true);
         this.updateSize();
     }
@@ -73,16 +75,16 @@ public final class JPictureSpriteX extends JSpriteX {
      * @return
      */
     public final Image getImage() {
-        return picture;
+        return image;
     }
 
     //Mutators
     /**
      *
-     * @param picture
+     * @param image
      */
-    public final void setPicture(Image picture) {
-        this.picture = picture;
+    public final void setImage(BufferedImage image) {
+        this.image = image;
     }
 
     /**
@@ -94,11 +96,9 @@ public final class JPictureSpriteX extends JSpriteX {
             filename = "JBasicX/nopic.png";
         }
         try {
-            Toolkit tk = Toolkit.getDefaultToolkit();
-            ClassLoader cl = this.getClass().getClassLoader();
-            this.picture = tk.getImage(cl.getResource(filename));
-        } catch (Exception e) {
-            System.err.printf("Sprite %1$ had issuses loading image %2$.", this.toString(), filename);
+            ImageIO.read(new File(filename));
+        } catch (IOException e) {
+            
         }
     }
 
@@ -147,10 +147,7 @@ public final class JPictureSpriteX extends JSpriteX {
             this.updateFrameSize();
             this.setSize(this.frame.width, this.frame.height);
         } else {
-            while(this.picture.getWidth(null) == -1 || this.picture.getHeight(null) == -1) {
-                System.out.println("A Sprite is waiting to measure it's image.");
-            }
-            this.setSize(this.picture.getWidth(null), this.picture.getHeight(null));
+            this.setSize(this.image.getWidth(), this.image.getHeight());
         }
     }
 
@@ -158,8 +155,8 @@ public final class JPictureSpriteX extends JSpriteX {
      *
      */
     public final void updateFrameSize() {
-        this.frame.width = ((int)(this.picture.getWidth(null) / this.columns - 1));
-        this.frame.height = ((int)(this.picture.getHeight(null) / (this.totalframes / this.columns) - 1));
+        this.frame.width = ((int)(this.image.getWidth(null) / this.columns - 1));
+        this.frame.height = ((int)(this.image.getHeight(null) / (this.totalframes / this.columns) - 1));
         this.frame.x = (this.currentframe % this.columns) * (int) this.frame.width;
         this.frame.y = (this.currentframe / this.columns) * (int) this.frame.height;
     }
@@ -182,12 +179,12 @@ public final class JPictureSpriteX extends JSpriteX {
             this.updateFrameSize();
             BufferedImage tempimage = new BufferedImage((int) this.bounds.getX(), (int) this.bounds.getY(), BufferedImage.TRANSLUCENT);
             Graphics2D g2dc = tempimage.createGraphics();
-            g2dc.drawImage(this.picture, 0, 0, (int) this.frame.getWidth(), (int) this.frame.getHeight(),
+            g2dc.drawImage(this.image, 0, 0, (int) this.frame.getWidth(), (int) this.frame.getHeight(),
                     (int) this.frame.getX(), (int) this.frame.getY(), (int) this.frame.getX() + (int) this.frame.getWidth(), (int) this.frame.getY() + (int) this.frame.getHeight(), null);
             g2d.drawImage(tempimage, 0, 0, null);
         }
         else {
-            g2d.drawImage(this.picture, 0, 0, null);
+            g2d.drawImage(this.image, 0, 0, null);
         }
     }
 }

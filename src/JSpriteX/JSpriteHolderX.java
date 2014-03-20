@@ -13,6 +13,8 @@ import JGameEngineX.JGameEngineListenerX;
 import JGameEngineX.JGameEngineX;
 import java.awt.Graphics2D;
 import java.awt.Image;
+import java.awt.image.BufferedImage;
+import java.io.File;
 import java.net.URL;
 import java.util.LinkedList;
 
@@ -85,8 +87,8 @@ final public class JSpriteHolderX implements Runnable, JGameEngineListenerX {
         return this.sprites.get(index);
     }
 
-    public final Image getPicture(String name) {
-        return this.images.getPicture(name);
+    public final BufferedImage getImage(String name) {
+        return this.images.getImage(name);
     }
 
     /**
@@ -122,7 +124,7 @@ final public class JSpriteHolderX implements Runnable, JGameEngineListenerX {
     }
 
     synchronized final public void addSprite(int type, int direction, double vel, double x, double y, String imagename) {
-        JSpriteX spr = new JPictureSpriteX(this.images.getPicture(imagename), x, y);
+        JSpriteX spr = new JPictureSpriteX(this.images.getImage(imagename), x, y);
         spr.setDirection(direction);
         spr.setVel(vel);
         spr.setType(type);
@@ -151,16 +153,16 @@ final public class JSpriteHolderX implements Runnable, JGameEngineListenerX {
         this.sprites.add(spr);
     }
 
-    synchronized final public void addPicture(String filename, String name) {
-        this.images.addPicture(filename, name);
+    synchronized final public void addPicture(String name) {
+        this.images.addImage(name);
     }
 
-    synchronized final public void addPicture(String filename) {
-        this.images.addPicture(filename);
+    synchronized final public void addPicture(String name, String filename) {
+        this.images.addImage(name, filename);
     }
 
-    synchronized final public void addPicture(URL filepath) {
-        this.images.addPicture(filepath);
+    synchronized final public void addPicture(String name, File file) {
+        this.images.addImage(name, file);
     }
 
     /**
@@ -215,14 +217,11 @@ final public class JSpriteHolderX implements Runnable, JGameEngineListenerX {
 
                     if (spr.getX() < 0) {
                         spr.setX(this.holder.getGameWinWidth());
-                    }
-                    else if (spr.getX() > this.holder.getGameWinWidth()) {
+                    } else if (spr.getX() > this.holder.getGameWinWidth()) {
                         spr.setX(0);
-                    }
-                    else if (spr.getY() < 0) {
+                    } else if (spr.getY() < 0) {
                         spr.setY(this.holder.getGameWinHeight());
-                    }
-                    else if (spr.getY() > this.holder.getGameWinHeight()) {
+                    } else if (spr.getY() > this.holder.getGameWinHeight()) {
                         spr.setY(0);
                     }
                     spr.update();
@@ -232,18 +231,15 @@ final public class JSpriteHolderX implements Runnable, JGameEngineListenerX {
                         spr.setDirection(180 - spr.getDirection());
                         spr.setRotation(spr.getDirection() - 90);
                         spr.setX(0);
-                    }
-                    else if (spr.getX() > this.holder.getGameWinWidth()) {
+                    } else if (spr.getX() > this.holder.getGameWinWidth()) {
                         spr.setDirection(180 - spr.getDirection());
                         spr.setRotation(spr.getDirection() - 90);
                         spr.setX(this.holder.getGameWinWidth());
-                    }
-                    else if (spr.getY() < 0) {
+                    } else if (spr.getY() < 0) {
                         spr.setDirection(360 - spr.getDirection());
                         spr.setRotation(spr.getDirection() - 90);
                         spr.setY(0);
-                    }
-                    else if (spr.getY() > this.holder.getGameWinHeight()) {
+                    } else if (spr.getY() > this.holder.getGameWinHeight()) {
                         spr.setDirection(360 - spr.getDirection());
                         spr.setRotation(spr.getDirection() - 90);
                         spr.setY(this.holder.getGameWinHeight());
@@ -365,10 +361,11 @@ final public class JSpriteHolderX implements Runnable, JGameEngineListenerX {
     }
 
     synchronized final public void pauseAll() {
-        for(JSpriteX e : sprites) {
+        for (JSpriteX e : sprites) {
             e.pause();
         }
     }
+
     /**
      *
      */
@@ -390,8 +387,7 @@ final public class JSpriteHolderX implements Runnable, JGameEngineListenerX {
             try {
                 this.updateSprites();
                 Thread.sleep(1000 / this.dsups);
-            }
-            catch (InterruptedException e) {
+            } catch (InterruptedException e) {
             }
         }
     }
