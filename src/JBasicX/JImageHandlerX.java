@@ -10,7 +10,6 @@ package JBasicX;
 
 
 import java.awt.image.BufferedImage;
-import java.io.File;
 import java.io.IOException;
 import java.util.HashMap;
 import javax.imageio.ImageIO;
@@ -27,6 +26,7 @@ public final class JImageHandlerX extends Object {
      */
     private static BufferedImage defaultimage;
     private final HashMap<String, BufferedImage> images;
+    private final Class holder;
 
     /**
      * Retrieves a previously imported image from the internal array based on
@@ -42,7 +42,7 @@ public final class JImageHandlerX extends Object {
         if (this.images.containsKey(name)) {
             return this.images.get(name);
         } else {
-            System.out.printf("Image %1$ not found. Defaulting...", name);
+            System.out.println("Image " + name + " not found. Defaulting...");
             return defaultimage;
         }
     }
@@ -83,30 +83,14 @@ public final class JImageHandlerX extends Object {
             System.err.println("Null image name and filepath. Aborting image load...");
         } else if (filename == null) {
             this.images.put(name, defaultimage);
-            return;
         } else {
-            addImage(name, new File(filename));
-        }
-    }
-
-    /**
-     * Imports an image from the <code>filename</code> location to the internal
-     * array. The image's <code>name</code> is set to match the
-     * <code>filename</code>.
-     * <p/>
-     * @param name The name of the picture.
-     * @param file The path to the file.
-     */
-    synchronized public final void addImage(String name, File file) {
-        if (name == null) {
-            System.err.println("Null image name and filepath. Aborting image load...");
-        }
-        try {
-            this.images.put(name, ImageIO.read(file));
-        } catch (IOException e) {
+            try {
+            this.images.put(name, ImageIO.read(JImageHandlerX.class.getResourceAsStream(filename)));
+        } catch (Exception e) {
             System.err.println("Error loading image: " + name + "...\nDefaulting...");
             this.loadDefaultImage();
             this.images.put(name, defaultimage);
+        }
         }
     }
 
@@ -115,7 +99,7 @@ public final class JImageHandlerX extends Object {
      * <code>nopic.png</code>.
      */
     synchronized public final void loadDefaultImage() {
-        if (defaultimage == null) {
+        while (defaultimage == null) {
             try {
                 defaultimage = ImageIO.read(JImageHandlerX.class.getResourceAsStream("/Resources/nopic.png"));
             } catch (IOException e) {
@@ -128,8 +112,9 @@ public final class JImageHandlerX extends Object {
      * Initializes the image handler. Sets the default image to
      * <code>nopic.png</code>.
      */
-    public JImageHandlerX() {
+    public JImageHandlerX(Class holder) {
         this.images = new HashMap<>();
         this.loadDefaultImage();
+        this.holder = holder;
     }
 }

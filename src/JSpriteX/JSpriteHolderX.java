@@ -12,10 +12,7 @@ import JBasicX.JImageHandlerX;
 import JGameEngineX.JGameEngineListenerX;
 import JGameEngineX.JGameEngineX;
 import java.awt.Graphics2D;
-import java.awt.Image;
 import java.awt.image.BufferedImage;
-import java.io.File;
-import java.net.URL;
 import java.util.LinkedList;
 
 /**
@@ -62,7 +59,7 @@ final public class JSpriteHolderX implements Runnable, JGameEngineListenerX {
      * @param holder
      */
     public JSpriteHolderX(JGameEngineX holder) {
-        this.images = new JImageHandlerX();
+        this.images = new JImageHandlerX(holder.getClass());
         this.sprites = new LinkedList<>();
         this.holder = holder;
     }
@@ -138,7 +135,7 @@ final public class JSpriteHolderX implements Runnable, JGameEngineListenerX {
      * @param y
      */
     synchronized final public void addSprite(int type, double x, double y) {
-        JSpriteX spr = new JPictureSpriteX(x, y);
+        JSpriteX spr = new JPictureSpriteX(this.images.getDefaultImage(), x, y);
         spr.setType(type);
         this.sprites.add(spr);
     }
@@ -148,21 +145,17 @@ final public class JSpriteHolderX implements Runnable, JGameEngineListenerX {
      * @param type
      */
     synchronized final public void addSprite(int type) {
-        JSpriteX spr = new JPictureSpriteX(this.holder.getCenterX(), this.holder.getCenterY());
+        JSpriteX spr = new JPictureSpriteX(this.images.getDefaultImage(), this.holder.getCenterX(), this.holder.getCenterY());
         spr.setType(type);
         this.sprites.add(spr);
     }
 
-    synchronized final public void addPicture(String name) {
+    synchronized final public void addImage(String name) {
         this.images.addImage(name);
     }
 
-    synchronized final public void addPicture(String name, String filename) {
+    synchronized final public void addImage(String name, String filename) {
         this.images.addImage(name, filename);
-    }
-
-    synchronized final public void addPicture(String name, File file) {
-        this.images.addImage(name, file);
     }
 
     /**

@@ -13,9 +13,6 @@ import java.awt.Image;
 import java.awt.Rectangle;
 import java.awt.geom.AffineTransform;
 import java.awt.image.BufferedImage;
-import java.io.File;
-import java.io.IOException;
-import javax.imageio.ImageIO;
 
 /**
  * @author RlonRyan
@@ -44,30 +41,6 @@ public final class JPictureSpriteX extends JSpriteX {
         this.updateSize();
     }
 
-    /**
-     *
-     * @param filename
-     * @param x
-     * @param y
-     */
-    public JPictureSpriteX(String filename, double x, double y) {
-        this.setPosition(x, y);
-        this.loadPicture(filename);
-        this.setVisable(true);
-        this.updateSize();
-    }
-
-    /**
-     *
-     * @param x
-     * @param y
-     */
-    public JPictureSpriteX(double x, double y) {
-        this.setPosition(x, y);
-        this.loadPicture(null);
-        this.setVisable(true);
-        this.updateSize();
-    }
     //Acessors
 
     /**
@@ -85,21 +58,6 @@ public final class JPictureSpriteX extends JSpriteX {
      */
     public final void setImage(BufferedImage image) {
         this.image = image;
-    }
-
-    /**
-     *
-     * @param filename
-     */
-    public final void loadPicture(String filename) {
-        if (filename == null) {
-            filename = "JBasicX/nopic.png";
-        }
-        try {
-            ImageIO.read(new File(filename));
-        } catch (IOException e) {
-            
-        }
     }
 
     /**
