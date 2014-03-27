@@ -8,7 +8,6 @@
  */
 package JIOX;
 
-import java.net.URL;
 import javax.sound.sampled.AudioInputStream;
 import javax.sound.sampled.AudioSystem;
 import javax.sound.sampled.Clip;
@@ -19,20 +18,11 @@ import javax.sound.sampled.Clip;
  */
 public final class JSoundX {
 
-    private String file = "gong.wav";
+    private Class holder;
+    private String file;
     private AudioInputStream ais;
     private Clip clip;
-    private long pausedat = 0;
-
-    private URL getUrl(String filename) {
-	URL url = null;
-	try {
-	    url = this.getClass().getResource(filename);
-	}
-	catch (Exception e) {
-	}
-	return url;
-    }
+    private long pausedat;
 
     /**
      *
@@ -55,11 +45,13 @@ public final class JSoundX {
      */
     public final void load() {
 	try {
-	    ais = AudioSystem.getAudioInputStream(this.getUrl(file));
+	    ais = AudioSystem.getAudioInputStream(this.holder.getResource(this.file));
 	    clip = AudioSystem.getClip();
 	    clip.open(ais);
 	}
 	catch (Exception e) {
+	    System.err.printf("A %1$s occured while loading the sound: %2$s.\n", e.getClass().getSimpleName(), this.file);
+	    e.printStackTrace();
 	}
     }
 
@@ -106,7 +98,10 @@ public final class JSoundX {
     /**
      *
      */
-    public JSoundX() {
+    public JSoundX(Class holder, String file) {
+	this.holder = holder;
+	this.file = file;
+	this.pausedat = 0;
 	this.load();
     }
 }

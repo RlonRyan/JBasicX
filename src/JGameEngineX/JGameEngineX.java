@@ -33,17 +33,17 @@ public abstract class JGameEngineX implements Runnable, JInputOutputX {
 
     public static enum EVENT_TYPE {
 
-	STATE_CHANGE;
+        STATE_CHANGE;
     }
 
     public static enum GAME_STATUS {
 
-	GAME_STOPPED,
-	GAME_INTIALIZING,
-	GAME_STARTING,
-	GAME_MENU,
-	GAME_RUNNING,
-	GAME_PAUSED;
+        GAME_STOPPED,
+        GAME_INTIALIZING,
+        GAME_STARTING,
+        GAME_MENU,
+        GAME_RUNNING,
+        GAME_PAUSED;
     }
 // Public
     public final String title;
@@ -173,7 +173,7 @@ public abstract class JGameEngineX implements Runnable, JInputOutputX {
      *         running.<br/>3 = paused.
      */
     public final GAME_STATUS getGameStatus() {
-	return this.gamestatus;
+        return this.gamestatus;
     }
 
     /**
@@ -182,7 +182,7 @@ public abstract class JGameEngineX implements Runnable, JInputOutputX {
      * @return The game's width.
      */
     public final double getGameWinWidth() {
-	return this.dimensions.getWidth();
+        return this.dimensions.getWidth();
     }
 
     /**
@@ -191,7 +191,7 @@ public abstract class JGameEngineX implements Runnable, JInputOutputX {
      * @return The game's height.
      */
     public final double getGameWinHeight() {
-	return this.dimensions.getHeight();
+        return this.dimensions.getHeight();
     }
 
     /**
@@ -200,7 +200,7 @@ public abstract class JGameEngineX implements Runnable, JInputOutputX {
      * @return The game's center in terms of width.
      */
     public final double getCenterX() {
-	return this.dimensions.getCenterX();
+        return this.dimensions.getCenterX();
     }
 
     /**
@@ -209,7 +209,7 @@ public abstract class JGameEngineX implements Runnable, JInputOutputX {
      * @return The game's center in terms of height.
      */
     public final double getCenterY() {
-	return this.dimensions.getCenterY();
+        return this.dimensions.getCenterY();
     }
 
     /**
@@ -218,7 +218,7 @@ public abstract class JGameEngineX implements Runnable, JInputOutputX {
      * @return The game's framerate.
      */
     public final int getFPS() {
-	return this.fps;
+        return this.fps;
     }
 
     /**
@@ -227,7 +227,7 @@ public abstract class JGameEngineX implements Runnable, JInputOutputX {
      * @return The game's desired framerate.
      */
     public final double getDFPS() {
-	return this.dfps;
+        return this.dfps;
     }
 
     /**
@@ -236,7 +236,7 @@ public abstract class JGameEngineX implements Runnable, JInputOutputX {
      * @return The game's primary graphics.
      */
     public final Graphics2D getGameGraphics() {
-	return this.holder.getGraphics();
+        return this.holder.getGraphics();
     }
 
     /**
@@ -245,7 +245,7 @@ public abstract class JGameEngineX implements Runnable, JInputOutputX {
      * @return The time the game first started.
      */
     public final long getGameStartTime() {
-	return this.gamestarttime;
+        return this.gamestarttime;
     }
 
     /**
@@ -254,7 +254,7 @@ public abstract class JGameEngineX implements Runnable, JInputOutputX {
      * @return The game time.
      */
     public final long getGameTime() {
-	return this.gametime;
+        return this.gametime;
     }
 
     /**
@@ -264,12 +264,12 @@ public abstract class JGameEngineX implements Runnable, JInputOutputX {
      * @return The total time spent in the game paused state.
      */
     public final long getTotalGamePauseTime() {
-	if (this.gamestatus == GAME_STATUS.GAME_STARTING) {
-	    return ((this.gametime - this.gamepausedat) + this.gamepausetime);
-	}
-	else {
-	    return 0;
-	}
+        if (this.gamestatus == GAME_STATUS.GAME_STARTING) {
+            return ((this.gametime - this.gamepausedat) + this.gamepausetime);
+        }
+        else {
+            return 0;
+        }
     }
 
     /**
@@ -279,12 +279,12 @@ public abstract class JGameEngineX implements Runnable, JInputOutputX {
      * @return The total time spent in the game paused state.
      */
     public final long getGamePauseTime() {
-	if (this.gamestatus == GAME_STATUS.GAME_PAUSED) {
-	    return this.gametime - this.gamepausedat;
-	}
-	else {
-	    return 0;
-	}
+        if (this.gamestatus == GAME_STATUS.GAME_PAUSED) {
+            return this.gametime - this.gamepausedat;
+        }
+        else {
+            return 0;
+        }
     }
 
     /**
@@ -293,7 +293,7 @@ public abstract class JGameEngineX implements Runnable, JInputOutputX {
      * @return
      */
     public final long getGameGameLastPausedAt() {
-	return this.gamelastpausedat;
+        return this.gamelastpausedat;
     }
 
     /**
@@ -301,7 +301,7 @@ public abstract class JGameEngineX implements Runnable, JInputOutputX {
      * @return
      */
     public final boolean isGameDataVisible() {
-	return this.showgamedata;
+        return this.showgamedata;
     }
     //Mutators
 
@@ -309,7 +309,7 @@ public abstract class JGameEngineX implements Runnable, JInputOutputX {
      *
      */
     public final void setBackgroundColor(Color color) {
-	this.holder.setBackgroundColor(color);
+        this.holder.setBackgroundColor(color);
     }
 
     /**
@@ -317,9 +317,9 @@ public abstract class JGameEngineX implements Runnable, JInputOutputX {
      * @param status
      */
     public final void setGameStatus(GAME_STATUS status) {
-	this.prevgamestatus = this.gamestatus;
-	this.gamestatus = status;
-	fireEvent(EVENT_TYPE.STATE_CHANGE, this.gamestatus, this.prevgamestatus);
+        this.prevgamestatus = this.gamestatus;
+        this.gamestatus = status;
+        fireEvent(EVENT_TYPE.STATE_CHANGE, this.gamestatus, this.prevgamestatus);
     }
 
     /**
@@ -327,7 +327,7 @@ public abstract class JGameEngineX implements Runnable, JInputOutputX {
      * @param visable
      */
     public final void setGameDataVisable(boolean visable) {
-	this.showgamedata = visable;
+        this.showgamedata = visable;
     }
 
     /**
@@ -335,14 +335,14 @@ public abstract class JGameEngineX implements Runnable, JInputOutputX {
      * @param dfps
      */
     public final void setDFPS(long dfps) {
-	this.dfps = dfps;
+        this.dfps = dfps;
     }
 
     /**
      *
      */
     public final void resetFont() {
-	this.holder.getGraphics().setFont(font);
+        this.holder.getGraphics().setFont(font);
     }
 
     //Functions
@@ -350,61 +350,61 @@ public abstract class JGameEngineX implements Runnable, JInputOutputX {
      *
      */
     public void pausegame() {
-	this.gamepausedat = this.gametime;
-	this.setGameStatus(GAME_STATUS.GAME_PAUSED);
+        this.gamepausedat = this.gametime;
+        this.setGameStatus(GAME_STATUS.GAME_PAUSED);
     }
 
     /**
      *
      */
     public void unpausegame() {
-	this.gamepausetime += this.gametime - this.gamepausedat;
-	this.gamelastpausedat = this.gametime;
-	this.gamepausedat = 0;
-	this.setGameStatus(GAME_STATUS.GAME_PAUSED);
+        this.gamepausetime += this.gametime - this.gamepausedat;
+        this.gamelastpausedat = this.gametime;
+        this.gamepausedat = 0;
+        this.setGameStatus(GAME_STATUS.GAME_PAUSED);
     }
 
     public final void paint() {
-	framenum++;
-	if (System.currentTimeMillis() > frametime + 1000) {
-	    frametime = System.currentTimeMillis();
-	    fps = framenum;
-	    framenum = 0;
-	}
+        framenum++;
+        if (System.currentTimeMillis() > frametime + 1000) {
+            frametime = System.currentTimeMillis();
+            fps = framenum;
+            framenum = 0;
+        }
 
-	this.holder.clearBackbuffer();
+        this.holder.clearBackbuffer();
 
-	switch (this.gamestatus) {
-	    case GAME_MENU:
-		gameMenuPaint(holder.getGraphics());
-		break;
-	    case GAME_PAUSED:
-		gamePausePaint(holder.getGraphics());
-		break;
-	    case GAME_RUNNING:
-		gamePaint(holder.getGraphics());
-		break;
-	    case GAME_STOPPED:
-		gameStoppedPaint(holder.getGraphics());
-		break;
-	    default:
-		paintError("Invalid Game Mode.");
-		break;
-	}
+        switch (this.gamestatus) {
+            case GAME_MENU:
+                gameMenuPaint(holder.getGraphics());
+                break;
+            case GAME_PAUSED:
+                gamePausePaint(holder.getGraphics());
+                break;
+            case GAME_RUNNING:
+                gamePaint(holder.getGraphics());
+                break;
+            case GAME_STOPPED:
+                gameStoppedPaint(holder.getGraphics());
+                break;
+            default:
+                paintError("Invalid Game Mode.");
+                break;
+        }
 
-	this.paintGameData();
+        this.paintGameData();
 
-	this.holder.flip();
+        this.holder.flip();
     }
 
     /**
      *
      */
     public void paintGameData() {
-	if (showgamedata) {
-	    holder.getGraphics().drawString("FPS: " + this.fps, 10, (int) this.getGameWinHeight() - 10);
-	    holder.getGraphics().drawString("Sups: " + this.spriteholder.getSups(), 100, (int) this.getGameWinHeight() - 10);
-	}
+        if (showgamedata) {
+            holder.getGraphics().drawString("FPS: " + this.fps, 10, (int)this.getGameWinHeight() - 10);
+            holder.getGraphics().drawString("Sups: " + this.spriteholder.getSups(), 100, (int)this.getGameWinHeight() - 10);
+        }
     }
 
     /**
@@ -412,11 +412,11 @@ public abstract class JGameEngineX implements Runnable, JInputOutputX {
      * @param desc
      */
     public void paintError(String desc) {
-	String message = "Error: " + desc;
-	Color prevc = this.holder.getGraphics().getColor();
-	this.holder.getGraphics().setColor(Color.red);
-	this.holder.getGraphics().drawString(message, (int) this.getCenterX() - (10 + (this.holder.getGraphics().getFontMetrics().stringWidth(message) / 2)), (int) this.getCenterY());
-	this.holder.getGraphics().setColor(prevc);
+        String message = "Error: " + desc;
+        Color prevc = this.holder.getGraphics().getColor();
+        this.holder.getGraphics().setColor(Color.red);
+        this.holder.getGraphics().drawString(message, (int)this.getCenterX() - (10 + (this.holder.getGraphics().getFontMetrics().stringWidth(message) / 2)), (int)this.getCenterY());
+        this.holder.getGraphics().setColor(prevc);
     }
 
     /**
@@ -424,11 +424,11 @@ public abstract class JGameEngineX implements Runnable, JInputOutputX {
      * @param e
      */
     public void paintError(Exception e) {
-	String message = "Error: " + e.getLocalizedMessage();
-	Color prevc = this.holder.getGraphics().getColor();
-	this.holder.getGraphics().setColor(Color.red);
-	this.holder.getGraphics().drawString(message, (int) this.getCenterX() - (10 + (this.holder.getGraphics().getFontMetrics().stringWidth(message) / 2)), (int) this.getCenterY());
-	this.holder.getGraphics().setColor(prevc);
+        String message = "Error: " + e.getLocalizedMessage();
+        Color prevc = this.holder.getGraphics().getColor();
+        this.holder.getGraphics().setColor(Color.red);
+        this.holder.getGraphics().drawString(message, (int)this.getCenterX() - (10 + (this.holder.getGraphics().getFontMetrics().stringWidth(message) / 2)), (int)this.getCenterY());
+        this.holder.getGraphics().setColor(prevc);
     }
 
     /**
@@ -437,160 +437,160 @@ public abstract class JGameEngineX implements Runnable, JInputOutputX {
      * @param height
      */
     public final void resizeGame(int width, int height) {
-	this.dimensions.setRect(0, 0, width, height);
-	this.holder.resize(width, height);
-	if (mouse != null) {
-	    mouse.clear();
-	}
+        this.dimensions.setRect(0, 0, width, height);
+        this.holder.resize(width, height);
+        if (mouse != null) {
+            mouse.clear();
+        }
     }
 
     public final void init() {
 
-	System.out.print("Initializing.");
+        System.out.print("Initializing.");
 
-	this.gamemain = new Thread(this);
-	this.gamemain.start();
+        this.gamemain = new Thread(this);
+        this.gamemain.start();
 
-	//  State
-	this.gamestatus = GAME_STATUS.GAME_INTIALIZING;
+        //  State
+        this.gamestatus = GAME_STATUS.GAME_INTIALIZING;
 
-	//  Resources
-	this.mouse = new JMouseX();
-	this.holder.addMouseListener(this.mouse);
-	this.mouse.addEventListener(this);
-	this.keyboard = new JKeyboardX();
-	this.holder.addKeyListener(this.keyboard);
-	this.keyboard.addEventListener(this);
-	this.images = new JImageHandlerX(this.getClass());
-	this.spriteholder = new JSpriteHolderX(this);
+        //  Resources
+        this.mouse = new JMouseX();
+        this.holder.addMouseListener(this.mouse);
+        this.mouse.addEventListener(this);
+        this.keyboard = new JKeyboardX();
+        this.holder.addKeyListener(this.keyboard);
+        this.keyboard.addEventListener(this);
+        this.images = new JImageHandlerX(this.getClass());
+        this.spriteholder = new JSpriteHolderX(this);
 
-	//  Listeners
-	this.addListener(spriteholder);
+        //  Listeners
+        this.addListener(spriteholder);
 
-	gameInit();
+        gameInit();
 
-	System.out.println("Initialized!");
+        System.out.println("Initialized!");
 
     }
 
     public final void start() {
 
-	System.out.print("Starting.");
+        System.out.print("Starting.");
 
-	//  Start the game thread
-	this.gamestatus = GAME_STATUS.GAME_STARTING;
+        //  Start the game thread
+        this.gamestatus = GAME_STATUS.GAME_STARTING;
 
-	// Timing Stuff
-	this.gamestarttime = System.currentTimeMillis();
-	this.frametime = System.currentTimeMillis();
+        // Timing Stuff
+        this.gamestarttime = System.currentTimeMillis();
+        this.frametime = System.currentTimeMillis();
 
-	//  Start-up Sprite holder
-	this.spriteholder.start();
+        //  Start-up Sprite holder
+        this.spriteholder.start();
 
-	//  Finally pass on control for pre-game stuff
-	gameStart();
+        //  Finally pass on control for pre-game stuff
+        gameStart();
 
-	System.out.println("Started!");
+        System.out.println("Started!");
 
     }
 
     @Override
     public final void run() {
-	Thread current = Thread.currentThread();
-	while (current == this.gamemain) {
-	    try {
-		Thread.sleep(1000 / this.dfps);
-	    }
-	    catch (InterruptedException e) {
-		this.holder.getGraphics().drawString(e.getLocalizedMessage(), 0, 0);
-	    }
-	    this.gametime = System.currentTimeMillis() - gamestarttime;
-	    switch (this.gamestatus) {
-		case GAME_MENU:
-		    gameMenu();
-		    break;
-		case GAME_RUNNING:
-		    gameUpdate();
-		    break;
-		case GAME_PAUSED:
-		    gamePaused();
-		    break;
-		case GAME_STOPPED:
-		    stop();
-		    break;
-		case GAME_INTIALIZING:
-		case GAME_STARTING:
-		    System.out.print(".");
-		    break;
-		default:
-		    System.err.println("Invalid game mode.");
-		    break;
-	    }
-	    paint();
-	}
+        Thread current = Thread.currentThread();
+        while (current == this.gamemain) {
+            try {
+                Thread.sleep(1000 / this.dfps);
+            }
+            catch (InterruptedException e) {
+                this.holder.getGraphics().drawString(e.getLocalizedMessage(), 0, 0);
+            }
+            this.gametime = System.currentTimeMillis() - gamestarttime;
+            switch (this.gamestatus) {
+                case GAME_MENU:
+                    gameMenu();
+                    break;
+                case GAME_RUNNING:
+                    gameUpdate();
+                    break;
+                case GAME_PAUSED:
+                    gamePaused();
+                    break;
+                case GAME_STOPPED:
+                    stop();
+                    break;
+                case GAME_INTIALIZING:
+                case GAME_STARTING:
+                    System.out.print(".");
+                    break;
+                default:
+                    System.err.println("Invalid game mode.");
+                    break;
+            }
+            paint();
+        }
     }
 
     public final void stop() {
-	gamemain = null;
-	this.spriteholder.stop();
-	this.gameEnd();
+        gamemain = null;
+        this.spriteholder.stop();
+        this.gameEnd();
     }
 
     @Override
     public void updateIO() {
-	// Ummm...
+        // Ummm...
     }
 
     @Override
     public void lostFocus(EventObject e) {
-	if (this.gamestatus == GAME_STATUS.GAME_RUNNING) {
-	    this.setGameStatus(GAME_STATUS.GAME_PAUSED);
-	}
+        if (this.gamestatus == GAME_STATUS.GAME_RUNNING) {
+            this.setGameStatus(GAME_STATUS.GAME_PAUSED);
+        }
     }
 
     synchronized protected void addListener(JGameEngineListenerX listener) {
-	if (!this.listeners.contains(listener)) {
-	    this.listeners.add(listener);
-	}
+        if (!this.listeners.contains(listener)) {
+            this.listeners.add(listener);
+        }
     }
 
     synchronized protected void removeListener(JGameEngineListenerX listener) {
-	if (this.listeners.contains(listener)) {
-	    this.listeners.remove(listener);
-	}
+        if (this.listeners.contains(listener)) {
+            this.listeners.remove(listener);
+        }
     }
 
     synchronized protected void fireEvent(EVENT_TYPE type, Object... args) {
-	switch (type) {
-	    case STATE_CHANGE:
-		for (JGameEngineListenerX e : this.listeners) {
-		    e.gameStateChanged((GAME_STATUS) (args[0]), (GAME_STATUS) (args[1]));
-		}
-		break;
-	    default:
-		break;
-	}
+        switch (type) {
+            case STATE_CHANGE:
+                for (JGameEngineListenerX e : this.listeners) {
+                    e.gameStateChanged((GAME_STATUS) (args[0]), (GAME_STATUS) (args[1]));
+                }
+                break;
+            default:
+                break;
+        }
     }
 
     public JGameEngineX(String title, String mode) throws HeadlessException {
-	this(title, mode, 50, 640, 480);
+        this(title, mode, 50, 640, 480);
     }
 
     public JGameEngineX(String title, String mode, int fps, int width, int height) throws HeadlessException {
-	//  Set Game Atributes
-	this.gamestatus = GAME_STATUS.GAME_INTIALIZING;
-	this.title = title;
-	this.dfps = fps;
-	this.dimensions = new Rectangle(0, 0, width, height);
-	switch (mode.toLowerCase()) {
-	    case "windowed":
-		this.holder = new JWindowHolderX(this.title, width, height);
-		break;
-	    case "applet":
-		this.holder = new JAppletHolderX(width, height);
-		break;
-	    default:
-		throw new UnsupportedOperationException("Modes other than windowed and applet not yet supported at this time");
-	}
+        //  Set Game Atributes
+        this.gamestatus = GAME_STATUS.GAME_INTIALIZING;
+        this.title = title;
+        this.dfps = fps;
+        this.dimensions = new Rectangle(0, 0, width, height);
+        switch (mode.toLowerCase()) {
+            case "windowed":
+                this.holder = new JWindowHolderX(this.title, width, height);
+                break;
+            case "applet":
+                this.holder = new JAppletHolderX(width, height);
+                break;
+            default:
+                throw new UnsupportedOperationException("Modes other than windowed and applet not yet supported at this time");
+        }
     }
 }

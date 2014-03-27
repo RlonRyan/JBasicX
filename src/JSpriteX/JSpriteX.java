@@ -471,10 +471,8 @@ public abstract class JSpriteX {
 	double opposite2 = this.vel * sin(toRadians(this.direction));
 	double adjacent = (adjacent1 + adjacent2);
 	double opposite = (opposite1 + opposite2);
-	direction = toDegrees(atan(opposite / adjacent));
-	force = sqrt((opposite * opposite) + (adjacent * adjacent));
-	this.direction = (int) direction + this.direction;
-	this.vel = force;
+	this.direction = (int)toDegrees(atan(opposite / adjacent));
+	this.vel = sqrt((opposite * opposite) + (adjacent * adjacent));
     }
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
