@@ -1,11 +1,11 @@
 /**
- * @author  RlonRyan
- * @name    JSpriteX
+ * @author RlonRyan
+ * @name JSpriteX
  * @version 1.0.0
- * @date    Dec 18, 2011
- * @info    Sprite base class.
-**/
-
+ * @date Dec 18, 2011
+ * @info Sprite base class.
+ *
+ */
 package JSpriteX;
 
 import java.awt.Color;
@@ -18,9 +18,10 @@ import java.awt.geom.Rectangle2D;
 import static java.lang.Math.*;
 
 /**
- * @author  RlonRyan
- * @name    JSpriteX
-**/
+ * @author RlonRyan
+ * @name JSpriteX
+ *
+ */
 public abstract class JSpriteX {
 
     //Status
@@ -51,7 +52,7 @@ public abstract class JSpriteX {
      * @return
      */
     public final boolean isVisable() {
-        return visable;
+	return visable;
     }
 
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -62,7 +63,7 @@ public abstract class JSpriteX {
      * @return
      */
     public final int getStatus() {
-        return status;
+	return status;
     }
 
     /**
@@ -70,7 +71,7 @@ public abstract class JSpriteX {
      * @return
      */
     public int getType() {
-        return type;
+	return type;
     }
 
     /**
@@ -78,7 +79,7 @@ public abstract class JSpriteX {
      * @return
      */
     public final int getLife() {
-        return life;
+	return life;
     }
 
     /**
@@ -86,18 +87,19 @@ public abstract class JSpriteX {
      * @return
      */
     public final Point2D getPosition() {
-        return new Point.Double(bounds.getX(), bounds.getY());
+	return new Point.Double(bounds.getX(), bounds.getY());
     }
 
     public final Rectangle2D getBounds() {
-        return bounds;
+	return bounds;
     }
+
     /**
      *
      * @return
      */
     public final double getAccel() {
-        return accel;
+	return accel;
     }
 
     /**
@@ -105,7 +107,7 @@ public abstract class JSpriteX {
      * @return
      */
     public final double getVel() {
-        return vel;
+	return vel;
     }
 
     /**
@@ -113,7 +115,7 @@ public abstract class JSpriteX {
      * @return
      */
     public final int getDirection() {
-        return direction;
+	return direction;
     }
 
     /**
@@ -121,7 +123,7 @@ public abstract class JSpriteX {
      * @return
      */
     public final double getRotation() {
-        return rotation;
+	return rotation;
     }
 
     /**
@@ -129,7 +131,7 @@ public abstract class JSpriteX {
      * @return
      */
     public final double getRotationrate() {
-        return rotationrate;
+	return rotationrate;
     }
 
     /**
@@ -137,7 +139,7 @@ public abstract class JSpriteX {
      * @return
      */
     public final double getX() {
-        return bounds.getX();
+	return bounds.getX();
     }
 
     /**
@@ -145,7 +147,7 @@ public abstract class JSpriteX {
      * @return
      */
     public final double getY() {
-        return bounds.getY();
+	return bounds.getY();
     }
 
     /**
@@ -153,7 +155,7 @@ public abstract class JSpriteX {
      * @return
      */
     public final double getWidth() {
-        return bounds.getWidth();
+	return bounds.getWidth();
     }
 
     /**
@@ -161,7 +163,7 @@ public abstract class JSpriteX {
      * @return
      */
     public final double getHeight() {
-        return bounds.getHeight();
+	return bounds.getHeight();
     }
 
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -172,21 +174,21 @@ public abstract class JSpriteX {
      * @param visable
      */
     public final void setVisable(boolean visable) {
-        this.visable = visable;
+	this.visable = visable;
     }
 
     /**
      *
      */
     public final void hide() {
-        this.visable = false;
+	this.visable = false;
     }
 
     /**
      *
      */
     public final void show() {
-        this.visable = true;
+	this.visable = true;
     }
 
     /**
@@ -194,7 +196,7 @@ public abstract class JSpriteX {
      * @param status
      */
     public final void setStatus(int status) {
-        this.status = status;
+	this.status = status;
     }
 
     /**
@@ -202,7 +204,7 @@ public abstract class JSpriteX {
      * @param type
      */
     public void setType(int type) {
-        this.type = type;
+	this.type = type;
     }
 
     /**
@@ -210,15 +212,15 @@ public abstract class JSpriteX {
      * @param life
      */
     public final void setLife(int life) {
-        this.life = life;
+	this.life = life;
     }
 
-        /**
+    /**
      *
      * @param accel
      */
     public final void setAccel(double accel) {
-        this.accel = accel;
+	this.accel = accel;
     }
 
     /**
@@ -226,7 +228,7 @@ public abstract class JSpriteX {
      * @param vel
      */
     public final void setVel(double vel) {
-        this.vel = vel;
+	this.vel = vel;
     }
 
     /**
@@ -234,14 +236,14 @@ public abstract class JSpriteX {
      * @param direction
      */
     public final void setDirection(int direction) {
-        direction = direction % 360;
-        if (direction < 0) {
-            direction = direction + 360;
-        }
-        else if (direction >= 360) {
-            direction = direction - 360;
-        }
-        this.direction = direction;
+	direction = direction % 360;
+	if (direction < 0) {
+	    direction = direction + 360;
+	}
+	else if (direction >= 360) {
+	    direction = direction - 360;
+	}
+	this.direction = direction;
     }
 
     /**
@@ -249,7 +251,7 @@ public abstract class JSpriteX {
      * @param rotation
      */
     public final void setRotation(double rotation) {
-        this.rotation = rotation;
+	this.rotation = rotation;
     }
 
     /**
@@ -257,7 +259,7 @@ public abstract class JSpriteX {
      * @param rotationrate
      */
     public final void setRotationrate(double rotationrate) {
-        this.rotationrate = rotationrate;
+	this.rotationrate = rotationrate;
     }
 
     /**
@@ -265,7 +267,7 @@ public abstract class JSpriteX {
      * @param position
      */
     public final void setPosition(Point2D pos) {
-        this.bounds.setRect(pos.getX(), pos.getY(), this.bounds.getWidth(), this.bounds.getHeight());
+	this.bounds.setRect(pos.getX(), pos.getY(), this.bounds.getWidth(), this.bounds.getHeight());
     }
 
     /**
@@ -274,7 +276,7 @@ public abstract class JSpriteX {
      * @param y
      */
     public final void setPosition(double x, double y) {
-        this.bounds.setRect(x, y, this.bounds.getWidth(), this.bounds.getHeight());
+	this.bounds.setRect(x, y, this.bounds.getWidth(), this.bounds.getHeight());
     }
 
     /**
@@ -282,19 +284,19 @@ public abstract class JSpriteX {
      * @param x
      */
     public final void setX(double x) {
-        this.setPosition(x, this.bounds.getY());
+	this.setPosition(x, this.bounds.getY());
     }
 
-     /**
+    /**
      *
      * @param y
      */
     public final void setY(double y) {
-        this.setPosition(this.bounds.getX(), y);
+	this.setPosition(this.bounds.getX(), y);
     }
 
     public final void setSize(double width, double height) {
-        this.bounds.setRect(this.bounds.getX(), this.bounds.getY(), width, height);
+	this.bounds.setRect(this.bounds.getX(), this.bounds.getY(), width, height);
     }
 
     /**
@@ -302,15 +304,15 @@ public abstract class JSpriteX {
      * @param width
      */
     public final void setWidth(double width) {
-        this.setSize(width, this.bounds.getHeight());
+	this.setSize(width, this.bounds.getHeight());
     }
 
-     /**
+    /**
      *
      * @param height
      */
     public final void setHeight(double height) {
-        this.setSize(this.bounds.getWidth(), height);
+	this.setSize(this.bounds.getWidth(), height);
     }
 
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -321,7 +323,7 @@ public abstract class JSpriteX {
      * @param life
      */
     public final void incLife(int life) {
-        this.life += life;
+	this.life += life;
     }
 
     /**
@@ -329,7 +331,7 @@ public abstract class JSpriteX {
      * @param rotation
      */
     public final void incRot(double rotation) {
-        this.rotation += rotation;
+	this.rotation += rotation;
     }
 
     /**
@@ -337,7 +339,7 @@ public abstract class JSpriteX {
      * @param inc
      */
     public final void incRotRate(double inc) {
-        this.rotationrate += inc;
+	this.rotationrate += inc;
     }
 
     /**
@@ -345,7 +347,7 @@ public abstract class JSpriteX {
      * @param x
      */
     public final void incX(double inc) {
-        this.setX(this.bounds.getX() + inc);
+	this.setX(this.bounds.getX() + inc);
     }
 
     /**
@@ -353,7 +355,7 @@ public abstract class JSpriteX {
      * @param y
      */
     public final void incY(double inc) {
-        this.setY(this.bounds.getY() + inc);
+	this.setY(this.bounds.getY() + inc);
     }
 
     /**
@@ -361,7 +363,7 @@ public abstract class JSpriteX {
      * @param vel
      */
     public final void incVel(double vel) {
-        this.setVel(this.getVel() + vel);
+	this.setVel(this.getVel() + vel);
     }
 
     /**
@@ -369,70 +371,70 @@ public abstract class JSpriteX {
      * @param accel
      */
     public final void incAccel(double accel) {
-        this.setAccel(this.getAccel() + accel);
+	this.setAccel(this.getAccel() + accel);
     }
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
     //Auto
 
     public final void pause() {
-        this.lastupdate = 0;
+	this.lastupdate = 0;
     }
 
     /**
      *
      */
     public final void update() {
-        if (this.lastupdate == 0) {
-            this.lastupdate = System.currentTimeMillis();
-            return;
-        }
-        if (this.getVel() > 0) {
-            this.incVel((this.accel / 1000) * (System.currentTimeMillis() - this.lastupdate));
-        }
-        else {
-            this.setVel(0);
-        }
-        this.incX(((this.vel * (Math.cos(this.direction * Math.PI / 180))) / 1000) * (System.currentTimeMillis() - this.lastupdate));
-        this.incY(((this.vel * (Math.sin(this.direction * Math.PI / 180))) / 1000) * (System.currentTimeMillis() - this.lastupdate));
-        this.lastupdate = System.currentTimeMillis();
+	if (this.lastupdate == 0) {
+	    this.lastupdate = System.currentTimeMillis();
+	    return;
+	}
+	if (this.getVel() > 0) {
+	    this.incVel((this.accel / 1000) * (System.currentTimeMillis() - this.lastupdate));
+	}
+	else {
+	    this.setVel(0);
+	}
+	this.incX(((this.vel * (Math.cos(this.direction * Math.PI / 180))) / 1000) * (System.currentTimeMillis() - this.lastupdate));
+	this.incY(((this.vel * (Math.sin(this.direction * Math.PI / 180))) / 1000) * (System.currentTimeMillis() - this.lastupdate));
+	this.lastupdate = System.currentTimeMillis();
     }
 
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
     //Scale
-
     // TBI
-
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
     //Bounds
-
     /**
      *
      * @param sprite
+     * <p/>
      * @return
      */
     public final Boolean collidesWith(JSpriteX sprite) {
-        return (this != sprite) && (this.collidesWith(sprite.getBounds()));
+	return (this != sprite) && (this.collidesWith(sprite.getBounds()));
     }
 
     /**
      *
      * @param rect
+     * <p/>
      * @return
      */
     public final Boolean collidesWith(Rectangle2D rect) {
-        return this.bounds.intersects(rect);
+	return this.bounds.intersects(rect);
     }
 
     /**
      *
      * @param point
+     * <p/>
      * @return
      */
     public final Boolean collidesWith(Point2D point) {
-        return this.bounds.contains(point);
+	return this.bounds.contains(point);
     }
 
     /**
@@ -440,9 +442,9 @@ public abstract class JSpriteX {
      * @param g2d
      */
     public final void drawBoundsTo(Graphics2D g2d) {
-        g2d.setTransform(new AffineTransform());
-        g2d.setColor(Color.WHITE);
-        g2d.drawRect((int)this.bounds.getX(), (int)this.bounds.getY(), (int)this.bounds.getWidth(), (int)this.bounds.getHeight());
+	g2d.setTransform(new AffineTransform());
+	g2d.setColor(Color.WHITE);
+	g2d.drawRect((int) this.bounds.getX(), (int) this.bounds.getY(), (int) this.bounds.getWidth(), (int) this.bounds.getHeight());
     }
 
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -463,16 +465,16 @@ public abstract class JSpriteX {
      * @param direction
      */
     public final void applyForce(double force, double direction) {
-        double adjacent1 = force * cos(toRadians(direction));
-        double opposite1 = force * sin(toRadians(direction));
-        double adjacent2 = this.vel * cos(toRadians(this.direction));
-        double opposite2 = this.vel * sin(toRadians(this.direction));
-        double adjacent = (adjacent1 + adjacent2);
-        double opposite = (opposite1 + opposite2);
-        direction = toDegrees(atan(opposite / adjacent));
-        force = sqrt((opposite * opposite) + (adjacent * adjacent));
-        this.direction = (int)direction + this.direction;
-        this.vel = force;
+	double adjacent1 = force * cos(toRadians(direction));
+	double opposite1 = force * sin(toRadians(direction));
+	double adjacent2 = this.vel * cos(toRadians(this.direction));
+	double opposite2 = this.vel * sin(toRadians(this.direction));
+	double adjacent = (adjacent1 + adjacent2);
+	double opposite = (opposite1 + opposite2);
+	direction = toDegrees(atan(opposite / adjacent));
+	force = sqrt((opposite * opposite) + (adjacent * adjacent));
+	this.direction = (int) direction + this.direction;
+	this.vel = force;
     }
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

@@ -13,11 +13,10 @@ import JNetX.JPacketX.JPackectX;
 public interface JNetworkListenerX {
 
     public void onPacket(JPackectX packet);
-    
-    public void onError();
-    
-    public void onTimeout();
-    
-    public void onTerminate();
 
+    public void onError();
+
+    public void onTimeout();
+
+    public void onTerminate();
 }

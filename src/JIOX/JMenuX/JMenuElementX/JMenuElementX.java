@@ -14,10 +14,10 @@ public interface JMenuElementX {
 
     public enum JMenuElementStateX {
 
-        STATELESS,
-        NORMAL,
-        HIGHLIGHTED,
-        SELECTED;
+	STATELESS,
+	NORMAL,
+	HIGHLIGHTED,
+	SELECTED;
     }
 
     /**

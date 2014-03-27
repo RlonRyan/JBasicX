@@ -1,33 +1,35 @@
 /**
- * @author  RlonRyan
- * @name    JSoundX
+ * @author RlonRyan
+ * @name JSoundX
  * @version 1.0.0
- * @date    Dec 17, 2011
- * @info    Mouse handler class.
-**/
-
+ * @date Dec 17, 2011
+ * @info Mouse handler class.
+ *
+ */
 package JIOX;
 
-import JBasicX.*;
+import java.awt.Point;
 import java.awt.event.*;
+import java.awt.geom.Point2D;
 import java.util.ArrayList;
 import java.util.List;
 
 /**
- * @author  RlonRyan
- * @name    JMouseX
+ * @author RlonRyan
+ * @name JMouseX
+ * @deprecated
  */
 public class JMouseX implements MouseListener, MouseMotionListener, MouseWheelListener {
 
     private List<JInputOutputX> listeners;
-    private JPoint2DX click = new JPoint2DX();
-    private JPoint2DX press = new JPoint2DX();
-    private JPoint2DX release = new JPoint2DX();
-    private JPoint2DX enter = new JPoint2DX();
-    private JPoint2DX exit = new JPoint2DX();
-    private JPoint2DX drag = new JPoint2DX();
-    private JPoint2DX move = new JPoint2DX();
-    private JPoint2DX position = new JPoint2DX();
+    private Point click = new Point();
+    private Point press = new Point();
+    private Point release = new Point();
+    private Point enter = new Point();
+    private Point exit = new Point();
+    private Point drag = new Point();
+    private Point move = new Point();
+    private Point position = new Point();
     private int scroll = 0;
     private Boolean mousedown = false;
     private Boolean mousedrag = false;
@@ -50,211 +52,211 @@ public class JMouseX implements MouseListener, MouseMotionListener, MouseWheelLi
      * @param user
      */
     public JMouseX() {
-        this.listeners = new ArrayList<>();
+	this.listeners = new ArrayList<>();
     }
 
     /**
      *
      */
     public void clear() {
-        click = new JPoint2DX();
-        press = new JPoint2DX();
-        release = new JPoint2DX();
-        enter = new JPoint2DX();
-        exit = new JPoint2DX();
-        drag = new JPoint2DX();
-        move = new JPoint2DX();
-        scroll = 0;
-        mousedown = false;
-        mousedrag = false;
-        mousebutton = 0;
+	click = new Point();
+	press = new Point();
+	release = new Point();
+	enter = new Point();
+	exit = new Point();
+	drag = new Point();
+	move = new Point();
+	scroll = 0;
+	mousedown = false;
+	mousedrag = false;
+	mousebutton = 0;
     }
 
     /**
      *
      */
     public void clearClick() {
-        click = new JPoint2DX();
+	click = new Point();
     }
 
     /**
      *
      */
     public void clearPress() {
-        press = new JPoint2DX();
-        release = new JPoint2DX();
+	press = new Point();
+	release = new Point();
     }
 
     /**
      *
      */
     public void clearEnter() {
-        enter = new JPoint2DX();
-        exit = new JPoint2DX();
+	enter = new Point();
+	exit = new Point();
     }
 
     /**
      *
      */
     public void clearDrag() {
-        drag = new JPoint2DX();
+	drag = new Point();
     }
 
     /**
      *
      */
     public void clearMove() {
-        move = new JPoint2DX();
+	move = new Point();
     }
 
     /**
      *
      */
     public void clearScroll() {
-        scroll = 0;
+	scroll = 0;
     }
 
     private void checkButton(MouseEvent e) {
-        switch (e.getButton()) {
-            case 1:
-                mousebutton = leftbutton;
-                break;
-            case 2:
-                mousebutton = rightbutton;
-                break;
-            case 3:
-                mousebutton = centerbutton;
-            default:
-                mousebutton = 0;
-        }
-        for(JInputOutputX listener : listeners) {
-            listener.updateIO();
-        }
+	switch (e.getButton()) {
+	    case 1:
+		mousebutton = leftbutton;
+		break;
+	    case 2:
+		mousebutton = rightbutton;
+		break;
+	    case 3:
+		mousebutton = centerbutton;
+	    default:
+		mousebutton = 0;
+	}
+	for (JInputOutputX listener : listeners) {
+	    listener.updateIO();
+	}
     }
 
     @Override
     public void mouseClicked(MouseEvent e) {
-        click.setPoint(e.getX(), e.getY());
-        position.setPoint(e.getX(), e.getY());
-        checkButton(e);
+	click.setLocation(e.getX(), e.getY());
+	position.setLocation(e.getX(), e.getY());
+	checkButton(e);
     }
 
     @Override
     public void mouseEntered(MouseEvent e) {
-        enter.setPoint(e.getX(), e.getY());
-        position.setPoint(e.getX(), e.getY());
-        checkButton(e);
+	enter.setLocation(e.getX(), e.getY());
+	position.setLocation(e.getX(), e.getY());
+	checkButton(e);
     }
 
     @Override
     public void mouseExited(MouseEvent e) {
-        exit.setPoint(e.getX(), e.getY());
-        position.setPoint(e.getX(), e.getY());
-        for(JInputOutputX listener : listeners) {
-            listener.lostFocus(e);
-        }
-        checkButton(e);
+	exit.setLocation(e.getX(), e.getY());
+	position.setLocation(e.getX(), e.getY());
+	for (JInputOutputX listener : listeners) {
+	    listener.lostFocus(e);
+	}
+	checkButton(e);
     }
 
     @Override
     public void mousePressed(MouseEvent e) {
-        mousedown = true;
-        press.setPoint(e.getX(), e.getY());
-        position.setPoint(e.getX(), e.getY());
-        checkButton(e);
+	mousedown = true;
+	press.setLocation(e.getX(), e.getY());
+	position.setLocation(e.getX(), e.getY());
+	checkButton(e);
     }
 
     @Override
     public void mouseReleased(MouseEvent e) {
-        mousedown = false;
-        release.setPoint(e.getX(), e.getY());
-        position.setPoint(e.getX(), e.getY());
-        checkButton(e);
+	mousedown = false;
+	release.setLocation(e.getX(), e.getY());
+	position.setLocation(e.getX(), e.getY());
+	checkButton(e);
     }
 
     @Override
     public void mouseDragged(MouseEvent e) {
-        mousedrag = true;
-        drag.setPoint(e.getX(), e.getY());
-        position.setPoint(e.getX(), e.getY());
-        checkButton(e);
+	mousedrag = true;
+	drag.setLocation(e.getX(), e.getY());
+	position.setLocation(e.getX(), e.getY());
+	checkButton(e);
     }
 
     @Override
     public void mouseMoved(MouseEvent e) {
-        mousedrag = false;
-        position.setPoint(e.getX(), e.getY());
-        checkButton(e);
+	mousedrag = false;
+	position.setLocation(e.getX(), e.getY());
+	checkButton(e);
     }
 
     @Override
     public void mouseWheelMoved(MouseWheelEvent e) {
-        scroll += e.getWheelRotation();
-        checkButton(e);
+	scroll += e.getWheelRotation();
+	checkButton(e);
     }
 
     /**
      *
      * @return
      */
-    public JPoint2DX getClick() {
-        return click;
+    public Point2D getClick() {
+	return click;
     }
 
     /**
      *
      * @return
      */
-    public JPoint2DX getDrag() {
-        return drag;
+    public Point2D getDrag() {
+	return drag;
     }
 
     /**
      *
      * @return
      */
-    public JPoint2DX getEnter() {
-        return enter;
+    public Point2D getEnter() {
+	return enter;
     }
 
     /**
      *
      * @return
      */
-    public JPoint2DX getExit() {
-        return exit;
+    public Point2D getExit() {
+	return exit;
     }
 
     /**
      *
      * @return
      */
-    public JPoint2DX getMove() {
-        return move;
+    public Point2D getMove() {
+	return move;
     }
 
     /**
      *
      * @return
      */
-    public JPoint2DX getPress() {
-        return press;
+    public Point2D getPress() {
+	return press;
     }
 
     /**
      *
      * @return
      */
-    public JPoint2DX getRelease() {
-        return release;
+    public Point2D getRelease() {
+	return release;
     }
 
     /**
      *
      * @return
      */
-    public JPoint2DX getPosition() {
-        return position;
+    public Point2D getPosition() {
+	return position;
     }
 
     /**
@@ -262,7 +264,7 @@ public class JMouseX implements MouseListener, MouseMotionListener, MouseWheelLi
      * @return
      */
     public int getMousebutton() {
-        return mousebutton;
+	return mousebutton;
     }
 
     /**
@@ -270,7 +272,7 @@ public class JMouseX implements MouseListener, MouseMotionListener, MouseWheelLi
      * @return
      */
     public Boolean isMousedown() {
-        return mousedown;
+	return mousedown;
     }
 
     /**
@@ -278,7 +280,7 @@ public class JMouseX implements MouseListener, MouseMotionListener, MouseWheelLi
      * @return
      */
     public Boolean isMousedrag() {
-        return mousedrag;
+	return mousedrag;
     }
 
     /**
@@ -286,24 +288,23 @@ public class JMouseX implements MouseListener, MouseMotionListener, MouseWheelLi
      * @return
      */
     public int getScroll() {
-        return scroll;
+	return scroll;
     }
-    
+
     /*
      * Event Methods Go Way Down Here
      * Likely will be deprecated or removed, as the elements themselves will get
      * their own events.
      */
     synchronized public final void addEventListener(JInputOutputX listener) {
-        listeners.add(listener);
+	listeners.add(listener);
     }
 
     synchronized public final void removeEventListener(JInputOutputX listener) {
-        listeners.remove(listener);
+	listeners.remove(listener);
     }
 
     synchronized public void fireEvent() {
-        //fill!
+	//fill!
     }
-    
 }

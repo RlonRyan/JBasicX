@@ -1,11 +1,11 @@
 /**
- * @author  RlonRyan
- * @name    JSoundX
+ * @author RlonRyan
+ * @name JSoundX
  * @version 1.0.0
- * @date    Dec 23, 2011
- * @info    Sound class.
-**/
-
+ * @date Dec 23, 2011
+ * @info Sound class.
+ *
+ */
 package JIOX;
 
 import java.net.URL;
@@ -14,8 +14,8 @@ import javax.sound.sampled.AudioSystem;
 import javax.sound.sampled.Clip;
 
 /**
- * @author  RlonRyan
- * @name    JSoundX
+ * @author RlonRyan
+ * @name JSoundX
  */
 public final class JSoundX {
 
@@ -25,13 +25,13 @@ public final class JSoundX {
     private long pausedat = 0;
 
     private URL getUrl(String filename) {
-        URL url = null;
-        try {
-            url = this.getClass().getResource(filename);
-        }
-        catch (Exception e) {
-        }
-        return url;
+	URL url = null;
+	try {
+	    url = this.getClass().getResource(filename);
+	}
+	catch (Exception e) {
+	}
+	return url;
     }
 
     /**
@@ -39,7 +39,7 @@ public final class JSoundX {
      * @return
      */
     public String getFile() {
-        return file;
+	return file;
     }
 
     /**
@@ -47,66 +47,66 @@ public final class JSoundX {
      * @param file
      */
     public void setFile(String file) {
-        this.file = file;
+	this.file = file;
     }
 
     /**
      *
      */
     public final void load() {
-        try {
-            ais = AudioSystem.getAudioInputStream(this.getUrl(file));
-            clip = AudioSystem.getClip();
-            clip.open(ais);
-        }
-        catch (Exception e) {
-        }
+	try {
+	    ais = AudioSystem.getAudioInputStream(this.getUrl(file));
+	    clip = AudioSystem.getClip();
+	    clip.open(ais);
+	}
+	catch (Exception e) {
+	}
     }
 
     /**
      *
      */
     public final void play() {
-        if (!this.clip.isRunning()) {
-            this.clip.setMicrosecondPosition(0);
-            this.clip.start();
-        }
+	if (!this.clip.isRunning()) {
+	    this.clip.setMicrosecondPosition(0);
+	    this.clip.start();
+	}
     }
 
     /**
      *
      */
     public final void pause() {
-        if (this.clip.isRunning()) {
-            this.pausedat = this.clip.getMicrosecondPosition();
-            this.clip.stop();
-        }
+	if (this.clip.isRunning()) {
+	    this.pausedat = this.clip.getMicrosecondPosition();
+	    this.clip.stop();
+	}
     }
 
     /**
      *
      */
     public final void resume() {
-        if (!this.clip.isRunning()) {
-            this.clip.setMicrosecondPosition(pausedat);
-            this.clip.start();
-            this.pausedat = 0;
-        }
+	if (!this.clip.isRunning()) {
+	    this.clip.setMicrosecondPosition(pausedat);
+	    this.clip.start();
+	    this.pausedat = 0;
+	}
     }
 
     /**
      *
      */
     public final void stop() {
-        if (this.clip.isRunning()) {
-            this.clip.stop();
-        }
+	if (this.clip.isRunning()) {
+	    this.clip.stop();
+	}
     }
 
     /**
      *
      */
     public JSoundX() {
-        this.load();
+	this.load();
     }
 }

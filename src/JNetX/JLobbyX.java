@@ -17,26 +17,25 @@ import java.util.List;
 public class JLobbyX extends Thread {
 
     public int port;
-
     public static List<Inet4Address> clients;
 
     @Override
     public void run() {
 
-        try (ServerSocket serverSocket = new ServerSocket(port)) {
-            System.out.println("Listening on port: " + serverSocket.getLocalPort() + ".");
-            while (true) {
-                serverSocket.accept();
+	try (ServerSocket serverSocket = new ServerSocket(port)) {
+	    System.out.println("Listening on port: " + serverSocket.getLocalPort() + ".");
+	    while (true) {
+		serverSocket.accept();
 
-            }
-        } catch (IOException e) {
-            System.err.println("Could not listen on port " + port + ".");
-        }
+	    }
+	}
+	catch (IOException e) {
+	    System.err.println("Could not listen on port " + port + ".");
+	}
 
     }
 
     public JLobbyX(int port) {
-        this.port = port;
+	this.port = port;
     }
-
 }

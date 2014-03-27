@@ -15,16 +15,15 @@ public enum JPacketTypeX {
     public byte id;
 
     private JPacketTypeX(int id) {
-        this.id = (id < Byte.MAX_VALUE ? (byte)id : 0);
+	this.id = (id < Byte.MAX_VALUE ? (byte) id : 0);
     }
 
     public static JPacketTypeX getForID(byte id) {
-        for (JPacketTypeX e : values()) {
-            if (e.id == id) {
-                return e;
-            }
-        }
-        return INVALID;
+	for (JPacketTypeX e : values()) {
+	    if (e.id == id) {
+		return e;
+	    }
+	}
+	return INVALID;
     }
-
 }

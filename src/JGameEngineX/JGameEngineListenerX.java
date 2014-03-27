@@ -3,7 +3,8 @@
  * @name JGameX
  * @version 1.0.2
  * @date October 26, 2013
-**/
+ *
+ */
 package JGameEngineX;
 
 /**
@@ -13,5 +14,4 @@ package JGameEngineX;
 public interface JGameEngineListenerX {
 
     public void gameStateChanged(JGameEngineX.GAME_STATUS newstate, JGameEngineX.GAME_STATUS oldstate);
-
 }

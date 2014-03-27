@@ -13,6 +13,7 @@ import JGameEngineX.JGameEngineListenerX;
 import JGameEngineX.JGameEngineX;
 import java.awt.Graphics2D;
 import java.awt.image.BufferedImage;
+import java.io.File;
 import java.util.LinkedList;
 
 /**
@@ -59,9 +60,9 @@ final public class JSpriteHolderX implements Runnable, JGameEngineListenerX {
      * @param holder
      */
     public JSpriteHolderX(JGameEngineX holder) {
-        this.images = new JImageHandlerX(holder.getClass());
-        this.sprites = new LinkedList<>();
-        this.holder = holder;
+	this.images = new JImageHandlerX(holder.getClass());
+	this.sprites = new LinkedList<>();
+	this.holder = holder;
     }
 
     /**
@@ -69,7 +70,7 @@ final public class JSpriteHolderX implements Runnable, JGameEngineListenerX {
      * @return
      */
     final public int getDsups() {
-        return dsups;
+	return dsups;
     }
 
     /**
@@ -77,15 +78,15 @@ final public class JSpriteHolderX implements Runnable, JGameEngineListenerX {
      * @return
      */
     final public int getSups() {
-        return sups;
+	return sups;
     }
 
     public final JSpriteX getSprite(int index) {
-        return this.sprites.get(index);
+	return this.sprites.get(index);
     }
 
     public final BufferedImage getImage(String name) {
-        return this.images.getImage(name);
+	return this.images.getImage(name);
     }
 
     /**
@@ -93,7 +94,7 @@ final public class JSpriteHolderX implements Runnable, JGameEngineListenerX {
      * @param dsups
      */
     final public void setDsups(int dsups) {
-        this.dsups = dsups;
+	this.dsups = dsups;
     }
 
     /**
@@ -101,7 +102,7 @@ final public class JSpriteHolderX implements Runnable, JGameEngineListenerX {
      * @return
      */
     public final boolean isActive() {
-        return active;
+	return active;
     }
 
     /**
@@ -113,19 +114,19 @@ final public class JSpriteHolderX implements Runnable, JGameEngineListenerX {
      * @param y
      */
     synchronized final public void addSprite(int type, int direction, double vel, double x, double y) {
-        JSpriteX spr = new JPictureSpriteX(this.images.getDefaultImage(), x, y);
-        spr.setDirection(direction);
-        spr.setVel(vel);
-        spr.setType(type);
-        this.sprites.add(spr);
+	JSpriteX spr = new JPictureSpriteX(this.images.getDefaultImage(), x, y);
+	spr.setDirection(direction);
+	spr.setVel(vel);
+	spr.setType(type);
+	this.sprites.add(spr);
     }
 
     synchronized final public void addSprite(int type, int direction, double vel, double x, double y, String imagename) {
-        JSpriteX spr = new JPictureSpriteX(this.images.getImage(imagename), x, y);
-        spr.setDirection(direction);
-        spr.setVel(vel);
-        spr.setType(type);
-        this.sprites.add(spr);
+	JSpriteX spr = new JPictureSpriteX(this.images.getImage(imagename), x, y);
+	spr.setDirection(direction);
+	spr.setVel(vel);
+	spr.setType(type);
+	this.sprites.add(spr);
     }
 
     /**
@@ -135,9 +136,9 @@ final public class JSpriteHolderX implements Runnable, JGameEngineListenerX {
      * @param y
      */
     synchronized final public void addSprite(int type, double x, double y) {
-        JSpriteX spr = new JPictureSpriteX(this.images.getDefaultImage(), x, y);
-        spr.setType(type);
-        this.sprites.add(spr);
+	JSpriteX spr = new JPictureSpriteX(this.images.getDefaultImage(), x, y);
+	spr.setType(type);
+	this.sprites.add(spr);
     }
 
     /**
@@ -145,17 +146,17 @@ final public class JSpriteHolderX implements Runnable, JGameEngineListenerX {
      * @param type
      */
     synchronized final public void addSprite(int type) {
-        JSpriteX spr = new JPictureSpriteX(this.images.getDefaultImage(), this.holder.getCenterX(), this.holder.getCenterY());
-        spr.setType(type);
-        this.sprites.add(spr);
+	JSpriteX spr = new JPictureSpriteX(this.images.getDefaultImage(), this.holder.getCenterX(), this.holder.getCenterY());
+	spr.setType(type);
+	this.sprites.add(spr);
     }
 
     synchronized final public void addImage(String name) {
-        this.images.addImage(name);
+	this.images.addImage(name);
     }
 
-    synchronized final public void addImage(String name, String filename) {
-        this.images.addImage(name, filename);
+    synchronized final public void addImage(String name, String path) {
+	this.images.addImage(name, path);
     }
 
     /**
@@ -163,7 +164,7 @@ final public class JSpriteHolderX implements Runnable, JGameEngineListenerX {
      * @param index
      */
     synchronized final public void deleteSprite(int index) {
-        this.sprites.remove(index);
+	this.sprites.remove(index);
     }
 
     /**
@@ -171,25 +172,25 @@ final public class JSpriteHolderX implements Runnable, JGameEngineListenerX {
      *
      */
     synchronized final public void deleteAllSprites() {
-        this.sprites.clear();
+	this.sprites.clear();
     }
 
     /**
      *
      */
     synchronized final public void hideAll() {
-        for (int i = 0; i < this.sprites.size(); i++) {
-            this.sprites.get(i).hide();
-        }
+	for (int i = 0; i < this.sprites.size(); i++) {
+	    this.sprites.get(i).hide();
+	}
     }
 
     /**
      *
      */
     synchronized final public void showAll() {
-        for (int i = 0; i < this.sprites.size(); i++) {
-            this.sprites.get(i).show();
-        }
+	for (int i = 0; i < this.sprites.size(); i++) {
+	    this.sprites.get(i).show();
+	}
     }
 
     /**
@@ -197,63 +198,69 @@ final public class JSpriteHolderX implements Runnable, JGameEngineListenerX {
      */
     synchronized final public void updateSprites() {
 
-        for (int i = 0; i < this.sprites.size(); i++) {
-            JSpriteX spr = this.sprites.get(i);
-            switch (spr.getType()) {
-                case SPRITE_BASIC:
-                    spr.update();
-                    if ((spr.getX() < 0) || (spr.getX() > this.holder.getGameWinWidth()) || (spr.getY() < 0) || (spr.getY() > this.holder.getGameWinHeight())) {
-                        this.sprites.remove(i);
-                    }
-                    break;
-                case SPRITE_LOOPER:
+	for (int i = 0; i < this.sprites.size(); i++) {
+	    JSpriteX spr = this.sprites.get(i);
+	    switch (spr.getType()) {
+		case SPRITE_BASIC:
+		    spr.update();
+		    if ((spr.getX() < 0) || (spr.getX() > this.holder.getGameWinWidth()) || (spr.getY() < 0) || (spr.getY() > this.holder.getGameWinHeight())) {
+			this.sprites.remove(i);
+		    }
+		    break;
+		case SPRITE_LOOPER:
 
-                    if (spr.getX() < 0) {
-                        spr.setX(this.holder.getGameWinWidth());
-                    } else if (spr.getX() > this.holder.getGameWinWidth()) {
-                        spr.setX(0);
-                    } else if (spr.getY() < 0) {
-                        spr.setY(this.holder.getGameWinHeight());
-                    } else if (spr.getY() > this.holder.getGameWinHeight()) {
-                        spr.setY(0);
-                    }
-                    spr.update();
-                    break;
-                case SPRITE_BOUNCER:
-                    if (spr.getX() < 0) {
-                        spr.setDirection(180 - spr.getDirection());
-                        spr.setRotation(spr.getDirection() - 90);
-                        spr.setX(0);
-                    } else if (spr.getX() > this.holder.getGameWinWidth()) {
-                        spr.setDirection(180 - spr.getDirection());
-                        spr.setRotation(spr.getDirection() - 90);
-                        spr.setX(this.holder.getGameWinWidth());
-                    } else if (spr.getY() < 0) {
-                        spr.setDirection(360 - spr.getDirection());
-                        spr.setRotation(spr.getDirection() - 90);
-                        spr.setY(0);
-                    } else if (spr.getY() > this.holder.getGameWinHeight()) {
-                        spr.setDirection(360 - spr.getDirection());
-                        spr.setRotation(spr.getDirection() - 90);
-                        spr.setY(this.holder.getGameWinHeight());
-                    }
-                    spr.update();
-                    break;
-                case SPRITE_STATIC:
-                    break;
-                case SPRITE_OTHER:
-                default:
-                    spr.update();
-                    break;
+		    if (spr.getX() < 0) {
+			spr.setX(this.holder.getGameWinWidth());
+		    }
+		    else if (spr.getX() > this.holder.getGameWinWidth()) {
+			spr.setX(0);
+		    }
+		    else if (spr.getY() < 0) {
+			spr.setY(this.holder.getGameWinHeight());
+		    }
+		    else if (spr.getY() > this.holder.getGameWinHeight()) {
+			spr.setY(0);
+		    }
+		    spr.update();
+		    break;
+		case SPRITE_BOUNCER:
+		    if (spr.getX() < 0) {
+			spr.setDirection(180 - spr.getDirection());
+			spr.setRotation(spr.getDirection() - 90);
+			spr.setX(0);
+		    }
+		    else if (spr.getX() > this.holder.getGameWinWidth()) {
+			spr.setDirection(180 - spr.getDirection());
+			spr.setRotation(spr.getDirection() - 90);
+			spr.setX(this.holder.getGameWinWidth());
+		    }
+		    else if (spr.getY() < 0) {
+			spr.setDirection(360 - spr.getDirection());
+			spr.setRotation(spr.getDirection() - 90);
+			spr.setY(0);
+		    }
+		    else if (spr.getY() > this.holder.getGameWinHeight()) {
+			spr.setDirection(360 - spr.getDirection());
+			spr.setRotation(spr.getDirection() - 90);
+			spr.setY(this.holder.getGameWinHeight());
+		    }
+		    spr.update();
+		    break;
+		case SPRITE_STATIC:
+		    break;
+		case SPRITE_OTHER:
+		default:
+		    spr.update();
+		    break;
 
-            }
-        }
-        updatenumber++;
-        if (System.currentTimeMillis() > updatetime + 1000) {
-            updatetime = System.currentTimeMillis();
-            sups = updatenumber;
-            updatenumber = 0;
-        }
+	    }
+	}
+	updatenumber++;
+	if (System.currentTimeMillis() > updatetime + 1000) {
+	    updatetime = System.currentTimeMillis();
+	    sups = updatenumber;
+	    updatenumber = 0;
+	}
     }
 
     /**
@@ -261,9 +268,9 @@ final public class JSpriteHolderX implements Runnable, JGameEngineListenerX {
      * @param g2d
      */
     synchronized final public void drawSprites(Graphics2D g2d) {
-        for (int i = 0; i < this.sprites.size(); i++) {
-            this.sprites.get(i).draw(g2d);
-        }
+	for (int i = 0; i < this.sprites.size(); i++) {
+	    this.sprites.get(i).draw(g2d);
+	}
     }
 
     /**
@@ -271,137 +278,142 @@ final public class JSpriteHolderX implements Runnable, JGameEngineListenerX {
      * @param g2d
      */
     synchronized final public void drawSpriteBounds(Graphics2D g2d) {
-        for (int i = 0; i < this.sprites.size(); i++) {
-            this.sprites.get(i).drawBoundsTo(g2d);
-        }
+	for (int i = 0; i < this.sprites.size(); i++) {
+	    this.sprites.get(i).drawBoundsTo(g2d);
+	}
     }
 
     /**
      *
      * @param sprite
-     * <p/>
+     *               <
+     * p/>
      * @return
      */
     synchronized final public JSpriteX collidesWith(JSpriteX sprite) {
-        for (int i = 0; i < this.sprites.size(); i++) {
-            if (this.sprites.get(i).collidesWith(sprite)) {
-                return this.sprites.get(i);
-            }
-        }
-        return null;
+	for (int i = 0; i < this.sprites.size(); i++) {
+	    if (this.sprites.get(i).collidesWith(sprite)) {
+		return this.sprites.get(i);
+	    }
+	}
+	return null;
     }
 
     /**
      *
      * @param sprite
-     * <p/>
+     *               <
+     * p/>
      * @return
      */
     synchronized final public JSpriteX collidesWithAndRemove(JSpriteX sprite) {
-        for (int i = 0; i < this.sprites.size(); i++) {
-            if (this.sprites.get(i).collidesWith(sprite)) {
-                return this.sprites.remove(i);
-            }
-        }
-        return null;
+	for (int i = 0; i < this.sprites.size(); i++) {
+	    if (this.sprites.get(i).collidesWith(sprite)) {
+		return this.sprites.remove(i);
+	    }
+	}
+	return null;
     }
 
     /**
      *
      * @param sprite
-     * <p/>
+     *               <
+     * p/>
      * @return
      */
     synchronized final public int checkCollisionsWith(JSpriteX sprite) {
-        int c = 0;
-        for (int i = 0; i < this.sprites.size(); i++) {
-            if (this.sprites.get(i).collidesWith(sprite)) {
-                c++;
-            }
-        }
-        return c;
+	int c = 0;
+	for (int i = 0; i < this.sprites.size(); i++) {
+	    if (this.sprites.get(i).collidesWith(sprite)) {
+		c++;
+	    }
+	}
+	return c;
     }
 
     /**
      *
      * @param sprite
-     * <p/>
+     *               <
+     * p/>
      * @return
      */
     synchronized final public int checkCollisionsWithAndRemove(JSpriteX sprite) {
-        int c = 0;
-        for (int i = 0; i < this.sprites.size(); i++) {
-            if (this.sprites.get(i).collidesWith(sprite)) {
-                this.sprites.remove(i);
-                c++;
-            }
-        }
-        return c;
+	int c = 0;
+	for (int i = 0; i < this.sprites.size(); i++) {
+	    if (this.sprites.get(i).collidesWith(sprite)) {
+		this.sprites.remove(i);
+		c++;
+	    }
+	}
+	return c;
     }
 
     /**
      *
      */
     synchronized final public void checkCollisionsAndRemove() {
-        for (int i = 0; i < this.sprites.size(); i++) {
-            for (int ii = 0; ii < this.sprites.size(); ii++) {
-                if (i != ii && this.sprites.get(i).collidesWith(this.sprites.get(ii))) {
-                    this.sprites.remove(i);
-                    this.sprites.remove(ii);
-                }
-            }
-        }
+	for (int i = 0; i < this.sprites.size(); i++) {
+	    for (int ii = 0; ii < this.sprites.size(); ii++) {
+		if (i != ii && this.sprites.get(i).collidesWith(this.sprites.get(ii))) {
+		    this.sprites.remove(i);
+		    this.sprites.remove(ii);
+		}
+	    }
+	}
     }
 
     synchronized final public void pauseAll() {
-        for (JSpriteX e : sprites) {
-            e.pause();
-        }
+	for (JSpriteX e : sprites) {
+	    e.pause();
+	}
     }
 
     /**
      *
      */
     final public void start() {
-        if (this.isActive()) {
-            return;
-        }
-        this.spriteUpdateThread = new Thread(this);
-        this.spriteUpdateThread.start();
-        this.active = true;
-        this.updatetime = 0;
-        this.updatenumber = 0;
+	if (this.isActive()) {
+	    return;
+	}
+	this.spriteUpdateThread = new Thread(this);
+	this.spriteUpdateThread.start();
+	this.active = true;
+	this.updatetime = 0;
+	this.updatenumber = 0;
     }
 
     @Override
     final public void run() {
-        Thread current = Thread.currentThread();
-        while (current == this.spriteUpdateThread) {
-            try {
-                this.updateSprites();
-                Thread.sleep(1000 / this.dsups);
-            } catch (InterruptedException e) {
-            }
-        }
+	Thread current = Thread.currentThread();
+	while (current == this.spriteUpdateThread) {
+	    try {
+		this.updateSprites();
+		Thread.sleep(1000 / this.dsups);
+	    }
+	    catch (InterruptedException e) {
+	    }
+	}
     }
 
     /**
      *
      */
     final public void stop() {
-        this.spriteUpdateThread = null;
-        this.active = false;
+	this.spriteUpdateThread = null;
+	this.active = false;
     }
 
     @Override
     public void gameStateChanged(JGameEngineX.GAME_STATUS newstate, JGameEngineX.GAME_STATUS oldstate) {
-        if (oldstate == JGameEngineX.GAME_STATUS.GAME_RUNNING && this.isActive()) {
-            this.stop();
-            this.pauseAll();
-        }
-        if (newstate == JGameEngineX.GAME_STATUS.GAME_RUNNING && !this.isActive()) {
-            this.start();
-            this.pauseAll();
-        }
+	if (oldstate == JGameEngineX.GAME_STATUS.GAME_RUNNING && this.isActive()) {
+	    this.stop();
+	    this.pauseAll();
+	}
+	if (newstate == JGameEngineX.GAME_STATUS.GAME_RUNNING && !this.isActive()) {
+	    this.start();
+	    this.pauseAll();
+	}
     }
 }

@@ -1,20 +1,21 @@
 /**
- * @author  RlonRyan
- * @name    JVectorSpriteX
+ * @author RlonRyan
+ * @name JVectorSpriteX
  * @version 1.0.0
- * @date    Dec 18, 2011
- * @info    Vector sprite.
-**/
-
+ * @date Dec 18, 2011
+ * @info Vector sprite.
+ *
+ */
 package JSpriteX;
 
 import java.awt.*;
 import java.awt.geom.AffineTransform;
 
 /**
- * @author  RlonRyan
- * @name    JVectorSpriteX
-**/
+ * @author RlonRyan
+ * @name JVectorSpriteX
+ *
+ */
 public class JVectorSpriteX extends JSpriteX {
 
     //Variables
@@ -32,7 +33,7 @@ public class JVectorSpriteX extends JSpriteX {
      * @return
      */
     public final Shape getShape() {
-        return this.shape;
+	return this.shape;
     }
 
     /**
@@ -40,7 +41,7 @@ public class JVectorSpriteX extends JSpriteX {
      * @return
      */
     public final Polygon getPolygon() {
-        return this.poly;
+	return this.poly;
     }
 
     /**
@@ -48,7 +49,7 @@ public class JVectorSpriteX extends JSpriteX {
      * @return
      */
     public final int getScale() {
-        return this.scale;
+	return this.scale;
     }
 
     /**
@@ -56,7 +57,7 @@ public class JVectorSpriteX extends JSpriteX {
      * @return
      */
     public final int[] getXPoints() {
-        return this.xpoints;
+	return this.xpoints;
     }
 
     /**
@@ -64,7 +65,7 @@ public class JVectorSpriteX extends JSpriteX {
      * @return
      */
     public final int[] getYPoints() {
-        return this.ypoints;
+	return this.ypoints;
     }
 
     /**
@@ -72,7 +73,7 @@ public class JVectorSpriteX extends JSpriteX {
      * @return
      */
     public final Color getLineColor() {
-        return this.linecolor;
+	return this.linecolor;
     }
 
     /**
@@ -80,7 +81,7 @@ public class JVectorSpriteX extends JSpriteX {
      * @return
      */
     public final Color getFillColor() {
-        return this.fillcolor;
+	return this.fillcolor;
     }
     //Mutators
 
@@ -89,7 +90,7 @@ public class JVectorSpriteX extends JSpriteX {
      * @param shape
      */
     public final void setShape(Shape shape) {
-        this.shape = shape;
+	this.shape = shape;
     }
 
     /**
@@ -97,7 +98,7 @@ public class JVectorSpriteX extends JSpriteX {
      * @param polygon
      */
     public final void setPolygon(Polygon polygon) {
-        this.poly = polygon;
+	this.poly = polygon;
     }
 
     /**
@@ -105,7 +106,7 @@ public class JVectorSpriteX extends JSpriteX {
      * @param scale
      */
     public final void setPolygon(int scale) {
-        this.scale = scale;
+	this.scale = scale;
     }
 
     /**
@@ -114,17 +115,17 @@ public class JVectorSpriteX extends JSpriteX {
      * @param ypoints
      */
     public final void setPoints(int[] xpoints, int[] ypoints) {
-        this.xpoints = xpoints;
-        this.ypoints = ypoints;
-        this.setPolygon(new Polygon(xpoints, ypoints, xpoints.length));
-        this.setSize((int) this.poly.getBounds2D().getWidth(), (int) this.poly.getBounds2D().getHeight());
+	this.xpoints = xpoints;
+	this.ypoints = ypoints;
+	this.setPolygon(new Polygon(xpoints, ypoints, xpoints.length));
+	this.setSize((int) this.poly.getBounds2D().getWidth(), (int) this.poly.getBounds2D().getHeight());
     }
 
     /**
      *
      */
     public final void updatesize() {
-        this.setSize((int) (this.poly.getBounds2D().getWidth() * this.scale), (int) (this.poly.getBounds2D().getHeight() * this.scale));
+	this.setSize((int) (this.poly.getBounds2D().getWidth() * this.scale), (int) (this.poly.getBounds2D().getHeight() * this.scale));
     }
 
     /**
@@ -132,8 +133,8 @@ public class JVectorSpriteX extends JSpriteX {
      * @param color
      */
     public final void setColors(Color color) {
-        this.fillcolor = color;
-        this.linecolor = color;
+	this.fillcolor = color;
+	this.linecolor = color;
     }
 
     /**
@@ -142,8 +143,8 @@ public class JVectorSpriteX extends JSpriteX {
      * @param FillColor
      */
     public final void setColors(Color LineColor, Color FillColor) {
-        this.linecolor = LineColor;
-        this.fillcolor = FillColor;
+	this.linecolor = LineColor;
+	this.fillcolor = FillColor;
     }
 
     /**
@@ -151,7 +152,7 @@ public class JVectorSpriteX extends JSpriteX {
      * @param LineColor
      */
     public final void setLineColor(Color LineColor) {
-        this.linecolor = LineColor;
+	this.linecolor = LineColor;
     }
 
     /**
@@ -159,7 +160,7 @@ public class JVectorSpriteX extends JSpriteX {
      * @param FillColor
      */
     public final void setFillColor(Color FillColor) {
-        this.fillcolor = FillColor;
+	this.fillcolor = FillColor;
     }
     //Functions
 
@@ -169,59 +170,59 @@ public class JVectorSpriteX extends JSpriteX {
      */
     @Override
     public final void draw(Graphics2D g2d) {
-        if (!this.visable) {
-            return;
-        }
+	if (!this.visable) {
+	    return;
+	}
 
-        g2d.setTransform(new AffineTransform());
-        g2d.translate(this.bounds.getX(), this.bounds.getY());
-        g2d.rotate(Math.toRadians(this.rotation));
+	g2d.setTransform(new AffineTransform());
+	g2d.translate(this.bounds.getX(), this.bounds.getY());
+	g2d.rotate(Math.toRadians(this.rotation));
 
-        if (this.poly != null) {
-            if (this.linecolor == null) {
-                g2d.setColor(Color.red);
-                g2d.drawPolygon(this.poly);
-            }
-            else {
-                g2d.setColor(this.linecolor);
-                g2d.drawPolygon(this.poly);
-            }
-            if (this.fillcolor == null) {
-                g2d.setColor(Color.pink);
-                g2d.fillPolygon(this.poly);
-            }
-            else {
-                g2d.setColor(this.fillcolor);
-                g2d.fillPolygon(this.poly);
-            }
-        }
-        else if (this.shape != null) {
-            if (this.linecolor == null) {
-                g2d.setColor(Color.red);
-                g2d.draw(this.shape);
-            }
-            else {
-                g2d.setColor(this.linecolor);
-                g2d.draw(this.shape);
-            }
-            if (this.fillcolor == null) {
-                g2d.setColor(Color.pink);
-                g2d.draw(this.shape);
-            }
-            else {
-                g2d.setColor(this.fillcolor);
-                g2d.draw(this.shape);
-            }
-        }
+	if (this.poly != null) {
+	    if (this.linecolor == null) {
+		g2d.setColor(Color.red);
+		g2d.drawPolygon(this.poly);
+	    }
+	    else {
+		g2d.setColor(this.linecolor);
+		g2d.drawPolygon(this.poly);
+	    }
+	    if (this.fillcolor == null) {
+		g2d.setColor(Color.pink);
+		g2d.fillPolygon(this.poly);
+	    }
+	    else {
+		g2d.setColor(this.fillcolor);
+		g2d.fillPolygon(this.poly);
+	    }
+	}
+	else if (this.shape != null) {
+	    if (this.linecolor == null) {
+		g2d.setColor(Color.red);
+		g2d.draw(this.shape);
+	    }
+	    else {
+		g2d.setColor(this.linecolor);
+		g2d.draw(this.shape);
+	    }
+	    if (this.fillcolor == null) {
+		g2d.setColor(Color.pink);
+		g2d.draw(this.shape);
+	    }
+	    else {
+		g2d.setColor(this.fillcolor);
+		g2d.draw(this.shape);
+	    }
+	}
     }
 
     /**
      *
      */
     public JVectorSpriteX() {
-        this.setColors(null);
-        this.setShape(null);
-        this.setPolygon(null);
-        this.scale = 1;
+	this.setColors(null);
+	this.setShape(null);
+	this.setPolygon(null);
+	this.scale = 1;
     }
 }

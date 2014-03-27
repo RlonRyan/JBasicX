@@ -1,18 +1,18 @@
 /**
- * @author  RlonRyan
- * @name    JMidiX
+ * @author RlonRyan
+ * @name JMidiX
  * @version 1.0.0
- * @date    Dec 23, 2011
- * @info    Midi class.
-**/
-
+ * @date Dec 23, 2011
+ * @info Midi class.
+ *
+ */
 package JIOX;
 
 import java.net.URL;
 
 /**
- * @author  RlonRyan
- * @name    JMidiX
+ * @author RlonRyan
+ * @name JMidiX
  */
 public class JMidiX {
 
@@ -20,13 +20,13 @@ public class JMidiX {
     private long pausedat = 0;
 
     private URL getUrl(String filename) {
-        URL url = null;
-        try {
-            url = this.getClass().getResource(filename);
-        }
-        catch (Exception e) {
-        }
-        return url;
+	URL url = null;
+	try {
+	    url = this.getClass().getResource(filename);
+	}
+	catch (Exception e) {
+	}
+	return url;
     }
 
     /**
@@ -34,7 +34,7 @@ public class JMidiX {
      * @return
      */
     public String getFile() {
-        return file;
+	return file;
     }
 
     /**
@@ -42,16 +42,16 @@ public class JMidiX {
      * @param file
      */
     public void setFile(String file) {
-        this.file = file;
+	this.file = file;
     }
 
     /**
      *
      */
     public final void load() {
-        try {
-        }
-        catch (Exception e) {
-        }
+	try {
+	}
+	catch (Exception e) {
+	}
     }
 }

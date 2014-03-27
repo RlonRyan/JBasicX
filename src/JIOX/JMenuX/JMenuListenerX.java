@@ -17,5 +17,4 @@ public interface JMenuListenerX {
     public void elementSelected(Object source, int... data);
 
     public void elementHighlighted(Object source, int... data);
-
 }
