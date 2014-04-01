@@ -15,7 +15,6 @@ import java.awt.Rectangle;
 import java.awt.geom.AffineTransform;
 import java.awt.geom.Point2D;
 import java.awt.geom.Rectangle2D;
-import static java.lang.Math.*;
 
 /**
  * @author RlonRyan
@@ -37,8 +36,8 @@ public abstract class JSpriteX {
     //Direction
     protected int direction = 0;
     //Rotation
-    protected double rotation = 0;
-    protected double rotationrate = 0;
+    protected int rotation = 0;
+    protected int rotationrate = 0;
     //Bounds
     protected Rectangle2D bounds = new Rectangle.Double();
     //Update Timer
@@ -122,7 +121,7 @@ public abstract class JSpriteX {
      *
      * @return
      */
-    public final double getRotation() {
+    public final int getRotation() {
 	return rotation;
     }
 
@@ -130,7 +129,7 @@ public abstract class JSpriteX {
      *
      * @return
      */
-    public final double getRotationrate() {
+    public final int getRotationrate() {
 	return rotationrate;
     }
 
@@ -240,9 +239,6 @@ public abstract class JSpriteX {
 	if (direction < 0) {
 	    direction = direction + 360;
 	}
-	else if (direction >= 360) {
-	    direction = direction - 360;
-	}
 	this.direction = direction;
     }
 
@@ -250,7 +246,7 @@ public abstract class JSpriteX {
      *
      * @param rotation
      */
-    public final void setRotation(double rotation) {
+    public final void setRotation(int rotation) {
 	this.rotation = rotation;
     }
 
@@ -258,7 +254,7 @@ public abstract class JSpriteX {
      *
      * @param rotationrate
      */
-    public final void setRotationrate(double rotationrate) {
+    public final void setRotationrate(int rotationrate) {
 	this.rotationrate = rotationrate;
     }
 
@@ -330,7 +326,7 @@ public abstract class JSpriteX {
      *
      * @param rotation
      */
-    public final void incRot(double rotation) {
+    public final void incRot(int rotation) {
 	this.rotation += rotation;
     }
 
@@ -338,7 +334,7 @@ public abstract class JSpriteX {
      *
      * @param inc
      */
-    public final void incRotRate(double inc) {
+    public final void incRotRate(int inc) {
 	this.rotationrate += inc;
     }
 
@@ -377,6 +373,10 @@ public abstract class JSpriteX {
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
     //Auto
 
+    public final void rot() {
+	this.rotation = this.direction - 90;
+    }
+
     public final void pause() {
 	this.lastupdate = 0;
     }
@@ -395,8 +395,8 @@ public abstract class JSpriteX {
 	else {
 	    this.setVel(0);
 	}
-	this.incX(((this.vel * (Math.cos(this.direction * Math.PI / 180))) / 1000) * (System.currentTimeMillis() - this.lastupdate));
-	this.incY(((this.vel * (Math.sin(this.direction * Math.PI / 180))) / 1000) * (System.currentTimeMillis() - this.lastupdate));
+	this.incX((this.vel * Math.cos(Math.toRadians(direction)) / 1000) * (System.currentTimeMillis() - this.lastupdate));
+	this.incY((this.vel * Math.sin(Math.toRadians(direction)) / 1000) * (System.currentTimeMillis() - this.lastupdate));
 	this.lastupdate = System.currentTimeMillis();
     }
 
@@ -445,6 +445,10 @@ public abstract class JSpriteX {
 	g2d.setTransform(new AffineTransform());
 	g2d.setColor(Color.WHITE);
 	g2d.drawRect((int) this.bounds.getX(), (int) this.bounds.getY(), (int) this.bounds.getWidth(), (int) this.bounds.getHeight());
+	g2d.setColor(Color.GREEN);
+	g2d.drawLine((int)this.bounds.getCenterX(), (int)this.bounds.getCenterY(), (int)(this.bounds.getCenterX() + this.vel * Math.cos(Math.toRadians(direction))), (int)(this.bounds.getCenterY() + this.vel * Math.sin(Math.toRadians(direction))));
+	g2d.setColor(Color.RED);
+	g2d.drawLine((int)this.bounds.getCenterX(), (int)this.bounds.getCenterY(), (int)(this.bounds.getCenterX() + this.accel * Math.cos(Math.toRadians(direction))), (int)(this.bounds.getCenterY() + this.accel * Math.sin(Math.toRadians(direction))));
     }
 
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -465,14 +469,12 @@ public abstract class JSpriteX {
      * @param direction
      */
     public final void applyForce(double force, double direction) {
-	double adjacent1 = force * cos(toRadians(direction));
-	double opposite1 = force * sin(toRadians(direction));
-	double adjacent2 = this.vel * cos(toRadians(this.direction));
-	double opposite2 = this.vel * sin(toRadians(this.direction));
-	double adjacent = (adjacent1 + adjacent2);
-	double opposite = (opposite1 + opposite2);
-	this.direction = (int)toDegrees(atan(opposite / adjacent));
-	this.vel = sqrt((opposite * opposite) + (adjacent * adjacent));
+	double f1x = force * Math.cos(Math.toRadians(direction));
+	double f1y = force * Math.sin(Math.toRadians(direction));
+	double f2x = this.vel * Math.cos(Math.toRadians(this.direction));
+	double f2y = this.vel * Math.sin(Math.toRadians(this.direction));
+	this.direction = (int)Math.toDegrees(Math.atan2(f1y + f2y, f1x + f2x));
+	this.vel = Math.hypot(f1x + f2x, f1y + f2y);
     }
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

@@ -13,6 +13,7 @@ import JIOX.JMenuX.JMenuElementX.JMenuTextElementX;
 import java.awt.Color;
 import java.awt.Font;
 import java.awt.Graphics2D;
+import java.awt.Rectangle;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -43,16 +44,15 @@ public class JMenuX {
      * Menu Properties
      */
     private int index;
-    private int[] dimensions;
-    private int[] position;
+    private Rectangle bounds;
+    private boolean visible;
 
     /*
      * Constructors Go Here
      */
     public JMenuX(String title, int x, int y, int width, int height, String... elements) {
 	this.title = title;
-	this.position = new int[]{x, y};
-	this.dimensions = new int[]{width, height};
+	this.bounds = new Rectangle(x, y, width, height);
 	this.elements = new ArrayList<>();
 	this.listeners = new ArrayList<>();
 	this.style = new JStyleX();
@@ -66,8 +66,7 @@ public class JMenuX {
 
     public JMenuX(String title, int x, int y, int width, int height, JMenuElementX... elements) {
 	this.title = title;
-	this.position = new int[]{x, y};
-	this.dimensions = new int[]{width, height};
+	this.bounds = new Rectangle(x, y, width, height);
 	this.elements = new ArrayList<>();
 	this.listeners = new ArrayList<>();
 	this.style = new JStyleX();
@@ -106,26 +105,10 @@ public class JMenuX {
      * Incrementers Go Here
      */
     synchronized public final void incrementHighlight() {
-	/*
-	 * Is this lazy? Or is this just maintainablity?
-	 *
-	 * OLD:
-	 *
-	 * this.index = (this.index >= elements.size()) ? 0 : this.index + 1;
-	 * if (this.index < this.elements.size()) {
-	 * this.elements.get(index).highlight();
-	 * }
-	 * fireEvent(ELEMENT_HIGHLIGHTED, index);
-	 *
-	 * NEW:
-	 */
 	this.incrementHighlight(1);
     }
 
     synchronized public final void deincrementHighlight() {
-	/*
-	 * This may or may not be bad for the stack.
-	 */
 	this.incrementHighlight(-1);
     }
 
@@ -200,24 +183,38 @@ public class JMenuX {
 	}
     }
 
+    public void open() {
+	this.index = 0;
+	this.highlight();
+	this.visible = true;
+    }
+
+    public void close() {
+	this.index = 0;
+	this.highlight();
+	this.visible = false;
+    }
     /*
      * Draw Methods Go Here
      */
     public void draw(Graphics2D g2d) {
+	if(!this.visible) {
+	    return;
+	}
 	/*
 	 * Draw the background & Border
 	 */
 	g2d.setColor(this.style.getColor("background"));
-	g2d.fillRoundRect(this.position[0], this.position[1], this.dimensions[0], this.dimensions[1], this.dimensions[0] / 10, this.dimensions[1] / 10);
+	g2d.fillRoundRect(this.bounds.x, this.bounds.y, this.bounds.width, this.bounds.height, this.bounds.width / 10, this.bounds.height / 10);
 	g2d.setColor(this.style.getColor("border"));
-	g2d.drawRoundRect(this.position[0], this.position[1], this.dimensions[0], this.dimensions[1], this.dimensions[0] / 10, this.dimensions[1] / 10);
+	g2d.drawRoundRect(this.bounds.x, this.bounds.y, this.bounds.width, this.bounds.height, this.bounds.width / 10, this.bounds.height / 10);
 
 	/*
 	 * Intitialize the variables for dynamic placement
 	 */
-	int x = this.position[0] + this.dimensions[0] / 100;
-	int y = this.position[1] + this.dimensions[1] / 100;
-	int width = this.dimensions[0] - (this.dimensions[0] / 50);
+	int x = this.bounds.x + this.bounds.width / 100;
+	int y = this.bounds.y + this.bounds.height / 100;
+	int width = this.bounds.width - (this.bounds.width / 50);
 
 	/*
 	 * Draw the Title.
@@ -226,7 +223,7 @@ public class JMenuX {
 	g2d.setFont(this.style.getFont("title"));
 
 	x += g2d.getFontMetrics().getHeight();
-	y += g2d.getFontMetrics().getHeight() + this.dimensions[1] / 100;
+	y += g2d.getFontMetrics().getHeight() + this.bounds.height / 100;
 	width = width - (g2d.getFontMetrics().getHeight() * 2);
 
 	g2d.drawString(title, x, y);
@@ -239,7 +236,7 @@ public class JMenuX {
 	 * Draw a title separator.
 	 */
 	g2d.setColor(this.style.getColor("border"));
-	g2d.drawLine(this.position[0], y, this.position[0] + this.dimensions[0], y);
+	g2d.drawLine(this.bounds.x, y, this.bounds.x + this.bounds.width, y);
 
 	y += g2d.getFontMetrics().getHeight();
 

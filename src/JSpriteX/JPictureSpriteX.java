@@ -132,7 +132,7 @@ public final class JPictureSpriteX extends JSpriteX {
 
 	g2d.setTransform(new AffineTransform());
 	g2d.translate(this.bounds.getX(), this.bounds.getY());
-	g2d.rotate(this.rotation, this.bounds.getWidth() / 2, this.bounds.getHeight() / 2);
+	g2d.rotate(Math.toRadians(this.rotation), this.bounds.getWidth() / 2, this.bounds.getHeight() / 2);
 
 	if (this.columns != 0) {
 	    this.updateFrameSize();
