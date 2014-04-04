@@ -402,8 +402,8 @@ public abstract class JGameEngineX implements Runnable, JInputOutputX {
      */
     public void paintGameData() {
         if (showgamedata) {
-            holder.getGraphics().drawString("FPS: " + this.fps, 10, (int)this.getGameWinHeight() - 10);
-            holder.getGraphics().drawString("Sups: " + this.spriteholder.getSups(), 100, (int)this.getGameWinHeight() - 10);
+            holder.getGraphics().drawString("FPS: " + this.fps, 25, (int)this.getGameWinHeight() - 10);
+            holder.getGraphics().drawString("Sups: " + this.spriteholder.getSups(), 125, (int)this.getGameWinHeight() - 10);
         }
     }
 
