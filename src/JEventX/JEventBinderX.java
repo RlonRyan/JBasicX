@@ -5,12 +5,10 @@
  */
 package JEventX;
 
-import JGameEngineX.JGameEngineX;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
-import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
-import java.util.List;
 
 /**
  *
@@ -18,34 +16,36 @@ import java.util.List;
  */
 public class JEventBinderX {
 
-    public HashMap<JGameEngineX.GAME_STATUS, HashMap<JEventX, HashMap<Method, Class[]>>> bindings;
+    public HashMap<String, HashMap<String, HashMap<Method, Object[]>>> bindings;
 
-    public final void bind(JEventX e, Method meth, Class...args) {
+    public JEventBinderX() {
+	bindings = new HashMap<>();
+    }
+
+    public final void bind(JEventX e, Method meth, Object... args) {
 	if (!this.bindings.containsKey(e.mode)) {
-	    this.bindings.put(e.mode, new HashMap<JEventX, HashMap<Method, Class[]>>());
+	    this.bindings.put(e.mode, new HashMap<String, HashMap<Method, Object[]>>());
 	}
-	if (!this.bindings.get(e.mode).containsKey(e)) {
-	    this.bindings.get(e.mode).put(e, new HashMap<Method, Class[]>());
+	if (!this.bindings.get(e.mode).containsKey(e.toString())) {
+	    this.bindings.get(e.mode).put(e.toString(), new HashMap<Method, Object[]>());
 	}
-	this.bindings.get(e.mode).get(e).put(meth, args);
+	this.bindings.get(e.mode).get(e.toString()).put(meth, args);
     }
 
     public final void unbind(JEventX e, Method m) {
-	if (this.bindings.containsKey(e.mode) && this.bindings.get(e.mode).containsKey(e)) {
-	    this.bindings.get(e.mode).get(e).remove(m);
+	if (this.bindings.containsKey(e.mode) && this.bindings.get(e.mode).containsKey(e.toString())) {
+	    this.bindings.get(e.mode).get(e.toString()).remove(m);
 	}
     }
 
     public final void fireEvent(JEventX e) {
-	if (this.bindings.containsKey(e.mode) && this.bindings.get(e.mode).containsKey(e)) {
-	    for (Method m : bindings.get(e.mode).get(e).keySet()) {
+	if (this.bindings.containsKey(e.mode) && this.bindings.get(e.mode).containsKey(e.toString())) {
+	    for (Method m : bindings.get(e.mode).get(e.toString()).keySet()) {
 		try {
-		    if (m.isAccessible()) {
-			m.invoke(bindings.get(e.mode).get(e).get(m));
-		    }
+		    m.invoke(bindings.get(e.mode).get(e.toString()).get(m)[0], Arrays.copyOfRange(bindings.get(e.mode).get(e.toString()).get(m), 1, bindings.get(e.mode).get(e.toString()).get(m).length));
 		}
 		catch (IllegalAccessException | IllegalArgumentException | InvocationTargetException ex) {
-		    //???
+		    System.err.println(ex.toString());
 		}
 	    }
 	}

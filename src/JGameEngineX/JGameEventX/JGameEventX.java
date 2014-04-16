@@ -7,14 +7,15 @@
 package JGameEngineX.JGameEventX;
 
 import JEventX.JEventX;
-import JGameEngineX.JGameEngineX;
 
 /**
  *
  * @author RlonRyan
  */
 public class JGameEventX extends JEventX {
-    public JGameEventX(JGameEngineX.GAME_STATUS mode) {
+
+    public JGameEventX(String mode) {
 	super(mode);
     }
+
 }

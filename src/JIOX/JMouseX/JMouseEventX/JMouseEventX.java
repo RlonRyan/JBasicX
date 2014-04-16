@@ -7,7 +7,6 @@
 package JIOX.JMouseX.JMouseEventX;
 
 import JEventX.JEventX;
-import JGameEngineX.JGameEngineX;
 
 /**
  *
@@ -19,12 +18,20 @@ public class JMouseEventX extends JEventX{
     
     public static enum MouseEvent {
         MOUSE_MOVED,
+	MOUSE_CLICK_LEFT,
+	MOUSE_CLICK_CENTER,
+	MOUSE_CLICK_RIGHT,
 	MOUSE_WHEEL_MOVED;
     }
     
-    public JMouseEventX(JGameEngineX.GAME_STATUS mode, MouseEvent type) {
+    public JMouseEventX(String mode, MouseEvent type) {
 	super(mode);
 	this.type = type;
+    }
+
+    @Override
+    public String toString() {
+	return type.toString();
     }
     
 }

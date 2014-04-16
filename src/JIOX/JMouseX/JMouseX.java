@@ -9,8 +9,8 @@
 package JIOX.JMouseX;
 
 import JEventX.JEventBinderX;
+import JEventX.JEventX;
 import JGameEngineX.JGameEngineX;
-import JGameHolderX.JGameHolderX;
 import JIOX.JInputOutputX;
 import JIOX.JMouseX.JMouseEventX.JMouseEventX;
 import java.awt.Point;
@@ -23,12 +23,11 @@ import java.util.List;
 /**
  * @author RlonRyan
  * @name JMouseX
- * @deprecated
  */
 public class JMouseX implements MouseListener, MouseMotionListener, MouseWheelListener {
 
     private final JGameEngineX holder;
-    
+
     private List<JInputOutputX> listeners;
     private Point click = new Point();
     private Point press = new Point();
@@ -58,10 +57,11 @@ public class JMouseX implements MouseListener, MouseMotionListener, MouseWheelLi
 
     /**
      *
-     * @param user
+     * @param holder
      */
     public JMouseX(JGameEngineX holder) {
 	this.holder = holder;
+	this.bindings = new JEventBinderX();
 	this.listeners = new ArrayList<>();
     }
 
@@ -196,13 +196,14 @@ public class JMouseX implements MouseListener, MouseMotionListener, MouseWheelLi
     public void mouseMoved(MouseEvent e) {
 	mousedrag = false;
 	position.setLocation(e.getX(), e.getY());
+	fireEvent(new JMouseEventX(holder.getGameStatus().toString(), JMouseEventX.MouseEvent.MOUSE_MOVED));
 	checkButton(e);
     }
 
     @Override
     public void mouseWheelMoved(MouseWheelEvent e) {
 	scroll += e.getWheelRotation();
-	fireEvent(new JMouseEventX(holder.getGameStatus(), JMouseEventX.MouseEvent.MOUSE_WHEEL_MOVED));
+	fireEvent(new JMouseEventX(holder.getGameStatus().toString(), JMouseEventX.MouseEvent.MOUSE_WHEEL_MOVED));
 	checkButton(e);
     }
 
@@ -314,13 +315,13 @@ public class JMouseX implements MouseListener, MouseMotionListener, MouseWheelLi
     synchronized public final void removeEventListener(JInputOutputX listener) {
 	listeners.remove(listener);
     }
-    
+
     /*
      * Event Methods Go Way Down Here
      * Likely will be deprecated or removed, as the elements themselves will get
      * their own events.
      */
-    synchronized public final void bind(JMouseEventX e, Method m, Class<?>...args) {
+    synchronized public final void bind(JEventX e, Method m, Object... args) {
 	bindings.bind(e, m, args);
     }
 

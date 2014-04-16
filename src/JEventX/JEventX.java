@@ -6,16 +6,15 @@
 
 package JEventX;
 
-import JGameEngineX.JGameEngineX;
-
 /**
  *
  * @author RlonRyan
  */
 public abstract class JEventX {
-    public final JGameEngineX.GAME_STATUS mode;
-    
-    public JEventX(JGameEngineX.GAME_STATUS mode) {
+    public final String mode;
+
+    public JEventX(String mode) {
 	this.mode = mode;
     }
+     
 }

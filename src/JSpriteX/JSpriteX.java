@@ -340,7 +340,7 @@ public abstract class JSpriteX {
 
     /**
      *
-     * @param x
+     * @param inc
      */
     public final void incX(double inc) {
 	this.setX(this.bounds.getX() + inc);
@@ -348,7 +348,7 @@ public abstract class JSpriteX {
 
     /**
      *
-     * @param y
+     * @param inc
      */
     public final void incY(double inc) {
 	this.setY(this.bounds.getY() + inc);

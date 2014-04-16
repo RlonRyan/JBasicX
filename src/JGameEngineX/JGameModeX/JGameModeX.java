@@ -5,6 +5,8 @@
  */
 package JGameEngineX.JGameModeX;
 
+import java.awt.Graphics2D;
+
 /*
  * public static enum GAME_STATUS {
  *
@@ -21,6 +23,24 @@ package JGameEngineX.JGameModeX;
  *
  * @author RlonRyan
  */
-public abstract class JGameModeX {  
+public abstract class JGameModeX {
+    
+    public final String name;
+
+    public JGameModeX(String name) {
+	this.name = name;
+    }
+    
+    public abstract boolean initialize();
+    
+    public abstract void start();
+    
+    public abstract void update();
+    
+    public abstract void paint(Graphics2D g2d);
+    
+    public abstract void pause();
+    
+    public abstract void stop();
     
 }
