@@ -18,11 +18,15 @@ import JIOX.JKeyboardX;
 import JIOX.JMouseX.JMouseX;
 import JSpriteX.JSpriteHolderX;
 import java.awt.Color;
+import java.awt.Event;
 import java.awt.Font;
 import java.awt.Graphics2D;
 import java.awt.HeadlessException;
 import java.awt.Rectangle;
+import java.awt.event.KeyEvent;
+import java.awt.event.KeyListener;
 import java.awt.geom.Rectangle2D;
+import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.EventObject;
 import java.util.HashMap;
@@ -34,7 +38,7 @@ import java.util.TimerTask;
  * @author RlonRyan
  * @name JGameX
  */
-public abstract class JGameEngineX implements Runnable, JInputOutputX {
+public class JGameEngineX implements Runnable, KeyListener, JInputOutputX {
 
     public final String title;
 
@@ -61,7 +65,28 @@ public abstract class JGameEngineX implements Runnable, JInputOutputX {
 
     private List<JGameEngineListenerX> listeners = new ArrayList<>();
 
+    // Initializers
+
+    public JGameEngineX(String title, String mode, int fps, int width, int height) throws HeadlessException {
+	//  Set Game Atributes
+	this.modes = new HashMap();
+	this.title = title;
+	this.dfps = fps;
+	this.dimensions = new Rectangle(0, 0, width, height);
+	switch (mode.toLowerCase()) {
+	    case "windowed":
+		this.holder = new JWindowHolderX(this.title, width, height);
+		break;
+	    case "applet":
+		this.holder = new JAppletHolderX(width, height);
+		break;
+	    default:
+		throw new UnsupportedOperationException("Modes other than windowed and applet not yet supported at this time");
+	}
+    }
+    
     //Acessors
+    
     /**
      * Method for getting the
      * <code>gamestatus</code>variable.
@@ -111,9 +136,10 @@ public abstract class JGameEngineX implements Runnable, JInputOutputX {
     public final boolean isGameDataVisible() {
 	return this.showgamedata;
     }
+    
     //Mutators
 
-    public final void addGameMode(String name, JGameModeX mode) {
+    public final void registerGameMode(String name, JGameModeX mode) {
 	this.modes.put(name, mode);
     }
 
@@ -156,7 +182,8 @@ public abstract class JGameEngineX implements Runnable, JInputOutputX {
 	this.holder.getGraphics().setFont(font);
     }
 
-    // Function
+    // Paint
+    
     public final void paint() {
 	framenum++;
 	if (System.currentTimeMillis() > frametime + 1000) {
@@ -221,9 +248,11 @@ public abstract class JGameEngineX implements Runnable, JInputOutputX {
 	}
     }
 
-    public final void init() {
+    // Run
+    
+    public final void start() {
 
-	System.out.print("Initializing.");
+	System.out.print("Starting.");
 	
 	Timer progressor = new Timer();
 	
@@ -247,10 +276,6 @@ public abstract class JGameEngineX implements Runnable, JInputOutputX {
 	
 	this.images = new JImageHandlerX(this.getClass());
 	this.spriteholder = new JSpriteHolderX(this);
-	
-	for(String key : modes.keySet()) {
-	    modes.get(key).initialize();
-	}
 
 	//  Listeners
 	this.addListener(spriteholder);
@@ -261,9 +286,7 @@ public abstract class JGameEngineX implements Runnable, JInputOutputX {
 
 	this.gamemain = new Thread(this);
 	this.gamemain.start();
-    }
 
-    public final void start() {
 	System.out.print("Starting.");
 
 	// Timing Stuff
@@ -294,6 +317,8 @@ public abstract class JGameEngineX implements Runnable, JInputOutputX {
 	this.spriteholder.stop();
     }
 
+    // Events
+    
     @Override
     public void updateIO() {
 	// Ummm...
@@ -302,7 +327,24 @@ public abstract class JGameEngineX implements Runnable, JInputOutputX {
     @Override
     public void lostFocus(EventObject e) {
     }
+    
+    @Override
+    public void keyTyped(KeyEvent k) {
+	binder.fireEvent(mode, k);
+    }
 
+    @Override
+    public void keyPressed(KeyEvent k) {
+	binder.fireEvent(mode, k);
+    }
+
+    @Override
+    public void keyReleased(KeyEvent k) {
+	binder.fireEvent(mode, k);
+    }
+
+    // Listeners
+    
     synchronized protected void addListener(JGameEngineListenerX listener) {
 	if (!this.listeners.contains(listener)) {
 	    this.listeners.add(listener);
@@ -314,33 +356,8 @@ public abstract class JGameEngineX implements Runnable, JInputOutputX {
 	    this.listeners.remove(listener);
 	}
     }
-
-    public JGameEngineX(String title, String mode) throws HeadlessException {
-	this(title, mode, 50, 640, 480);
+    
+    public void bind(String mode, String event, Method meth, Object... args) {
+	this.binder.bind(mode, event, meth, args);
     }
-
-    public JGameEngineX(String title, String mode, int fps, int width, int height) throws HeadlessException {
-	//  Set Game Atributes
-	this.modes = new HashMap();
-	this.title = title;
-	this.dfps = fps;
-	this.dimensions = new Rectangle(0, 0, width, height);
-	switch (mode.toLowerCase()) {
-	    case "windowed":
-		this.holder = new JWindowHolderX(this.title, width, height);
-		break;
-	    case "applet":
-		this.holder = new JAppletHolderX(width, height);
-		break;
-	    default:
-		throw new UnsupportedOperationException("Modes other than windowed and applet not yet supported at this time");
-	}
-    }
-    
-    public abstract void initalizeAddons();
-    
-    public abstract void registerModes();
-    
-    public abstract void start();
-    
 }

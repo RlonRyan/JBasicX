@@ -197,7 +197,7 @@ public class JMenuX {
     /*
      * Draw Methods Go Here
      */
-    public void draw(Graphics2D g2d) {
+    public void paint(Graphics2D g2d) {
 	if(!this.visible) {
 	    return;
 	}

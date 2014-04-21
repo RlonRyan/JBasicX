@@ -5,6 +5,7 @@
  */
 package JGameEngineX.JGameModeX;
 
+import JGameEngineX.JGameEngineX;
 import java.awt.Graphics2D;
 
 /*
@@ -26,12 +27,12 @@ import java.awt.Graphics2D;
 public abstract class JGameModeX {
     
     public final String name;
+    public final JGameEngineX holder;
 
-    public JGameModeX(String name) {
+    public JGameModeX(String name, JGameEngineX holder) {
 	this.name = name;
+	this.holder = holder;
     }
-    
-    public abstract boolean initialize();
     
     public abstract void start();
     

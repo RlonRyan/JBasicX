@@ -5,6 +5,8 @@
  */
 package JEventX;
 
+import java.awt.AWTEvent;
+import java.awt.Event;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.util.Arrays;
@@ -22,27 +24,40 @@ public class JEventBinderX {
 	bindings = new HashMap<>();
     }
 
-    public final void bind(JEventX e, Method meth, Object... args) {
-	if (!this.bindings.containsKey(e.mode)) {
-	    this.bindings.put(e.mode, new HashMap<String, HashMap<Method, Object[]>>());
+    public final void bind(String mode, String event, Method meth, Object... args) {
+	if (!this.bindings.containsKey(mode)) {
+	    this.bindings.put(mode, new HashMap<String, HashMap<Method, Object[]>>());
 	}
-	if (!this.bindings.get(e.mode).containsKey(e.toString())) {
-	    this.bindings.get(e.mode).put(e.toString(), new HashMap<Method, Object[]>());
+	if (!this.bindings.get(mode).containsKey(event)) {
+	    this.bindings.get(mode).put(event, new HashMap<Method, Object[]>());
 	}
-	this.bindings.get(e.mode).get(e.toString()).put(meth, args);
+	this.bindings.get(mode).get(event).put(meth, args);
     }
 
-    public final void unbind(JEventX e, Method m) {
-	if (this.bindings.containsKey(e.mode) && this.bindings.get(e.mode).containsKey(e.toString())) {
-	    this.bindings.get(e.mode).get(e.toString()).remove(m);
+    public final void unbind(String mode, String event, Method m) {
+	if (this.bindings.containsKey(mode) && this.bindings.get(mode).containsKey(event)) {
+	    this.bindings.get(mode).get(event).remove(m);
 	}
     }
 
-    public final void fireEvent(JEventX e) {
-	if (this.bindings.containsKey(e.mode) && this.bindings.get(e.mode).containsKey(e.toString())) {
-	    for (Method m : bindings.get(e.mode).get(e.toString()).keySet()) {
+    public final void fireEvent(String mode, Event e) {
+	if (this.bindings.containsKey(mode) && this.bindings.get(mode).containsKey(e.toString())) {
+	    for (Method m : bindings.get(mode).get(e.toString()).keySet()) {
 		try {
-		    m.invoke(bindings.get(e.mode).get(e.toString()).get(m)[0], Arrays.copyOfRange(bindings.get(e.mode).get(e.toString()).get(m), 1, bindings.get(e.mode).get(e.toString()).get(m).length));
+		    m.invoke(bindings.get(mode).get(e.toString()).get(m)[0], Arrays.copyOfRange(bindings.get(mode).get(e.toString()).get(m), 1, bindings.get(mode).get(e.toString()).get(m).length));
+		}
+		catch (IllegalAccessException | IllegalArgumentException | InvocationTargetException ex) {
+		    System.err.println(ex.toString());
+		}
+	    }
+	}
+    }
+    
+    public final void fireEvent(String mode, AWTEvent e) {
+	if (this.bindings.containsKey(mode) && this.bindings.get(mode).containsKey(e.toString())) {
+	    for (Method m : bindings.get(mode).get(e.toString()).keySet()) {
+		try {
+		    m.invoke(bindings.get(mode).get(e.toString()).get(m)[0], Arrays.copyOfRange(bindings.get(mode).get(e.toString()).get(m), 1, bindings.get(mode).get(e.toString()).get(m).length));
 		}
 		catch (IllegalAccessException | IllegalArgumentException | InvocationTargetException ex) {
 		    System.err.println(ex.toString());
