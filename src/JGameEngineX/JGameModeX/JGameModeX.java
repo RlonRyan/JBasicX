@@ -34,6 +34,8 @@ public abstract class JGameModeX {
 	this.holder = holder;
     }
     
+    public abstract void registerBindings();
+    
     public abstract void start();
     
     public abstract void update();

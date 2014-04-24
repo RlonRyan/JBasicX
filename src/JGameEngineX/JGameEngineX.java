@@ -18,7 +18,6 @@ import JIOX.JKeyboardX;
 import JIOX.JMouseX.JMouseX;
 import JSpriteX.JSpriteHolderX;
 import java.awt.Color;
-import java.awt.Event;
 import java.awt.Font;
 import java.awt.Graphics2D;
 import java.awt.HeadlessException;
@@ -27,10 +26,8 @@ import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
 import java.awt.geom.Rectangle2D;
 import java.lang.reflect.Method;
-import java.util.ArrayList;
 import java.util.EventObject;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Timer;
 import java.util.TimerTask;
 
@@ -62,8 +59,6 @@ public class JGameEngineX implements Runnable, KeyListener, JInputOutputX {
     private Font font = new Font("Arial", Font.PLAIN, 10);
 
     private HashMap<String, JGameModeX> modes;
-
-    private List<JGameEngineListenerX> listeners = new ArrayList<>();
 
     // Initializers
 
@@ -252,7 +247,7 @@ public class JGameEngineX implements Runnable, KeyListener, JInputOutputX {
     
     public final void start() {
 
-	System.out.print("Starting.");
+	System.out.print("Initializing.");
 	
 	Timer progressor = new Timer();
 	
@@ -266,6 +261,12 @@ public class JGameEngineX implements Runnable, KeyListener, JInputOutputX {
 	//  Resources
 	this.binder = new JEventBinderX();
 	
+	System.out.println(binder.toString());
+	
+	for(String key : modes.keySet()) {
+	    modes.get(key).registerBindings();
+	}
+	
 	this.mouse = new JMouseX(this);
 	this.holder.addMouseListener(this.mouse);
 	this.mouse.addEventListener(this);
@@ -276,11 +277,6 @@ public class JGameEngineX implements Runnable, KeyListener, JInputOutputX {
 	
 	this.images = new JImageHandlerX(this.getClass());
 	this.spriteholder = new JSpriteHolderX(this);
-
-	//  Listeners
-	this.addListener(spriteholder);
-
-	progressor = null;
 	
 	System.out.println("Initialized!");
 
@@ -296,6 +292,8 @@ public class JGameEngineX implements Runnable, KeyListener, JInputOutputX {
 	this.spriteholder.start();
 
 	System.out.println("Started!");
+	progressor.cancel();
+	
     }
 
     @Override
@@ -308,6 +306,10 @@ public class JGameEngineX implements Runnable, KeyListener, JInputOutputX {
 	    catch (InterruptedException e) {
 		this.holder.getGraphics().drawString(e.getLocalizedMessage(), 0, 0);
 	    }
+	    
+	    if (this.mode != null && this.modes.get(mode) != null) 
+		this.modes.get(mode).update();
+	    
 	    paint();
 	}
     }
@@ -343,19 +345,7 @@ public class JGameEngineX implements Runnable, KeyListener, JInputOutputX {
 	binder.fireEvent(mode, k);
     }
 
-    // Listeners
-    
-    synchronized protected void addListener(JGameEngineListenerX listener) {
-	if (!this.listeners.contains(listener)) {
-	    this.listeners.add(listener);
-	}
-    }
-
-    synchronized protected void removeListener(JGameEngineListenerX listener) {
-	if (this.listeners.contains(listener)) {
-	    this.listeners.remove(listener);
-	}
-    }
+    // Bindings
     
     public void bind(String mode, String event, Method meth, Object... args) {
 	this.binder.bind(mode, event, meth, args);

@@ -9,10 +9,9 @@
 package JIOX.JMouseX;
 
 import JEventX.JEventBinderX;
-import JEventX.JEventX;
 import JGameEngineX.JGameEngineX;
 import JIOX.JInputOutputX;
-import JIOX.JMouseX.JMouseEventX.JMouseEventX;
+import java.awt.AWTEvent;
 import java.awt.Point;
 import java.awt.event.*;
 import java.awt.geom.Point2D;
@@ -27,8 +26,8 @@ import java.util.List;
 public class JMouseX implements MouseListener, MouseMotionListener, MouseWheelListener {
 
     private final JGameEngineX holder;
-
-    private List<JInputOutputX> listeners;
+    private final List<JInputOutputX> listeners;
+    
     private Point click = new Point();
     private Point press = new Point();
     private Point release = new Point();
@@ -37,6 +36,7 @@ public class JMouseX implements MouseListener, MouseMotionListener, MouseWheelLi
     private Point drag = new Point();
     private Point move = new Point();
     private Point position = new Point();
+    
     private JEventBinderX bindings = new JEventBinderX();
     private int scroll = 0;
     private Boolean mousedown = false;
@@ -139,6 +139,11 @@ public class JMouseX implements MouseListener, MouseMotionListener, MouseWheelLi
 	    default:
 		mousebutton = 0;
 	}
+	
+	this.position = e.getPoint();
+	
+	fireEvent(e);
+	
 	for (JInputOutputX listener : listeners) {
 	    listener.updateIO();
 	}
@@ -196,14 +201,12 @@ public class JMouseX implements MouseListener, MouseMotionListener, MouseWheelLi
     public void mouseMoved(MouseEvent e) {
 	mousedrag = false;
 	position.setLocation(e.getX(), e.getY());
-	fireEvent(new JMouseEventX(holder.getGameStatus().toString(), JMouseEventX.MouseEvent.MOUSE_MOVED));
 	checkButton(e);
     }
 
     @Override
     public void mouseWheelMoved(MouseWheelEvent e) {
 	scroll += e.getWheelRotation();
-	fireEvent(new JMouseEventX(holder.getGameStatus().toString(), JMouseEventX.MouseEvent.MOUSE_WHEEL_MOVED));
 	checkButton(e);
     }
 
@@ -321,15 +324,15 @@ public class JMouseX implements MouseListener, MouseMotionListener, MouseWheelLi
      * Likely will be deprecated or removed, as the elements themselves will get
      * their own events.
      */
-    synchronized public final void bind(JEventX e, Method m, Object... args) {
-	bindings.bind(e, m, args);
+    synchronized public final void bind(String mode, String event, Method m, Object... args) {
+	bindings.bind(mode, event, m, args);
     }
 
-    synchronized public final void unbind(JMouseEventX e, Method m) {
-	bindings.unbind(e, m);
+    synchronized public final void unbind(String mode, String event, Method m) {
+	bindings.unbind(mode, event, m);
     }
 
-    synchronized public void fireEvent(JMouseEventX e) {
-	bindings.fireEvent(e);
+    synchronized public void fireEvent(AWTEvent e) {
+	bindings.fireEvent(this.holder.getGameMode(), e);
     }
 }

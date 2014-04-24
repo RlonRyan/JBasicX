@@ -9,18 +9,16 @@
 package JSpriteX;
 
 import JBasicX.JImageHandlerX;
-import JGameEngineX.JGameEngineListenerX;
 import JGameEngineX.JGameEngineX;
 import java.awt.Graphics2D;
 import java.awt.image.BufferedImage;
-import java.io.File;
 import java.util.LinkedList;
 
 /**
  * @author RlonRyan
  * @name JSpriteHolderX
  */
-final public class JSpriteHolderX implements Runnable, JGameEngineListenerX {
+final public class JSpriteHolderX implements Runnable {
 
     // Constants
     /**
@@ -46,9 +44,11 @@ final public class JSpriteHolderX implements Runnable, JGameEngineListenerX {
     // Public
     // Private
     private Thread spriteUpdateThread;
-    private LinkedList<JSpriteX> sprites;
-    private JImageHandlerX images;
-    private JGameEngineX holder;
+    
+    private final LinkedList<JSpriteX> sprites;
+    private final JImageHandlerX images;
+    private final JGameEngineX holder;
+    
     private int dsups = 100;
     private int sups = 0;
     private long updatetime;
@@ -146,7 +146,7 @@ final public class JSpriteHolderX implements Runnable, JGameEngineListenerX {
      * @param type
      */
     synchronized final public void addSprite(int type) {
-	JSpriteX spr = new JPictureSpriteX(this.images.getDefaultImage(), this.holder.getCenterX(), this.holder.getCenterY());
+	JSpriteX spr = new JPictureSpriteX(this.images.getDefaultImage(), this.holder.getDimensions().getCenterX(), this.holder.getDimensions().getCenterY());
 	spr.setType(type);
 	this.sprites.add(spr);
     }
@@ -203,22 +203,22 @@ final public class JSpriteHolderX implements Runnable, JGameEngineListenerX {
 	    switch (spr.getType()) {
 		case SPRITE_BASIC:
 		    spr.update();
-		    if ((spr.getX() < 0) || (spr.getX() > this.holder.getGameWinWidth()) || (spr.getY() < 0) || (spr.getY() > this.holder.getGameWinHeight())) {
+		    if ((spr.getX() < 0) || (spr.getX() > (int) this.holder.getDimensions().getWidth()) || (spr.getY() < 0) || (spr.getY() > (int) this.holder.getDimensions().getHeight())) {
 			this.sprites.remove(i);
 		    }
 		    break;
 		case SPRITE_LOOPER:
 
 		    if (spr.getX() < 0) {
-			spr.setX(this.holder.getGameWinWidth());
+			spr.setX((int) this.holder.getDimensions().getWidth());
 		    }
-		    else if (spr.getX() > this.holder.getGameWinWidth()) {
+		    else if (spr.getX() > (int) this.holder.getDimensions().getWidth()) {
 			spr.setX(0);
 		    }
 		    else if (spr.getY() < 0) {
-			spr.setY(this.holder.getGameWinHeight());
+			spr.setY((int) this.holder.getDimensions().getHeight());
 		    }
-		    else if (spr.getY() > this.holder.getGameWinHeight()) {
+		    else if (spr.getY() > (int) this.holder.getDimensions().getHeight()) {
 			spr.setY(0);
 		    }
 		    spr.update();
@@ -229,20 +229,20 @@ final public class JSpriteHolderX implements Runnable, JGameEngineListenerX {
 			spr.setRotation(spr.getDirection() - 90);
 			spr.setX(0);
 		    }
-		    else if (spr.getX() > this.holder.getGameWinWidth()) {
+		    else if (spr.getX() > (int) this.holder.getDimensions().getWidth()) {
 			spr.setDirection(180 - spr.getDirection());
 			spr.setRotation(spr.getDirection() - 90);
-			spr.setX(this.holder.getGameWinWidth());
+			spr.setX((int) this.holder.getDimensions().getWidth());
 		    }
 		    else if (spr.getY() < 0) {
 			spr.setDirection(360 - spr.getDirection());
 			spr.setRotation(spr.getDirection() - 90);
 			spr.setY(0);
 		    }
-		    else if (spr.getY() > this.holder.getGameWinHeight()) {
+		    else if (spr.getY() > (int) this.holder.getDimensions().getHeight()) {
 			spr.setDirection(360 - spr.getDirection());
 			spr.setRotation(spr.getDirection() - 90);
-			spr.setY(this.holder.getGameWinHeight());
+			spr.setY((int) this.holder.getDimensions().getHeight());
 		    }
 		    spr.update();
 		    break;
@@ -405,15 +405,4 @@ final public class JSpriteHolderX implements Runnable, JGameEngineListenerX {
 	this.active = false;
     }
 
-    @Override
-    public void gameStateChanged(JGameEngineX.GAME_STATUS newstate, JGameEngineX.GAME_STATUS oldstate) {
-	if (oldstate == JGameEngineX.GAME_STATUS.GAME_RUNNING && this.isActive()) {
-	    this.stop();
-	    this.pauseAll();
-	}
-	if (newstate == JGameEngineX.GAME_STATUS.GAME_RUNNING && !this.isActive()) {
-	    this.start();
-	    this.pauseAll();
-	}
-    }
 }
