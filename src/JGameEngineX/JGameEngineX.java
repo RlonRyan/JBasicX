@@ -17,6 +17,7 @@ import JIOX.JInputOutputX;
 import JIOX.JKeyboardX;
 import JIOX.JMouseX.JMouseX;
 import JSpriteX.JSpriteHolderX;
+import java.awt.AWTEvent;
 import java.awt.Color;
 import java.awt.Font;
 import java.awt.Graphics2D;
@@ -151,7 +152,11 @@ public class JGameEngineX implements Runnable, KeyListener, JInputOutputX {
      * @param mode
      */
     public final void setGameMode(String mode) {
+	if(this.mode != null) {
+	    this.modes.get(this.mode).stop();
+	}
 	this.mode = mode;
+	this.modes.get(this.mode).start();
     }
 
     /**
@@ -261,8 +266,6 @@ public class JGameEngineX implements Runnable, KeyListener, JInputOutputX {
 	//  Resources
 	this.binder = new JEventBinderX();
 	
-	System.out.println(binder.toString());
-	
 	for(String key : modes.keySet()) {
 	    modes.get(key).registerBindings();
 	}
@@ -273,6 +276,7 @@ public class JGameEngineX implements Runnable, KeyListener, JInputOutputX {
 	
 	this.keyboard = new JKeyboardX();
 	this.holder.addKeyListener(this.keyboard);
+	this.holder.addKeyListener(this);
 	this.keyboard.addEventListener(this);
 	
 	this.images = new JImageHandlerX(this.getClass());
@@ -322,8 +326,8 @@ public class JGameEngineX implements Runnable, KeyListener, JInputOutputX {
     // Events
     
     @Override
-    public void updateIO() {
-	// Ummm...
+    public void updateIO(AWTEvent e) {
+	binder.fireEvent(mode, e);
     }
 
     @Override
@@ -347,7 +351,7 @@ public class JGameEngineX implements Runnable, KeyListener, JInputOutputX {
 
     // Bindings
     
-    public void bind(String mode, String event, Method meth, Object... args) {
-	this.binder.bind(mode, event, meth, args);
+    public void bind(String mode, int eventid, Method meth, Object... args) {
+	this.binder.bind(mode, eventid, meth, args);
     }
 }

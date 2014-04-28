@@ -105,7 +105,8 @@ public class JKeyboardX implements KeyListener {
 	listeners.remove(listener);
     }
 
-    synchronized public void fireEvent() {
-	//fill!
+    synchronized public void fireEvent(KeyEvent k) {
+	for(JInputOutputX l : listeners)
+	    l.updateIO(k);
     }
 }

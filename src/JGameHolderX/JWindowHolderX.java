@@ -9,6 +9,7 @@ import JIOX.JKeyboardX;
 import JIOX.JMouseX.JMouseX;
 import java.awt.Color;
 import java.awt.Graphics2D;
+import java.awt.event.KeyListener;
 import java.awt.geom.AffineTransform;
 import java.awt.image.BufferedImage;
 import javax.swing.JFrame;
@@ -78,7 +79,7 @@ public class JWindowHolderX implements JGameHolderX {
     }
 
     @Override
-    public void addKeyListener(JKeyboardX listener) {
+    public void addKeyListener(KeyListener listener) {
 	this.frame.addKeyListener(listener);
     }
 

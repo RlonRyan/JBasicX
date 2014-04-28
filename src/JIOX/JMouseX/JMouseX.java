@@ -145,7 +145,7 @@ public class JMouseX implements MouseListener, MouseMotionListener, MouseWheelLi
 	fireEvent(e);
 	
 	for (JInputOutputX listener : listeners) {
-	    listener.updateIO();
+	    listener.updateIO(e);
 	}
     }
 
@@ -324,12 +324,12 @@ public class JMouseX implements MouseListener, MouseMotionListener, MouseWheelLi
      * Likely will be deprecated or removed, as the elements themselves will get
      * their own events.
      */
-    synchronized public final void bind(String mode, String event, Method m, Object... args) {
-	bindings.bind(mode, event, m, args);
+    synchronized public final void bind(String mode, int id, Method m, Object... args) {
+	bindings.bind(mode, id, m, args);
     }
 
-    synchronized public final void unbind(String mode, String event, Method m) {
-	bindings.unbind(mode, event, m);
+    synchronized public final void unbind(String mode, int id, Method m) {
+	bindings.unbind(mode, id, m);
     }
 
     synchronized public void fireEvent(AWTEvent e) {

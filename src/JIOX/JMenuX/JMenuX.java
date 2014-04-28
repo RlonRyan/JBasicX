@@ -60,8 +60,7 @@ public class JMenuX {
 	for (String e : elements) {
 	    this.elements.add(new JMenuTextElementX(e, this.style));
 	}
-	this.index = 0;
-	this.highlight();
+	this.highlight(0);
     }
 
     public JMenuX(String title, int x, int y, int width, int height, JMenuElementX... elements) {
@@ -72,8 +71,7 @@ public class JMenuX {
 	this.style = new JStyleX();
 	this.validateStyle();
 	this.elements.addAll(Arrays.asList(elements));
-	this.index = 0;
-	this.highlight();
+	this.highlight(0);
     }
 
     /*
@@ -113,29 +111,20 @@ public class JMenuX {
     }
 
     synchronized public final void incrementHighlight(int increment) {
-	int i = ((this.index + increment) % (this.elements.size()));
-	if (i < 0) {
-	    i = i + this.elements.size();
-	}
-	highlight(i);
+	highlight(this.index + increment);
     }
 
     /*
      * Methods Go Here
      */
     synchronized public final void highlight(int index) {
-	if (this.index < this.elements.size()) {
-	    this.elements.get(this.index).dehighlight();
+	this.elements.get(this.index).dehighlight();
+	this.index = index % this.elements.size();
+	if(this.index < 0){
+	    this.index += this.elements.size();
 	}
-	this.index = index;
-	highlight();
-    }
-
-    synchronized public final void highlight() {
-	if (this.index < this.elements.size()) {
-	    this.elements.get(index).highlight();
-	    fireEvent(JMenuStateX.ELEMENT_HIGHLIGHTED, this.index);
-	}
+	this.elements.get(this.index).highlight();
+	fireEvent(JMenuStateX.ELEMENT_HIGHLIGHTED, this.index);
     }
 
     synchronized public final void selectMenuElement(int index) {
@@ -184,21 +173,20 @@ public class JMenuX {
     }
 
     public void open() {
-	this.index = 0;
-	this.highlight();
+	this.highlight(0);
 	this.visible = true;
     }
 
     public void close() {
-	this.index = 0;
-	this.highlight();
+	this.highlight(0);
 	this.visible = false;
     }
     /*
      * Draw Methods Go Here
      */
+
     public void paint(Graphics2D g2d) {
-	if(!this.visible) {
+	if (!this.visible) {
 	    return;
 	}
 	/*

@@ -8,6 +8,7 @@
  */
 package JIOX;
 
+import java.awt.AWTEvent;
 import java.util.EventObject;
 
 /**
@@ -19,7 +20,7 @@ public interface JInputOutputX {
     /**
      *
      */
-    public void updateIO();
+    public void updateIO(AWTEvent e);
 
     public void lostFocus(EventObject e);
 }

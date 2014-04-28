@@ -5,10 +5,10 @@
  */
 package JGameHolderX;
 
-import JIOX.JKeyboardX;
 import JIOX.JMouseX.JMouseX;
 import java.awt.Color;
 import java.awt.Graphics2D;
+import java.awt.event.KeyListener;
 
 /**
  *
@@ -28,7 +28,7 @@ public interface JGameHolderX {
 
     public void resize(int winw, int winh);
 
-    public void addKeyListener(JKeyboardX listener);
+    public void addKeyListener(KeyListener listener);
 
     public void addMouseListener(JMouseX listener);
 }
