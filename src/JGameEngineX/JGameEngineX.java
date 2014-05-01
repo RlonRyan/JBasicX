@@ -61,7 +61,6 @@ public class JGameEngineX implements Runnable, KeyListener, JInputOutputX {
     private HashMap<String, JGameModeX> modes;
 
     // Initializers
-
     public JGameEngineX(String title, String mode, int fps, int width, int height) throws HeadlessException {
 	//  Set Game Atributes
 	this.modes = new HashMap();
@@ -79,9 +78,8 @@ public class JGameEngineX implements Runnable, KeyListener, JInputOutputX {
 		throw new UnsupportedOperationException("Modes other than windowed and applet not yet supported at this time");
 	}
     }
-    
+
     //Acessors
-    
     /**
      * Method for getting the
      * <code>gamestatus</code>variable.
@@ -131,11 +129,10 @@ public class JGameEngineX implements Runnable, KeyListener, JInputOutputX {
     public final boolean isGameDataVisible() {
 	return this.showgamedata;
     }
-    
-    //Mutators
 
-    public final void registerGameMode(String name, JGameModeX mode) {
-	this.modes.put(name, mode);
+    //Mutators
+    public final void registerGameMode(JGameModeX mode) {
+	this.modes.put(mode.name.toLowerCase(), mode);
     }
 
     /**
@@ -151,10 +148,8 @@ public class JGameEngineX implements Runnable, KeyListener, JInputOutputX {
      * @param mode
      */
     public final void setGameMode(String mode) {
-	if(this.mode != null) {
-	    this.modes.get(this.mode).stop();
-	}
-	this.mode = mode;
+	this.modes.get(this.mode).stop();
+	this.mode = mode.toLowerCase();
 	this.modes.get(this.mode).start();
     }
 
@@ -182,7 +177,6 @@ public class JGameEngineX implements Runnable, KeyListener, JInputOutputX {
     }
 
     // Paint
-    
     public final void paint() {
 	framenum++;
 	if (System.currentTimeMillis() > frametime + 1000) {
@@ -248,11 +242,68 @@ public class JGameEngineX implements Runnable, KeyListener, JInputOutputX {
     }
 
     // Run
-    
-    public final void start() {
-
-	System.out.print("Initializing.");
+    public final void init() {
 	
+	System.out.print("Initializing Core...");
+
+	Timer progressor = new Timer();
+
+	progressor.scheduleAtFixedRate(new TimerTask() {
+	    @Override
+	    public void run() {
+		System.out.print(".");
+	    }
+	}, 0l, 1000l);
+	
+	try {
+	
+	//  Resources
+	this.binder = new JEventBinderX();
+
+	this.mouse = new JMouseX(this);
+	this.holder.addMouseListener(this.mouse);
+	this.mouse.addEventListener(this);
+
+	this.keyboard = new JKeyboardX();
+	this.holder.addKeyListener(this.keyboard);
+	this.holder.addKeyListener(this);
+	this.keyboard.addEventListener(this);
+
+	this.images = new JImageHandlerX(this.getClass());
+	this.spriteholder = new JSpriteHolderX(this);
+
+	System.out.println("Core Initialized!");
+	System.out.print("Initalizing Modes...");
+
+	for (String k : modes.keySet()) {
+	    modes.get(k).init();
+	}
+
+	System.out.println("Modes Initialized!");
+	System.out.print("Initalizing Bindings...");
+
+	for (String key : modes.keySet()) {
+	    modes.get(key).registerBindings();
+	}
+
+	System.out.println("Modes Initialized!");
+	progressor.cancel();
+	System.out.println("Initialized!");
+	}
+	catch(Exception e){ //The buck stops here
+	    progressor.cancel();
+	    System.out.println("Failed!");
+	    System.out.println("");
+	    System.out.println("The error reports:");
+	    e.printStackTrace();
+	}
+	
+    }
+
+    public final void start(String mode) {
+	
+	System.out.print("Starting...");
+
 	Timer progressor = new Timer();
 	
 	progressor.scheduleAtFixedRate(new TimerTask() {
@@ -261,32 +312,12 @@ public class JGameEngineX implements Runnable, KeyListener, JInputOutputX {
 		System.out.print(".");
 	    }
 	}, 0l, 1000l);
-
-	//  Resources
-	this.binder = new JEventBinderX();
 	
-	for(String key : modes.keySet()) {
-	    modes.get(key).registerBindings();
-	}
+	this.mode = mode.toLowerCase();
+	this.modes.get(this.mode).start();
 	
-	this.mouse = new JMouseX(this);
-	this.holder.addMouseListener(this.mouse);
-	this.mouse.addEventListener(this);
-	
-	this.keyboard = new JKeyboardX();
-	this.holder.addKeyListener(this.keyboard);
-	this.holder.addKeyListener(this);
-	this.keyboard.addEventListener(this);
-	
-	this.images = new JImageHandlerX(this.getClass());
-	this.spriteholder = new JSpriteHolderX(this);
-	
-	System.out.println("Initialized!");
-
 	this.gamemain = new Thread(this);
 	this.gamemain.start();
-
-	System.out.print("Starting.");
 
 	// Timing Stuff
 	this.frametime = System.currentTimeMillis();
@@ -294,9 +325,9 @@ public class JGameEngineX implements Runnable, KeyListener, JInputOutputX {
 	//  Start-up Sprite holder
 	this.spriteholder.start();
 
-	System.out.println("Started!");
 	progressor.cancel();
-	
+	System.out.println("Started!");
+
     }
 
     @Override
@@ -309,10 +340,11 @@ public class JGameEngineX implements Runnable, KeyListener, JInputOutputX {
 	    catch (InterruptedException e) {
 		this.holder.getGraphics().drawString(e.getLocalizedMessage(), 0, 0);
 	    }
-	    
-	    if (this.mode != null && this.modes.get(mode) != null) 
+
+	    if (this.mode != null && this.modes.get(mode) != null) {
 		this.modes.get(mode).update();
-	    
+	    }
+
 	    paint();
 	}
     }
@@ -323,7 +355,6 @@ public class JGameEngineX implements Runnable, KeyListener, JInputOutputX {
     }
 
     // Events
-    
     @Override
     public void updateIO(AWTEvent e) {
 	binder.fireEvent(mode, e);
@@ -332,7 +363,7 @@ public class JGameEngineX implements Runnable, KeyListener, JInputOutputX {
     @Override
     public void lostFocus(EventObject e) {
     }
-    
+
     @Override
     public void keyTyped(KeyEvent k) {
 	binder.fireEvent(mode, k, k.getExtendedKeyCode());
@@ -349,12 +380,11 @@ public class JGameEngineX implements Runnable, KeyListener, JInputOutputX {
     }
 
     // Bindings
-    
     public void bind(String mode, int eventid, Method meth, Object... args) {
-	this.binder.bind(mode, eventid, meth, args);
+	this.binder.bind(mode.toLowerCase(), eventid, meth, args);
     }
-    
+
     public void bind(String mode, int eventid, int meta, Method meth, Object... args) {
-	this.binder.bind(mode, eventid, meta, meth, args);
+	this.binder.bind(mode.toLowerCase(), eventid, meta, meth, args);
     }
 }

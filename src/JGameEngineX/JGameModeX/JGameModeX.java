@@ -30,9 +30,11 @@ public abstract class JGameModeX {
     public final JGameEngineX holder;
 
     public JGameModeX(String name, JGameEngineX holder) {
-	this.name = name;
+	this.name = name.toLowerCase();
 	this.holder = holder;
     }
+    
+    public abstract void init();
     
     public abstract void registerBindings();
     
