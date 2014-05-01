@@ -18,33 +18,52 @@ import java.util.HashMap;
  */
 public class JEventBinderX {
 
-    public HashMap<String, HashMap<Object[], HashMap<Method, Object[]>>> bindings;
+    public HashMap<String, HashMap<Integer, HashMap<Integer, HashMap<Method, Object[]>>>> bindings;
 
     public JEventBinderX() {
 	bindings = new HashMap<>();
     }
 
-    public final void bind(String mode, Object[] id, Method meth, Object... args) {
+    public final void bind(String mode, int eventid, Method meth, Object... args) {
+	bind(mode, eventid, 0, meth, args);
+    }
+    
+    public final void bind(String mode, int eventid, int meta, Method meth, Object... args) {
 	if (!this.bindings.containsKey(mode)) {
-	    this.bindings.put(mode, new HashMap<Object[], HashMap<Method, Object[]>>());
+	    this.bindings.put(mode, new HashMap<Integer, HashMap<Integer, HashMap<Method, Object[]>>>());
 	}
-	if (!this.bindings.get(mode).containsKey(id)) {
-	    this.bindings.get(mode).put(id, new HashMap<Method, Object[]>());
+	if (!this.bindings.get(mode).containsKey(eventid)) {
+	    this.bindings.get(mode).put(eventid, new HashMap<Integer, HashMap<Method, Object[]>>());
 	}
-	this.bindings.get(mode).get(id).put(meth, args);
+	if (!this.bindings.get(mode).containsKey(meta)) {
+	    this.bindings.get(mode).get(eventid).put(meta, new HashMap<Method, Object[]>());
+	}
+	this.bindings.get(mode).get(eventid).get(meta).put(meth, args);
     }
 
-    public final void unbind(String mode, Object[] id, Method m) {
-	if (this.bindings.containsKey(mode) && this.bindings.get(mode).containsKey(id)) {
-	    this.bindings.get(mode).get(id).remove(m);
+    public final void unbind(String mode, int eventid, Method m) {
+	unbind(mode, eventid, 0, m);
+    }
+    
+    public final void unbind(String mode, int eventid, int meta, Method m) {
+	if (this.bindings.containsKey(mode) && this.bindings.get(mode).containsKey(eventid) && this.bindings.get(mode).get(eventid).containsKey(meta)) {
+	    this.bindings.get(mode).get(eventid).get(meta).remove(m);
 	}
     }
-
+    
     public final void fireEvent(String mode, Event e) {
-	if (this.bindings.containsKey(mode) && this.bindings.get(mode).containsKey({e.id, e.modifiers})) {
-	    for (Method m : bindings.get(mode).get(e.id).keySet()) {
+	fireEvent(mode, e, 0);
+    }
+    
+    public final void fireEvent(String mode, AWTEvent e) {
+	fireEvent(mode, e, 0);
+    }
+
+    public final void fireEvent(String mode, Event e, int meta) {
+	if (this.bindings.containsKey(mode) && this.bindings.get(mode).containsKey(e.id) && this.bindings.get(mode).get(e.id).containsKey(meta)) {
+	    for (Method m : bindings.get(mode).get(e.id).get(meta).keySet()) {
 		try {
-		    m.invoke(bindings.get(mode).get(e.id).get(m)[0], Arrays.copyOfRange(bindings.get(mode).get(e.id).get(m), 1, bindings.get(mode).get(e.id).get(m).length));
+		    m.invoke(bindings.get(mode).get(e.id).get(meta).get(m)[0], Arrays.copyOfRange(bindings.get(mode).get(e.id).get(meta).get(m), 1, bindings.get(mode).get(e.id).get(meta).get(m).length));
 		}
 		catch (IllegalAccessException | IllegalArgumentException | InvocationTargetException ex) {
 		    System.err.println(ex.toString());
@@ -53,11 +72,11 @@ public class JEventBinderX {
 	}
     }
     
-    public final void fireEvent(String mode, AWTEvent e) {
-	if (this.bindings.containsKey(mode) && this.bindings.get(mode).containsKey(e.getID())) {
-	    for (Method m : bindings.get(mode).get(e.getID()).keySet()) {
+    public final void fireEvent(String mode, AWTEvent e, int meta) {
+	if (this.bindings.containsKey(mode) && this.bindings.get(mode).containsKey(e.getID()) && this.bindings.get(mode).get(e.getID()).containsKey(meta)) {
+	    for (Method m : bindings.get(mode).get(e.getID()).get(meta).keySet()) {
 		try {
-		    m.invoke(bindings.get(mode).get(e.getID()).get(m)[0], Arrays.copyOfRange(bindings.get(mode).get(e.getID()).get(m), 1, bindings.get(mode).get(e.getID()).get(m).length));
+		    m.invoke(bindings.get(mode).get(e.getID()).get(meta).get(m)[0], Arrays.copyOfRange(bindings.get(mode).get(e.getID()).get(meta).get(m), 1, bindings.get(mode).get(e.getID()).get(meta).get(m).length));
 		}
 		catch (IllegalAccessException | IllegalArgumentException | InvocationTargetException ex) {
 		    System.err.println(ex.toString());

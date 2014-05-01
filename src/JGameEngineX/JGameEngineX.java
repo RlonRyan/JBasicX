@@ -40,12 +40,11 @@ public class JGameEngineX implements Runnable, KeyListener, JInputOutputX {
 
     public final String title;
 
-    protected JSpriteHolderX spriteholder;
-    protected JMouseX mouse;
-    protected JKeyboardX keyboard;
-    protected JEventBinderX binder;
-
-    protected JImageHandlerX images;
+    public JSpriteHolderX spriteholder;
+    public JMouseX mouse;
+    public JKeyboardX keyboard;
+    public JEventBinderX binder;
+    public JImageHandlerX images;
 
     private String mode;
     private JGameHolderX holder;
@@ -336,22 +335,26 @@ public class JGameEngineX implements Runnable, KeyListener, JInputOutputX {
     
     @Override
     public void keyTyped(KeyEvent k) {
-	binder.fireEvent(mode, k);
+	binder.fireEvent(mode, k, k.getExtendedKeyCode());
     }
 
     @Override
     public void keyPressed(KeyEvent k) {
-	binder.fireEvent(mode, k);
+	binder.fireEvent(mode, k, k.getExtendedKeyCode());
     }
 
     @Override
     public void keyReleased(KeyEvent k) {
-	binder.fireEvent(mode, k);
+	binder.fireEvent(mode, k, k.getExtendedKeyCode());
     }
 
     // Bindings
     
     public void bind(String mode, int eventid, Method meth, Object... args) {
 	this.binder.bind(mode, eventid, meth, args);
+    }
+    
+    public void bind(String mode, int eventid, int meta, Method meth, Object... args) {
+	this.binder.bind(mode, eventid, meta, meth, args);
     }
 }
