@@ -13,21 +13,15 @@ import JGameEngineX.JGameModeX.JGameModeX;
 import JGameHolderX.JAppletHolderX;
 import JGameHolderX.JGameHolderX;
 import JGameHolderX.JWindowHolderX;
-import JIOX.JInputOutputX;
 import JIOX.JKeyboardX;
 import JIOX.JMouseX.JMouseX;
 import JSpriteX.JSpriteHolderX;
-import java.awt.AWTEvent;
 import java.awt.Color;
 import java.awt.Font;
 import java.awt.Graphics2D;
 import java.awt.HeadlessException;
 import java.awt.Rectangle;
-import java.awt.event.KeyEvent;
-import java.awt.event.KeyListener;
 import java.awt.geom.Rectangle2D;
-import java.lang.reflect.Method;
-import java.util.EventObject;
 import java.util.HashMap;
 import java.util.Timer;
 import java.util.TimerTask;
@@ -36,7 +30,7 @@ import java.util.TimerTask;
  * @author RlonRyan
  * @name JGameX
  */
-public class JGameEngineX implements Runnable, KeyListener, JInputOutputX {
+public class JGameEngineX implements Runnable {
 
     public final String title;
 
@@ -151,6 +145,8 @@ public class JGameEngineX implements Runnable, KeyListener, JInputOutputX {
 	this.modes.get(this.mode).stop();
 	this.mode = mode.toLowerCase();
 	this.modes.get(this.mode).start();
+	this.mouse.setBindings(this.modes.get(this.mode).bindings);
+	this.keyboard.setBindings(this.modes.get(this.mode).bindings);
     }
 
     /**
@@ -167,6 +163,10 @@ public class JGameEngineX implements Runnable, KeyListener, JInputOutputX {
      */
     public final void setDFPS(long dfps) {
 	this.dfps = dfps;
+    }
+    
+    public final void toggleGameDataVisable() {
+	this.showgamedata = !this.showgamedata;
     }
 
     /**
@@ -186,11 +186,11 @@ public class JGameEngineX implements Runnable, KeyListener, JInputOutputX {
 	}
 
 	this.holder.clearBackbuffer();
-
+	this.holder.resetGraphics();
 	this.modes.get(mode).paint(this.holder.getGraphics());
-
+	this.holder.resetGraphics();
 	this.paintGameData();
-
+	this.holder.resetGraphics();
 	this.holder.flip();
     }
 
@@ -244,8 +244,11 @@ public class JGameEngineX implements Runnable, KeyListener, JInputOutputX {
     // Run
     public final void init() {
 	
+	System.out.println(title + " is initializing!");
+	System.out.println();
 	System.out.print("Initializing Core...");
-
+	
+	long init_time = System.currentTimeMillis();
 	Timer progressor = new Timer();
 
 	progressor.scheduleAtFixedRate(new TimerTask() {
@@ -258,16 +261,11 @@ public class JGameEngineX implements Runnable, KeyListener, JInputOutputX {
 	try {
 	
 	//  Resources
-	this.binder = new JEventBinderX();
-
-	this.mouse = new JMouseX(this);
+	this.mouse = new JMouseX();
 	this.holder.addMouseListener(this.mouse);
-	this.mouse.addEventListener(this);
 
 	this.keyboard = new JKeyboardX();
 	this.holder.addKeyListener(this.keyboard);
-	this.holder.addKeyListener(this);
-	this.keyboard.addEventListener(this);
 
 	this.images = new JImageHandlerX(this.getClass());
 	this.spriteholder = new JSpriteHolderX(this);
@@ -288,7 +286,8 @@ public class JGameEngineX implements Runnable, KeyListener, JInputOutputX {
 
 	System.out.println("Modes Initialized!");
 	progressor.cancel();
-	System.out.println("Initialized!");
+	System.out.println();
+	System.out.println("Initialized! (" + (System.currentTimeMillis() - init_time) + " ms)");
 	}
 	catch(Exception e){ //The buck stops here
 	    progressor.cancel();
@@ -304,6 +303,7 @@ public class JGameEngineX implements Runnable, KeyListener, JInputOutputX {
 	
 	System.out.print("Starting...");
 
+	long start_time = System.currentTimeMillis();
 	Timer progressor = new Timer();
 	
 	progressor.scheduleAtFixedRate(new TimerTask() {
@@ -315,6 +315,8 @@ public class JGameEngineX implements Runnable, KeyListener, JInputOutputX {
 	
 	this.mode = mode.toLowerCase();
 	this.modes.get(this.mode).start();
+	this.mouse.setBindings(this.modes.get(this.mode).bindings);
+	this.keyboard.setBindings(this.modes.get(this.mode).bindings);
 	
 	this.gamemain = new Thread(this);
 	this.gamemain.start();
@@ -326,7 +328,7 @@ public class JGameEngineX implements Runnable, KeyListener, JInputOutputX {
 	this.spriteholder.start();
 
 	progressor.cancel();
-	System.out.println("Started!");
+	System.out.println("Started! (" + (System.currentTimeMillis() - start_time) + " ms)");
 
     }
 
@@ -353,38 +355,5 @@ public class JGameEngineX implements Runnable, KeyListener, JInputOutputX {
 	gamemain = null;
 	this.spriteholder.stop();
     }
-
-    // Events
-    @Override
-    public void updateIO(AWTEvent e) {
-	binder.fireEvent(mode, e);
-    }
-
-    @Override
-    public void lostFocus(EventObject e) {
-    }
-
-    @Override
-    public void keyTyped(KeyEvent k) {
-	binder.fireEvent(mode, k, k.getExtendedKeyCode());
-    }
-
-    @Override
-    public void keyPressed(KeyEvent k) {
-	binder.fireEvent(mode, k, k.getExtendedKeyCode());
-    }
-
-    @Override
-    public void keyReleased(KeyEvent k) {
-	binder.fireEvent(mode, k, k.getExtendedKeyCode());
-    }
-
-    // Bindings
-    public void bind(String mode, int eventid, Method meth, Object... args) {
-	this.binder.bind(mode.toLowerCase(), eventid, meth, args);
-    }
-
-    public void bind(String mode, int eventid, int meta, Method meth, Object... args) {
-	this.binder.bind(mode.toLowerCase(), eventid, meta, meth, args);
-    }
+    
 }

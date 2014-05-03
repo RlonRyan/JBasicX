@@ -20,8 +20,23 @@ public class JMenuTextElementX implements JMenuElementX {
      * Variable Variables
      */
     private String text;
-    private JStyleX style;
     private JMenuElementStateX state;
+    private JMenuElementActionX action;
+    
+    /*
+     * Constructor
+     */
+    public JMenuTextElementX(String text) {
+	this.text = text;
+	this.state = JMenuElementStateX.NORMAL;
+	this.action = () -> {};
+    }
+    
+    public JMenuTextElementX(String text, JMenuElementActionX action) {
+	this.text = text;
+	this.state = JMenuElementStateX.NORMAL;
+	this.action = action;
+    }
 
     @Override
     public JMenuElementStateX getState() {
@@ -39,11 +54,6 @@ public class JMenuTextElementX implements JMenuElementX {
     }
 
     @Override
-    public void applyStyle(JStyleX style) {
-	this.style = style;
-    }
-
-    @Override
     public void highlight() {
 	//this.state = (this.state == JMenuElementStateX.HIGHLIGHTED) ? JMenuElementStateX.NORMAL:JMenuElementStateX.HIGHLIGHTED;
 	this.state = JMenuElementStateX.HIGHLIGHTED;
@@ -56,8 +66,9 @@ public class JMenuTextElementX implements JMenuElementX {
 
     @Override
     public void select() {
-	//this.state = (this.state == JMenuElementStateX.SELECTED) ? JMenuElementStateX.NORMAL:JMenuElementStateX.SELECTED;
-	this.state = JMenuElementStateX.NORMAL;
+	this.state = JMenuElementStateX.SELECTED;
+	this.action.act();
+	this.state = JMenuElementStateX.HIGHLIGHTED;
     }
 
     @Override
@@ -66,26 +77,26 @@ public class JMenuTextElementX implements JMenuElementX {
     }
 
     @Override
-    public void draw(Graphics2D g2d, int x, int y, int width) {
+    public void draw(Graphics2D g2d, JStyleX style, int x, int y, int width) {
 	switch (state) {
 	    case NORMAL:
-		g2d.setColor(this.style.getColor("body"));
-		g2d.setFont(this.style.getFont("body"));
+		g2d.setColor(style.getColor("body"));
+		g2d.setFont(style.getFont("body"));
 		break;
 	    case HIGHLIGHTED:
-		g2d.setColor(this.style.getColor("highlight"));
-		g2d.setFont(this.style.getFont("highlight"));
+		g2d.setColor(style.getColor("highlight"));
+		g2d.setFont(style.getFont("highlight"));
 		break;
 	    case SELECTED:
-		g2d.setColor(this.style.getColor("selected"));
-		g2d.setFont(this.style.getFont("selected"));
+		g2d.setColor(style.getColor("selected"));
+		g2d.setFont(style.getFont("selected"));
 		break;
 	    default:
-		g2d.setColor(this.style.getColor("body"));
-		g2d.setFont(this.style.getFont("body"));
+		g2d.setColor(style.getColor("body"));
+		g2d.setFont(style.getFont("body"));
 		break;
 	}
-	g2d.setColor(this.style.getColor(text));
+	g2d.setColor(style.getColor(text));
 	for (String e : wrapToLines(this.text, g2d, width)) {
 	    y += g2d.getFontMetrics().getHeight();
 	    g2d.drawString(e, x, y);
@@ -94,7 +105,7 @@ public class JMenuTextElementX implements JMenuElementX {
 
     public static final List<String> wrapToLines(String line, Graphics2D context, int length) {
 	List<String> lines = new ArrayList<>();
-	length = length / context.getFontMetrics().getMaxAdvance();
+	length = length * context.getFontMetrics().getMaxAdvance();
 	for (int i = 0; i < line.length(); i += length) {
 	    if (line.length() < (i + length)) {
 		lines.add(line.substring(i));
@@ -106,12 +117,4 @@ public class JMenuTextElementX implements JMenuElementX {
 	return lines;
     }
 
-    /*
-     * Constructor
-     */
-    public JMenuTextElementX(String text, JStyleX style) {
-	this.text = text;
-	this.style = style;
-	this.state = JMenuElementStateX.NORMAL;
-    }
 }

@@ -6,11 +6,12 @@
 package JEventX;
 
 import java.awt.AWTEvent;
-import java.awt.Event;
-import java.lang.reflect.InvocationTargetException;
-import java.lang.reflect.Method;
-import java.util.Arrays;
+import java.awt.event.KeyEvent;
+import java.awt.event.MouseEvent;
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.function.Consumer;
+import javafx.util.Pair;
 
 /**
  *
@@ -18,70 +19,68 @@ import java.util.HashMap;
  */
 public class JEventBinderX {
 
-    public HashMap<String, HashMap<Integer, HashMap<Integer, HashMap<Method, Object[]>>>> bindings;
+    private final HashMap<Pair<Integer, Integer>, ArrayList<Consumer<AWTEvent>>> bindings;
 
     public JEventBinderX() {
 	bindings = new HashMap<>();
     }
-
-    public final void bind(String mode, int eventid, Method meth, Object... args) {
-	bind(mode, eventid, 0, meth, args);
+    
+    public final void bind(int trigger, Consumer<AWTEvent> method) {
+	bind(new Pair<>(trigger, 0), method);
     }
     
-    public final void bind(String mode, int eventid, int meta, Method meth, Object... args) {
-	if (!this.bindings.containsKey(mode)) {
-	    this.bindings.put(mode, new HashMap<Integer, HashMap<Integer, HashMap<Method, Object[]>>>());
-	}
-	if (!this.bindings.get(mode).containsKey(eventid)) {
-	    this.bindings.get(mode).put(eventid, new HashMap<Integer, HashMap<Method, Object[]>>());
-	}
-	if (!this.bindings.get(mode).containsKey(meta)) {
-	    this.bindings.get(mode).get(eventid).put(meta, new HashMap<Method, Object[]>());
-	}
-	this.bindings.get(mode).get(eventid).get(meta).put(meth, args);
+    public final void bind(int trigger, int subtrigger, Consumer<AWTEvent> method) {
+	bind(new Pair<>(trigger, subtrigger), method);
     }
 
-    public final void unbind(String mode, int eventid, Method m) {
-	unbind(mode, eventid, 0, m);
-    }
-    
-    public final void unbind(String mode, int eventid, int meta, Method m) {
-	if (this.bindings.containsKey(mode) && this.bindings.get(mode).containsKey(eventid) && this.bindings.get(mode).get(eventid).containsKey(meta)) {
-	    this.bindings.get(mode).get(eventid).get(meta).remove(m);
+    public final void bind(Pair<Integer, Integer> trigger, Consumer<AWTEvent> method) {
+	if (!this.bindings.containsKey(trigger)) {
+	    this.bindings.put(trigger, new ArrayList<>());
 	}
-    }
-    
-    public final void fireEvent(String mode, Event e) {
-	fireEvent(mode, e, 0);
-    }
-    
-    public final void fireEvent(String mode, AWTEvent e) {
-	fireEvent(mode, e, 0);
+	this.bindings.get(trigger).add(method);
     }
 
-    public final void fireEvent(String mode, Event e, int meta) {
-	if (this.bindings.containsKey(mode) && this.bindings.get(mode).containsKey(e.id) && this.bindings.get(mode).get(e.id).containsKey(meta)) {
-	    for (Method m : bindings.get(mode).get(e.id).get(meta).keySet()) {
-		try {
-		    m.invoke(bindings.get(mode).get(e.id).get(meta).get(m)[0], Arrays.copyOfRange(bindings.get(mode).get(e.id).get(meta).get(m), 1, bindings.get(mode).get(e.id).get(meta).get(m).length));
-		}
-		catch (IllegalAccessException | IllegalArgumentException | InvocationTargetException ex) {
-		    System.err.println(ex.toString());
-		}
-	    }
+    public final void release(int trigger) {
+	release(new Pair<>(trigger, 0));
+    }
+    
+    public final void release(Pair<Integer, Integer> trigger) {
+	if (this.bindings.containsKey(trigger)) {
+	    this.bindings.remove(trigger);
 	}
     }
     
-    public final void fireEvent(String mode, AWTEvent e, int meta) {
-	if (this.bindings.containsKey(mode) && this.bindings.get(mode).containsKey(e.getID()) && this.bindings.get(mode).get(e.getID()).containsKey(meta)) {
-	    for (Method m : bindings.get(mode).get(e.getID()).get(meta).keySet()) {
-		try {
-		    m.invoke(bindings.get(mode).get(e.getID()).get(meta).get(m)[0], Arrays.copyOfRange(bindings.get(mode).get(e.getID()).get(meta).get(m), 1, bindings.get(mode).get(e.getID()).get(meta).get(m).length));
-		}
-		catch (IllegalAccessException | IllegalArgumentException | InvocationTargetException ex) {
-		    System.err.println(ex.toString());
-		}
-	    }
+    public final void release(int trigger, Consumer<AWTEvent> method) {
+	release(new Pair<>(trigger, 0), method);
+    }
+
+    public final void release(Pair<Integer, Integer> trigger, Consumer<AWTEvent> method) {
+	if (this.bindings.containsKey(trigger)) {
+	    this.bindings.get(trigger).remove(method);
+	}
+    }
+    
+    public final void fireEvent(AWTEvent e) {
+	Pair<Integer, Integer> id = null;
+	if(e instanceof MouseEvent) {
+	    id = new Pair<>(e.getID(), ((MouseEvent)e).getButton());
+	}
+	else if(e instanceof KeyEvent) {
+	    id = new Pair<>(e.getID(), ((KeyEvent)e).getKeyCode());
+	}
+	if(id != null && this.bindings.containsKey(id)){
+	    bindings.get(id).stream().forEach((c) -> c.accept(e));
+	}
+	id = new Pair<>(e.getID(), 0);
+	if(this.bindings.containsKey(id)) {
+	    bindings.get(id).stream().forEach((c) -> c.accept(e));
+	}
+    }
+    
+    public final void fireEvent(AWTEvent e, int subid) {
+	Pair<Integer, Integer> id = new Pair<>(e.getID(), subid);
+	if(this.bindings.containsKey(id)){
+	    bindings.get(id).stream().forEach((c) -> c.accept(e));
 	}
     }
 

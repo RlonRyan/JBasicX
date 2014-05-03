@@ -15,7 +15,6 @@ import java.awt.Font;
 import java.awt.Graphics2D;
 import java.awt.Rectangle;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 
 /**
@@ -36,15 +35,14 @@ public class JMenuX {
      * Menu Properties
      */
     private final String title;
-    private JStyleX style;
-    private List<JMenuElementX> elements;
-    private List<JMenuListenerX> listeners;
+    private final List<JMenuElementX> elements;
+    private final Rectangle bounds;
 
     /*
      * Menu Properties
      */
     private int index;
-    private Rectangle bounds;
+    private JStyleX style;
     private boolean visible;
 
     /*
@@ -54,16 +52,14 @@ public class JMenuX {
 	this.title = title;
 	this.bounds = new Rectangle(x, y, width, height);
 	this.elements = new ArrayList<>();
-	this.listeners = new ArrayList<>();
 	this.style = new JStyleX();
 	this.validateStyle();
 	for (String e : elements) {
-	    this.elements.add(new JMenuTextElementX(e, this.style));
+	    this.elements.add(new JMenuTextElementX(e));
 	}
-	this.highlight(0);
     }
 
-    public JMenuX(String title, int x, int y, int width, int height, JMenuElementX... elements) {
+    /*public JMenuX(String title, int x, int y, int width, int height, JMenuElementX... elements) {
 	this.title = title;
 	this.bounds = new Rectangle(x, y, width, height);
 	this.elements = new ArrayList<>();
@@ -71,8 +67,7 @@ public class JMenuX {
 	this.style = new JStyleX();
 	this.validateStyle();
 	this.elements.addAll(Arrays.asList(elements));
-	this.highlight(0);
-    }
+    }*/
 
     /*
      * Setters Go Here
@@ -84,12 +79,23 @@ public class JMenuX {
     synchronized public final void setStyleElement(String name, Object element) {
 	this.style.setStyleElement(name, element);
     }
-
+    
+    /*
+     * Putters Go Here
+     */
+    synchronized public final void addMenuElement(JMenuElementX element){
+	this.elements.add(element);
+    }
+    
     /*
      * Getters Go Here
      */
     final public String getTitle() {
 	return this.title;
+    }
+
+    synchronized public final int getIndex() {
+	return this.index;
     }
 
     synchronized public final JMenuElementX getMenuElement(int idex) {
@@ -120,11 +126,10 @@ public class JMenuX {
     synchronized public final void highlight(int index) {
 	this.elements.get(this.index).dehighlight();
 	this.index = index % this.elements.size();
-	if(this.index < 0){
+	if (this.index < 0) {
 	    this.index += this.elements.size();
 	}
 	this.elements.get(this.index).highlight();
-	fireEvent(JMenuStateX.ELEMENT_HIGHLIGHTED, this.index);
     }
 
     synchronized public final void selectMenuElement(int index) {
@@ -135,7 +140,6 @@ public class JMenuX {
     synchronized public final void selectMenuElement() {
 	if (this.index < this.elements.size()) {
 	    this.elements.get(index).select();
-	    fireEvent(JMenuStateX.ELEMENT_SELECTED, this.index);
 	}
     }
 
@@ -173,6 +177,9 @@ public class JMenuX {
     }
 
     public void open() {
+	if(this.elements.isEmpty()) {
+	    this.elements.add(new JMenuTextElementX("Oops! This menu has yet to be filled!"));
+	}
 	this.highlight(0);
 	this.visible = true;
     }
@@ -202,7 +209,6 @@ public class JMenuX {
 	 */
 	int x = this.bounds.x + this.bounds.width / 100;
 	int y = this.bounds.y + this.bounds.height / 100;
-	int width = this.bounds.width - (this.bounds.width / 50);
 
 	/*
 	 * Draw the Title.
@@ -210,15 +216,13 @@ public class JMenuX {
 	g2d.setColor(this.style.getColor("title"));
 	g2d.setFont(this.style.getFont("title"));
 
-	x += g2d.getFontMetrics().getHeight();
-	y += g2d.getFontMetrics().getHeight() + this.bounds.height / 100;
-	width = width - (g2d.getFontMetrics().getHeight() * 2);
+	x += g2d.getFontMetrics().getAscent();
+	y += g2d.getFontMetrics().getAscent() + this.bounds.height / 100;
 
 	g2d.drawString(title, x, y);
 
-	x += g2d.getFontMetrics().getHeight();
-	y += g2d.getFontMetrics().getHeight();
-	width = width - (g2d.getFontMetrics().getHeight() * 2);
+	x += g2d.getFontMetrics().getAscent();
+	y += g2d.getFontMetrics().getAscent();
 
 	/*
 	 * Draw a title separator.
@@ -232,41 +236,8 @@ public class JMenuX {
 	 * Draw menu elements
 	 */
 	for (JMenuElementX e : elements) {
-	    e.draw(g2d, x, y, width);
+	    e.draw(g2d, style, x, y, this.bounds.width - 2 * (x - this.bounds.x));
 	    y += g2d.getFontMetrics().getHeight();
-	}
-    }
-
-    /*
-     * Event Methods Go Way Down Here
-     * Likely will be deprecated or removed, as the elements themselves will get
-     * their own events.
-     */
-    synchronized public final void addEventListener(JMenuListenerX listener) {
-	listeners.add(listener);
-    }
-
-    synchronized public final void removeEventListener(JMenuListenerX listener) {
-	listeners.remove(listener);
-    }
-
-    synchronized public void fireEvent(JMenuStateX type, int... data) {
-	switch (type) {
-	    case MENU_CHANGED:
-		break;
-	    case ELEMENT_SELECTED:
-		for (JMenuListenerX e : this.listeners) {
-		    e.elementSelected(this, data);
-		}
-		break;
-	    case ELEMENT_HIGHLIGHTED:
-		for (JMenuListenerX e : this.listeners) {
-		    e.elementHighlighted(this, data);
-		}
-		break;
-	    default:
-		// No Event For You!
-		break;
 	}
     }
 }

@@ -19,6 +19,10 @@ public interface JMenuElementX {
 	HIGHLIGHTED,
 	SELECTED;
     }
+    
+    interface JMenuElementActionX {
+	void act();
+    }
 
     /**
      * Retrieves the state of the element.
@@ -36,13 +40,6 @@ public interface JMenuElementX {
      * Requests that the element be resized.
      */
     public void resize();
-
-    /**
-     * Applies a style to the element.
-     * <p/>
-     * @param style
-     */
-    public void applyStyle(JStyleX style);
 
     /**
      * Highlights the element.
@@ -68,9 +65,10 @@ public interface JMenuElementX {
      * Renders the element using the given graphics.
      * <p/>
      * @param g2d   The graphics to be drawn to.
+     * @param style The style to use.
      * @param x     The x-position of the element.
      * @param y     The y-position of the element.
      * @param width The maximum allowable width of the element.
      */
-    public void draw(Graphics2D g2d, int x, int y, int width);
+    public void draw(Graphics2D g2d, JStyleX style, int x, int y, int width);
 }

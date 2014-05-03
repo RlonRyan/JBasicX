@@ -5,6 +5,7 @@
  */
 package JGameEngineX.JGameModeX;
 
+import JEventX.JEventBinderX;
 import JGameEngineX.JGameEngineX;
 import java.awt.Graphics2D;
 
@@ -27,10 +28,14 @@ import java.awt.Graphics2D;
 public abstract class JGameModeX {
     
     public final String name;
+    
+    public final JEventBinderX bindings;
+    
     public final JGameEngineX holder;
 
     public JGameModeX(String name, JGameEngineX holder) {
 	this.name = name.toLowerCase();
+	this.bindings = new JEventBinderX();
 	this.holder = holder;
     }
     

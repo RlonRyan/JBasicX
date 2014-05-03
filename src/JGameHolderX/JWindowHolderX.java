@@ -5,7 +5,6 @@
  */
 package JGameHolderX;
 
-import JIOX.JKeyboardX;
 import JIOX.JMouseX.JMouseX;
 import java.awt.Color;
 import java.awt.Graphics2D;
@@ -69,6 +68,8 @@ public class JWindowHolderX implements JGameHolderX {
     public JWindowHolderX(String title, int winw, int winh) {
 	this.frame = new JFrame(title);
 	this.frame.setSize(winw, winh);
+	this.frame.setLocationRelativeTo(null);
+	this.frame.setAutoRequestFocus(true);
 	this.frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 	this.frame.setResizable(false);
 	this.frame.setVisible(true);
