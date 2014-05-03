@@ -4,17 +4,18 @@
  * and open the template in the editor.
  */
 
-package JGameEngineX.JGameEventX;
+package JEventX;
 
-import JEventX.JEventX;
 import JGameEngineX.JGameEngineX;
 
 /**
  *
  * @author RlonRyan
  */
-public class JGameEventX extends JEventX {
-    public JGameEventX(JGameEngineX.GAME_STATUS mode) {
-	super(mode);
+public abstract class JEventX {
+    public final JGameEngineX.GAME_STATUS mode;
+    
+    public JEventX(JGameEngineX.GAME_STATUS mode) {
+	this.mode = mode;
     }
 }

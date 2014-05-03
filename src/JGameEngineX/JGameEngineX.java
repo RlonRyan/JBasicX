@@ -8,12 +8,13 @@
 package JGameEngineX;
 
 import JBasicX.JImageHandlerX;
+import JEventX.JEventBinderX;
 import JGameHolderX.JAppletHolderX;
 import JGameHolderX.JGameHolderX;
 import JGameHolderX.JWindowHolderX;
 import JIOX.JInputOutputX;
 import JIOX.JKeyboardX;
-import JIOX.JMouseX;
+import JIOX.JMouseX.JMouseX;
 import JSpriteX.JSpriteHolderX;
 import java.awt.Color;
 import java.awt.Font;
@@ -57,6 +58,7 @@ public abstract class JGameEngineX implements Runnable, JInputOutputX {
     protected JSpriteHolderX spriteholder;
     protected JMouseX mouse;
     protected JKeyboardX keyboard;
+    protected JEventBinderX binder;
     /**
      *
      */
@@ -455,9 +457,10 @@ public abstract class JGameEngineX implements Runnable, JInputOutputX {
         this.gamestatus = GAME_STATUS.GAME_INTIALIZING;
 
         //  Resources
-        this.mouse = new JMouseX();
+        this.mouse = new JMouseX(this);
         this.holder.addMouseListener(this.mouse);
         this.mouse.addEventListener(this);
+	this.binder = new JEventBinderX();
         this.keyboard = new JKeyboardX();
         this.holder.addKeyListener(this.keyboard);
         this.keyboard.addEventListener(this);

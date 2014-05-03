@@ -6,7 +6,7 @@
 package JGameHolderX;
 
 import JIOX.JKeyboardX;
-import JIOX.JMouseX;
+import JIOX.JMouseX.JMouseX;
 import java.awt.Color;
 import java.awt.Graphics2D;
 import java.awt.geom.AffineTransform;
