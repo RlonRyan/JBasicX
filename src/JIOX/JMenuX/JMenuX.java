@@ -13,6 +13,7 @@ import JIOX.JMenuX.JMenuElementX.JMenuTextElementX;
 import java.awt.Color;
 import java.awt.Font;
 import java.awt.Graphics2D;
+import java.awt.Point;
 import java.awt.Rectangle;
 import java.util.ArrayList;
 import java.util.List;
@@ -37,6 +38,7 @@ public class JMenuX {
     private final String title;
     private final List<JMenuElementX> elements;
     private final Rectangle bounds;
+    private final Rectangle header;
 
     /*
      * Menu Properties
@@ -44,6 +46,9 @@ public class JMenuX {
     private int index;
     private JStyleX style;
     private boolean visible;
+    private int separator;
+
+    private boolean drawBounds = false;
 
     /*
      * Constructors Go Here
@@ -51,27 +56,41 @@ public class JMenuX {
     public JMenuX(String title, int x, int y, int width, int height, String... elements) {
 	this.title = title;
 	this.bounds = new Rectangle(x, y, width, height);
+	this.header = new Rectangle(x + 5 * width / 100, y, 90 * width / 100, 10 * height / 100);
 	this.elements = new ArrayList<>();
 	this.style = new JStyleX();
 	this.validateStyle();
 	for (String e : elements) {
 	    this.elements.add(new JMenuTextElementX(e));
 	}
+	if (!this.elements.isEmpty()) {
+	    this.separator = width / (10 * this.elements.size());
+	}
+	else {
+	    this.separator = width / 10;
+	}
     }
 
-    /*public JMenuX(String title, int x, int y, int width, int height, JMenuElementX... elements) {
-	this.title = title;
-	this.bounds = new Rectangle(x, y, width, height);
-	this.elements = new ArrayList<>();
-	this.listeners = new ArrayList<>();
-	this.style = new JStyleX();
-	this.validateStyle();
-	this.elements.addAll(Arrays.asList(elements));
-    }*/
+    /*
+     * public JMenuX(String title, int x, int y, int width, int height,
+     * JMenuElementX... elements) {
+     * this.title = title;
+     * this.bounds = new Rectangle(x, y, width, height);
+     * this.elements = new ArrayList<>();
+     * this.listeners = new ArrayList<>();
+     * this.style = new JStyleX();
+     * this.validateStyle();
+     * this.elements.addAll(Arrays.asList(elements));
+     * }
+     */
 
     /*
      * Setters Go Here
      */
+    synchronized public final void setBoundsVisable(boolean visable) {
+	this.drawBounds = visable;
+    }
+
     synchronized public final void setStyle(JStyleX style) {
 	this.style = style;
     }
@@ -79,14 +98,15 @@ public class JMenuX {
     synchronized public final void setStyleElement(String name, Object element) {
 	this.style.setStyleElement(name, element);
     }
-    
+
     /*
      * Putters Go Here
      */
-    synchronized public final void addMenuElement(JMenuElementX element){
+    synchronized public final void addMenuElement(JMenuElementX element) {
 	this.elements.add(element);
+	this.separator = this.bounds.width / (10 * this.elements.size());
     }
-    
+
     /*
      * Getters Go Here
      */
@@ -132,7 +152,19 @@ public class JMenuX {
 	this.elements.get(this.index).highlight();
     }
 
+    synchronized public final void selectMenuElement(Point p) {
+	int pos = this.bounds.y + this.header.height + this.separator;
+	for (int i = 0; i < this.elements.size(); i++) {
+	    if (new Rectangle(this.bounds.x, pos, elements.get(i).getBounds().width, elements.get(i).getBounds().height).contains(p)) {
+		selectMenuElement(i);
+		return;
+	    }
+	    pos += elements.get(i).getBounds().height + separator;
+	}
+    }
+
     synchronized public final void selectMenuElement(int index) {
+	this.elements.get(this.index).dehighlight();
 	this.index = index;
 	selectMenuElement();
     }
@@ -176,10 +208,24 @@ public class JMenuX {
 	}
     }
 
+    public void normalize() {
+	int width = (int) (0.80 * this.bounds.width);
+	int height = (this.bounds.height) / (this.elements.size() + separator);
+	for (JMenuElementX e : elements) {
+	    if (e.getBounds().width == 0) {
+		e.setWidth(width);
+	    }
+	    if (e.getBounds().height == 0) {
+		e.setHeight(height);
+	    }
+	}
+    }
+
     public void open() {
-	if(this.elements.isEmpty()) {
+	if (this.elements.isEmpty()) {
 	    this.elements.add(new JMenuTextElementX("Oops! This menu has yet to be filled!"));
 	}
+	this.normalize();
 	this.highlight(0);
 	this.visible = true;
     }
@@ -205,10 +251,12 @@ public class JMenuX {
 	g2d.drawRoundRect(this.bounds.x, this.bounds.y, this.bounds.width, this.bounds.height, this.bounds.width / 10, this.bounds.height / 10);
 
 	/*
-	 * Intitialize the variables for dynamic placement
+	 * Vars!
 	 */
-	int x = this.bounds.x + this.bounds.width / 100;
-	int y = this.bounds.y + this.bounds.height / 100;
+	int w = g2d.getFontMetrics().getMaxAdvance();
+	int h = g2d.getFontMetrics().getAscent();
+	int x = this.bounds.x + this.bounds.width / 50;
+	int y = this.bounds.y + this.header.height;
 
 	/*
 	 * Draw the Title.
@@ -216,28 +264,28 @@ public class JMenuX {
 	g2d.setColor(this.style.getColor("title"));
 	g2d.setFont(this.style.getFont("title"));
 
-	x += g2d.getFontMetrics().getAscent();
-	y += g2d.getFontMetrics().getAscent() + this.bounds.height / 100;
-
-	g2d.drawString(title, x, y);
-
-	x += g2d.getFontMetrics().getAscent();
-	y += g2d.getFontMetrics().getAscent();
+	g2d.drawString(title, this.bounds.x + this.header.width / 50, this.bounds.y + (this.header.height - h) / 2 + h);
 
 	/*
 	 * Draw a title separator.
 	 */
 	g2d.setColor(this.style.getColor("border"));
-	g2d.drawLine(this.bounds.x, y, this.bounds.x + this.bounds.width, y);
-
-	y += g2d.getFontMetrics().getHeight();
+	g2d.drawLine(this.bounds.x, y, (int) this.bounds.getMaxX(), y);
 
 	/*
 	 * Draw menu elements
 	 */
 	for (JMenuElementX e : elements) {
-	    e.draw(g2d, style, x, y, this.bounds.width - 2 * (x - this.bounds.x));
-	    y += g2d.getFontMetrics().getHeight();
+	    y += separator;
+	    e.draw(g2d, style, x, y);
+	    if (drawBounds) {
+		e.drawBounds(g2d, style, x, y);
+	    }
+	    y += e.getBounds().height;
+	}
+	if (drawBounds) {
+	    g2d.setColor(this.style.getColor("border"));
+	    g2d.draw(bounds);
 	}
     }
 }

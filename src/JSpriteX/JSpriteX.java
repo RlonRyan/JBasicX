@@ -164,6 +164,14 @@ public abstract class JSpriteX {
     public final double getHeight() {
 	return bounds.getHeight();
     }
+    
+    /**
+     *
+     * @return
+     */
+    public final double getRadius() {
+	return Math.sqrt((bounds.getWidth() * bounds.getWidth()) + (bounds.getHeight()* bounds.getHeight())) / 2;
+    }
 
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -389,14 +397,15 @@ public abstract class JSpriteX {
 	    this.lastupdate = System.currentTimeMillis();
 	    return;
 	}
-	if (this.getVel() > 0) {
-	    this.incVel((this.accel / 1000) * (System.currentTimeMillis() - this.lastupdate));
-	}
-	else {
+	if (this.getVel() < 0 && this.accel < 0) {
 	    this.setVel(0);
 	}
-	this.incX((this.vel * Math.cos(Math.toRadians(direction)) / 1000) * (System.currentTimeMillis() - this.lastupdate));
-	this.incY((this.vel * Math.sin(Math.toRadians(direction)) / 1000) * (System.currentTimeMillis() - this.lastupdate));
+	else {
+	    this.incVel((this.accel / 1000) * (System.currentTimeMillis() - this.lastupdate));
+	}
+	this.incX(-(this.vel * Math.cos(Math.toRadians(direction)) / 1000) * (System.currentTimeMillis() - this.lastupdate));
+	this.incY(-(this.vel * Math.sin(Math.toRadians(direction)) / 1000) * (System.currentTimeMillis() - this.lastupdate));
+	this.incRot((int) ((((double)rotationrate) / 1000) * (System.currentTimeMillis() - this.lastupdate)));
 	this.lastupdate = System.currentTimeMillis();
     }
 
@@ -445,10 +454,12 @@ public abstract class JSpriteX {
 	g2d.setTransform(new AffineTransform());
 	g2d.setColor(Color.WHITE);
 	g2d.drawRect((int) this.bounds.getX(), (int) this.bounds.getY(), (int) this.bounds.getWidth(), (int) this.bounds.getHeight());
+	g2d.setColor(Color.BLUE);
+	g2d.drawOval((int)this.bounds.getX(), (int)this.bounds.getY(), (int)this.bounds.getWidth(), (int)this.bounds.getHeight());
 	g2d.setColor(Color.GREEN);
-	g2d.drawLine((int)this.bounds.getCenterX(), (int)this.bounds.getCenterY(), (int)(this.bounds.getCenterX() + this.vel * Math.cos(Math.toRadians(direction))), (int)(this.bounds.getCenterY() + this.vel * Math.sin(Math.toRadians(direction))));
+	g2d.drawLine((int)this.bounds.getCenterX(), (int)this.bounds.getCenterY(), (int)(this.bounds.getCenterX() - this.vel * Math.cos(Math.toRadians(direction))), (int)(this.bounds.getCenterY() - this.vel * Math.sin(Math.toRadians(direction))));
 	g2d.setColor(Color.RED);
-	g2d.drawLine((int)this.bounds.getCenterX(), (int)this.bounds.getCenterY(), (int)(this.bounds.getCenterX() + this.accel * Math.cos(Math.toRadians(direction))), (int)(this.bounds.getCenterY() + this.accel * Math.sin(Math.toRadians(direction))));
+	g2d.drawLine((int)this.bounds.getCenterX(), (int)this.bounds.getCenterY(), (int)(this.bounds.getCenterX() - this.accel * Math.cos(Math.toRadians(direction))), (int)(this.bounds.getCenterY() - this.accel * Math.sin(Math.toRadians(direction))));
     }
 
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

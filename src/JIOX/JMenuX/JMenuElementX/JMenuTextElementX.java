@@ -5,8 +5,7 @@ package JIOX.JMenuX.JMenuElementX;
 
 import JBasicX.JStyleX;
 import java.awt.Graphics2D;
-import java.util.ArrayList;
-import java.util.List;
+import java.awt.Rectangle;
 
 /**
  * @author RlonRyan
@@ -19,28 +18,63 @@ public class JMenuTextElementX implements JMenuElementX {
     /*
      * Variable Variables
      */
-    private String text;
     private JMenuElementStateX state;
-    private JMenuElementActionX action;
     
+    private final String text;
+    private final JMenuElementActionX action;
+    private final Rectangle bounds;
+
     /*
      * Constructor
      */
     public JMenuTextElementX(String text) {
 	this.text = text;
 	this.state = JMenuElementStateX.NORMAL;
-	this.action = () -> {};
+	this.action = () -> {
+	};
+	this.bounds = new Rectangle(0, 0);
     }
-    
+
+    public JMenuTextElementX(String text, int width, int height) {
+	this.text = text;
+	this.state = JMenuElementStateX.NORMAL;
+	this.action = () -> {
+	};
+	this.bounds = new Rectangle(width, height);
+    }
+
     public JMenuTextElementX(String text, JMenuElementActionX action) {
 	this.text = text;
 	this.state = JMenuElementStateX.NORMAL;
 	this.action = action;
+	this.bounds = new Rectangle(0, 0);
+    }
+
+    public JMenuTextElementX(String text, JMenuElementActionX action, int width, int height) {
+	this.text = text;
+	this.state = JMenuElementStateX.NORMAL;
+	this.action = action;
+	this.bounds = new Rectangle(width, height);
     }
 
     @Override
     public JMenuElementStateX getState() {
 	return state;
+    }
+
+    @Override
+    public Rectangle getBounds() {
+	return bounds;
+    }
+
+    @Override
+    public void setWidth(int width) {
+	this.bounds.setRect(0, 0, width, this.bounds.getHeight());
+    }
+
+    @Override
+    public void setHeight(int height) {
+	this.bounds.setRect(0, 0, this.bounds.getWidth(), height);
     }
 
     @Override
@@ -77,7 +111,7 @@ public class JMenuTextElementX implements JMenuElementX {
     }
 
     @Override
-    public void draw(Graphics2D g2d, JStyleX style, int x, int y, int width) {
+    public void draw(Graphics2D g2d, JStyleX style, int x, int y) {
 	switch (state) {
 	    case NORMAL:
 		g2d.setColor(style.getColor("body"));
@@ -97,24 +131,12 @@ public class JMenuTextElementX implements JMenuElementX {
 		break;
 	}
 	g2d.setColor(style.getColor(text));
-	for (String e : wrapToLines(this.text, g2d, width)) {
-	    y += g2d.getFontMetrics().getHeight();
-	    g2d.drawString(e, x, y);
-	}
+	g2d.drawString(this.text, x, y + (int)(this.bounds.getCenterY() + g2d.getFontMetrics().getAscent() / 2));
     }
 
-    public static final List<String> wrapToLines(String line, Graphics2D context, int length) {
-	List<String> lines = new ArrayList<>();
-	length = length * context.getFontMetrics().getMaxAdvance();
-	for (int i = 0; i < line.length(); i += length) {
-	    if (line.length() < (i + length)) {
-		lines.add(line.substring(i));
-	    }
-	    else {
-		lines.add(line.substring(i, i + length));
-	    }
-	}
-	return lines;
+    @Override
+    public void drawBounds(Graphics2D g2d, JStyleX style, int x, int y) {
+	g2d.drawRect(x, y, bounds.width, bounds.height);
     }
 
 }

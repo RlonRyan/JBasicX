@@ -2,6 +2,7 @@ package JIOX.JMenuX.JMenuElementX;
 
 import JBasicX.JStyleX;
 import java.awt.Graphics2D;
+import java.awt.Rectangle;
 
 /**
  * @author RlonRyan
@@ -20,6 +21,7 @@ public interface JMenuElementX {
 	SELECTED;
     }
     
+    @FunctionalInterface
     interface JMenuElementActionX {
 	void act();
     }
@@ -30,6 +32,17 @@ public interface JMenuElementX {
      * @return state
      */
     public JMenuElementStateX getState();
+    
+    /**
+     * Retrieves the element's dimensions.
+     * <p/>
+     * @return state
+     */
+    public Rectangle getBounds();
+    
+    public void setWidth(int width);
+    
+    public void setHeight(int height);
 
     /**
      * Checks to see if the element is valid to use.
@@ -70,5 +83,7 @@ public interface JMenuElementX {
      * @param y     The y-position of the element.
      * @param width The maximum allowable width of the element.
      */
-    public void draw(Graphics2D g2d, JStyleX style, int x, int y, int width);
+    public void draw(Graphics2D g2d, JStyleX style, int x, int y);
+    
+    public void drawBounds(Graphics2D g2d, JStyleX style, int x, int y);
 }

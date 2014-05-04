@@ -38,14 +38,6 @@ public class JMouseX implements MouseListener, MouseMotionListener, MouseWheelLi
     public final int leftbutton		= 1;
     public final int rightbutton	= 2;
     public final int centerbutton	= 3;
-    public final int MOUSE_ENTERED	= 4;
-    public final int MOUSE_MOVED	= 5;
-    public final int MOUSE_DRAGGED	= 6;
-    public final int MOUSE_WHEEL_MOVED	= 7;
-    public final int MOUSE_CLICKED	= 8;
-    public final int MOUSE_PRESSED	= 9;
-    public final int MOUSE_RELEASED	= 10;
-    public final int MOUSE_EXITED	= 11;
 
     /**
      *
@@ -116,6 +108,14 @@ public class JMouseX implements MouseListener, MouseMotionListener, MouseWheelLi
      */
     public Point2D getPosition() {
 	return position;
+    }
+    
+    public int getX() {
+	return position.x;
+    }
+    
+    public int getY() {
+	return position.y;
     }
 
     /**
@@ -236,7 +236,7 @@ public class JMouseX implements MouseListener, MouseMotionListener, MouseWheelLi
 	enter.setLocation(e.getX(), e.getY());
 	position.setLocation(e.getX(), e.getY());
 	checkButton(e);
-	fireEvent(e, MOUSE_ENTERED);
+	fireEvent(e);
     }
 
     @Override
@@ -244,7 +244,7 @@ public class JMouseX implements MouseListener, MouseMotionListener, MouseWheelLi
 	mousedrag = false;
 	position.setLocation(e.getX(), e.getY());
 	checkButton(e);
-	fireEvent(e, MOUSE_MOVED);
+	fireEvent(e);
     }
 
     @Override
@@ -253,14 +253,14 @@ public class JMouseX implements MouseListener, MouseMotionListener, MouseWheelLi
 	drag.setLocation(e.getX(), e.getY());
 	position.setLocation(e.getX(), e.getY());
 	checkButton(e);
-	fireEvent(e, MOUSE_DRAGGED);
+	fireEvent(e);
     }
 
     @Override
     public void mouseWheelMoved(MouseWheelEvent e) {
 	scroll += e.getWheelRotation();
 	checkButton(e);
-	fireEvent(e, MOUSE_WHEEL_MOVED);
+	fireEvent(e);
     }
 
     @Override
@@ -268,7 +268,7 @@ public class JMouseX implements MouseListener, MouseMotionListener, MouseWheelLi
 	click.setLocation(e.getX(), e.getY());
 	position.setLocation(e.getX(), e.getY());
 	checkButton(e);
-	fireEvent(e, MOUSE_CLICKED);
+	fireEvent(e);
     }
     
     @Override
@@ -277,7 +277,7 @@ public class JMouseX implements MouseListener, MouseMotionListener, MouseWheelLi
 	press.setLocation(e.getX(), e.getY());
 	position.setLocation(e.getX(), e.getY());
 	checkButton(e);
-	fireEvent(e, MOUSE_PRESSED);
+	fireEvent(e);
     }
 
     @Override
@@ -286,7 +286,7 @@ public class JMouseX implements MouseListener, MouseMotionListener, MouseWheelLi
 	release.setLocation(e.getX(), e.getY());
 	position.setLocation(e.getX(), e.getY());
 	checkButton(e);
-	fireEvent(e, MOUSE_RELEASED);
+	fireEvent(e);
     }
 
     @Override
@@ -294,12 +294,12 @@ public class JMouseX implements MouseListener, MouseMotionListener, MouseWheelLi
 	exit.setLocation(e.getX(), e.getY());
 	position.setLocation(e.getX(), e.getY());
 	checkButton(e);
-	fireEvent(e, MOUSE_EXITED);
+	fireEvent(e);
     }
     
-    public void fireEvent(MouseEvent e, int id) {
+    public void fireEvent(MouseEvent e) {
 	if (bindings != null) {
-	    this.bindings.fireEvent(e, id);
+	    this.bindings.fireEvent(e);
 	}
     }
 

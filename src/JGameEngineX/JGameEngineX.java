@@ -199,6 +199,12 @@ public class JGameEngineX implements Runnable {
      */
     public void paintGameData() {
 	if (showgamedata) {
+	    int h = holder.getGraphics().getFontMetrics().getHeight();
+	    holder.getGraphics().setColor(Color.WHITE);
+	    holder.getGraphics().drawRoundRect(10, (int)(this.dimensions.getMaxY() - 1.5 * h), (int)this.dimensions.getWidth() - 20, (int)this.dimensions.getWidth() - 20, (int)this.dimensions.getWidth() / 25, (int)this.dimensions.getHeight() / 25);
+	    holder.getGraphics().setColor(new Color(150, 150, 150, 100));
+	    holder.getGraphics().fillRoundRect(10, (int)(this.dimensions.getMaxY() - 1.5 * h), (int)this.dimensions.getWidth() - 20, (int)this.dimensions.getWidth() - 20, (int)this.dimensions.getWidth() / 25, (int)this.dimensions.getHeight() / 25);
+	    holder.getGraphics().setColor(Color.WHITE);
 	    holder.getGraphics().drawString("FPS: " + this.fps, 25, (int) this.dimensions.getHeight() - 10);
 	    holder.getGraphics().drawString("Sups: " + this.spriteholder.getSups(), 125, (int) this.dimensions.getHeight() - 10);
 	}
