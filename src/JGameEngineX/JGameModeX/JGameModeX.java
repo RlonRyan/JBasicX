@@ -49,6 +49,8 @@ public abstract class JGameModeX {
     
     public abstract void paint(Graphics2D g2d);
     
+    public abstract void paintGameData(Graphics2D g2d);
+    
     public abstract void pause();
     
     public abstract void stop();

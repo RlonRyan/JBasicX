@@ -38,8 +38,7 @@ public class JMenuTextElementX implements JMenuElementX {
     public JMenuTextElementX(String text, int width, int height) {
 	this.text = text;
 	this.state = JMenuElementStateX.NORMAL;
-	this.action = () -> {
-	};
+	this.action = () -> {};
 	this.bounds = new Rectangle(width, height);
     }
 
@@ -89,13 +88,7 @@ public class JMenuTextElementX implements JMenuElementX {
 
     @Override
     public void highlight() {
-	//this.state = (this.state == JMenuElementStateX.HIGHLIGHTED) ? JMenuElementStateX.NORMAL:JMenuElementStateX.HIGHLIGHTED;
 	this.state = JMenuElementStateX.HIGHLIGHTED;
-    }
-
-    @Override
-    public void dehighlight() {
-	this.state = JMenuElementStateX.NORMAL;
     }
 
     @Override
@@ -106,7 +99,7 @@ public class JMenuTextElementX implements JMenuElementX {
     }
 
     @Override
-    public void deselect() {
+    public void reset() {
 	this.state = JMenuElementStateX.NORMAL;
     }
 

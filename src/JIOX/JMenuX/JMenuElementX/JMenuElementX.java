@@ -60,19 +60,14 @@ public interface JMenuElementX {
     public void highlight();
 
     /**
-     * Removes highlighting from the element.
-     */
-    public void dehighlight();
-
-    /**
      * Selects the element.
      */
     public void select();
 
     /**
-     * Deselects the element.
+     * Resets the element.
      */
-    public void deselect();
+    public void reset();
 
     /**
      * Renders the element using the given graphics.
@@ -81,7 +76,6 @@ public interface JMenuElementX {
      * @param style The style to use.
      * @param x     The x-position of the element.
      * @param y     The y-position of the element.
-     * @param width The maximum allowable width of the element.
      */
     public void draw(Graphics2D g2d, JStyleX style, int x, int y);
     

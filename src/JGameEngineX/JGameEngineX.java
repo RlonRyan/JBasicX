@@ -75,14 +75,14 @@ public class JGameEngineX implements Runnable {
 
     //Acessors
     /**
-     * Method for getting the
-     * <code>gamestatus</code>variable.
-     * <p/>
-     * @return <code>gamestatus</code><br/>0 = stopped.<br/>1 = menu.<br/>2 =
-     *         running.<br/>3 = paused.
+     * @return The name of the currently active game mode.
      */
-    public final String getGameMode() {
+    public final String getMode() {
 	return this.mode;
+    }
+
+    public final JGameModeX getGameMode(String mode) {
+	return this.modes.get(mode);
     }
 
     public final Rectangle2D getDimensions() {
@@ -164,7 +164,7 @@ public class JGameEngineX implements Runnable {
     public final void setDFPS(long dfps) {
 	this.dfps = dfps;
     }
-    
+
     public final void toggleGameDataVisable() {
 	this.showgamedata = !this.showgamedata;
     }
@@ -174,6 +174,10 @@ public class JGameEngineX implements Runnable {
      */
     public final void resetFont() {
 	this.holder.getGraphics().setFont(font);
+    }
+
+    public final void resetGraphics() {
+	this.holder.resetGraphics();
     }
 
     // Paint
@@ -188,9 +192,9 @@ public class JGameEngineX implements Runnable {
 	this.holder.clearBackbuffer();
 	this.holder.resetGraphics();
 	this.modes.get(mode).paint(this.holder.getGraphics());
-	this.holder.resetGraphics();
-	this.paintGameData();
-	this.holder.resetGraphics();
+	if (this.showgamedata) {
+	    this.paintGameData();
+	}
 	this.holder.flip();
     }
 
@@ -198,16 +202,20 @@ public class JGameEngineX implements Runnable {
      *
      */
     public void paintGameData() {
+	this.holder.resetGraphics();
+	this.modes.get(mode).paintGameData(this.holder.getGraphics());
+	this.holder.resetGraphics();
 	if (showgamedata) {
 	    int h = holder.getGraphics().getFontMetrics().getHeight();
 	    holder.getGraphics().setColor(Color.WHITE);
-	    holder.getGraphics().drawRoundRect(10, (int)(this.dimensions.getMaxY() - 1.5 * h), (int)this.dimensions.getWidth() - 20, (int)this.dimensions.getWidth() - 20, (int)this.dimensions.getWidth() / 25, (int)this.dimensions.getHeight() / 25);
+	    holder.getGraphics().drawRoundRect(10, (int) (this.dimensions.getMaxY() - 1.5 * h), (int) this.dimensions.getWidth() - 20, (int) this.dimensions.getWidth() - 20, (int) this.dimensions.getWidth() / 25, (int) this.dimensions.getHeight() / 25);
 	    holder.getGraphics().setColor(new Color(150, 150, 150, 100));
-	    holder.getGraphics().fillRoundRect(10, (int)(this.dimensions.getMaxY() - 1.5 * h), (int)this.dimensions.getWidth() - 20, (int)this.dimensions.getWidth() - 20, (int)this.dimensions.getWidth() / 25, (int)this.dimensions.getHeight() / 25);
+	    holder.getGraphics().fillRoundRect(10, (int) (this.dimensions.getMaxY() - 1.5 * h), (int) this.dimensions.getWidth() - 20, (int) this.dimensions.getWidth() - 20, (int) this.dimensions.getWidth() / 25, (int) this.dimensions.getHeight() / 25);
 	    holder.getGraphics().setColor(Color.WHITE);
 	    holder.getGraphics().drawString("FPS: " + this.fps, 25, (int) this.dimensions.getHeight() - 10);
 	    holder.getGraphics().drawString("Sups: " + this.spriteholder.getSups(), 125, (int) this.dimensions.getHeight() - 10);
 	}
+	holder.resetGraphics();
     }
 
     /**
@@ -249,11 +257,11 @@ public class JGameEngineX implements Runnable {
 
     // Run
     public final void init() {
-	
+
 	System.out.println(title + " is initializing!");
 	System.out.println();
 	System.out.print("Initializing Core...");
-	
+
 	long init_time = System.currentTimeMillis();
 	Timer progressor = new Timer();
 
@@ -263,67 +271,67 @@ public class JGameEngineX implements Runnable {
 		System.out.print(".");
 	    }
 	}, 0l, 1000l);
-	
+
 	try {
-	
-	//  Resources
-	this.mouse = new JMouseX();
-	this.holder.addMouseListener(this.mouse);
 
-	this.keyboard = new JKeyboardX();
-	this.holder.addKeyListener(this.keyboard);
+	    //  Resources
+	    this.mouse = new JMouseX();
+	    this.holder.addMouseListener(this.mouse);
 
-	this.images = new JImageHandlerX(this.getClass());
-	this.spriteholder = new JSpriteHolderX(this);
+	    this.keyboard = new JKeyboardX();
+	    this.holder.addKeyListener(this.keyboard);
 
-	System.out.println("Core Initialized!");
-	System.out.print("Initalizing Modes...");
+	    this.images = new JImageHandlerX(this.getClass());
+	    this.spriteholder = new JSpriteHolderX(this);
 
-	for (String k : modes.keySet()) {
-	    modes.get(k).init();
+	    System.out.println("Core Initialized!");
+	    System.out.print("Initalizing Modes...");
+
+	    for (String k : modes.keySet()) {
+		modes.get(k).init();
+	    }
+
+	    System.out.println("Modes Initialized!");
+	    System.out.print("Initalizing Bindings...");
+
+	    for (String key : modes.keySet()) {
+		modes.get(key).registerBindings();
+	    }
+
+	    System.out.println("Modes Initialized!");
+	    progressor.cancel();
+	    System.out.println();
+	    System.out.println("Initialized! (" + (System.currentTimeMillis() - init_time) + " ms)");
 	}
-
-	System.out.println("Modes Initialized!");
-	System.out.print("Initalizing Bindings...");
-
-	for (String key : modes.keySet()) {
-	    modes.get(key).registerBindings();
-	}
-
-	System.out.println("Modes Initialized!");
-	progressor.cancel();
-	System.out.println();
-	System.out.println("Initialized! (" + (System.currentTimeMillis() - init_time) + " ms)");
-	}
-	catch(Exception e){ //The buck stops here
+	catch (Exception e) { //The buck stops here
 	    progressor.cancel();
 	    System.out.println("Failed!");
 	    System.out.println("");
 	    System.out.println("The error reports:");
 	    e.printStackTrace();
 	}
-	
+
     }
 
     public final void start(String mode) {
-	
+
 	System.out.print("Starting...");
 
 	long start_time = System.currentTimeMillis();
 	Timer progressor = new Timer();
-	
+
 	progressor.scheduleAtFixedRate(new TimerTask() {
 	    @Override
 	    public void run() {
 		System.out.print(".");
 	    }
 	}, 0l, 1000l);
-	
+
 	this.mode = mode.toLowerCase();
 	this.modes.get(this.mode).start();
 	this.mouse.setBindings(this.modes.get(this.mode).bindings);
 	this.keyboard.setBindings(this.modes.get(this.mode).bindings);
-	
+
 	this.gamemain = new Thread(this);
 	this.gamemain.start();
 
@@ -352,7 +360,6 @@ public class JGameEngineX implements Runnable {
 	    if (this.mode != null && this.modes.get(mode) != null) {
 		this.modes.get(mode).update();
 	    }
-
 	    paint();
 	}
     }
@@ -361,5 +368,5 @@ public class JGameEngineX implements Runnable {
 	gamemain = null;
 	this.spriteholder.stop();
     }
-    
+
 }

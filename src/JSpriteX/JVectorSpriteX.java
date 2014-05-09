@@ -169,7 +169,7 @@ public class JVectorSpriteX extends JSpriteX {
      * @param g2d
      */
     @Override
-    public final void draw(Graphics2D g2d) {
+    public final void paint(Graphics2D g2d) {
 	if (!this.visable) {
 	    return;
 	}

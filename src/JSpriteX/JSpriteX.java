@@ -446,22 +446,6 @@ public abstract class JSpriteX {
 	return this.bounds.contains(point);
     }
 
-    /**
-     *
-     * @param g2d
-     */
-    public final void drawBoundsTo(Graphics2D g2d) {
-	g2d.setTransform(new AffineTransform());
-	g2d.setColor(Color.WHITE);
-	g2d.drawRect((int) this.bounds.getX(), (int) this.bounds.getY(), (int) this.bounds.getWidth(), (int) this.bounds.getHeight());
-	g2d.setColor(Color.BLUE);
-	g2d.drawOval((int)this.bounds.getX(), (int)this.bounds.getY(), (int)this.bounds.getWidth(), (int)this.bounds.getHeight());
-	g2d.setColor(Color.GREEN);
-	g2d.drawLine((int)this.bounds.getCenterX(), (int)this.bounds.getCenterY(), (int)(this.bounds.getCenterX() - this.vel * Math.cos(Math.toRadians(direction))), (int)(this.bounds.getCenterY() - this.vel * Math.sin(Math.toRadians(direction))));
-	g2d.setColor(Color.RED);
-	g2d.drawLine((int)this.bounds.getCenterX(), (int)this.bounds.getCenterY(), (int)(this.bounds.getCenterX() - this.accel * Math.cos(Math.toRadians(direction))), (int)(this.bounds.getCenterY() - this.accel * Math.sin(Math.toRadians(direction))));
-    }
-
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
     //Draw
@@ -469,7 +453,24 @@ public abstract class JSpriteX {
      *
      * @param g2d
      */
-    public abstract void draw(Graphics2D g2d);
+    public abstract void paint(Graphics2D g2d);
+    
+    /**
+     *
+     * @param g2d
+     */
+    public final void paintBounds(Graphics2D g2d) {
+	g2d.setTransform(new AffineTransform());
+	g2d.setColor(Color.WHITE);
+	g2d.drawRect((int) this.bounds.getX(), (int) this.bounds.getY(), (int) this.bounds.getWidth(), (int) this.bounds.getHeight());
+	g2d.setColor(Color.BLUE);
+	double rad = getRadius();
+	g2d.drawOval((int)(bounds.getCenterX() - rad), (int)(bounds.getCenterY() - rad), (int)(2 * rad), (int)(2 * rad));
+	g2d.setColor(Color.GREEN);
+	g2d.drawLine((int)this.bounds.getCenterX(), (int)this.bounds.getCenterY(), (int)(this.bounds.getCenterX() - this.vel * Math.cos(Math.toRadians(direction))), (int)(this.bounds.getCenterY() - this.vel * Math.sin(Math.toRadians(direction))));
+	g2d.setColor(Color.RED);
+	g2d.drawLine((int)this.bounds.getCenterX(), (int)this.bounds.getCenterY(), (int)(this.bounds.getCenterX() - this.accel * Math.cos(Math.toRadians(direction))), (int)(this.bounds.getCenterY() - this.accel * Math.sin(Math.toRadians(direction))));
+    }
 
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

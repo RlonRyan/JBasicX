@@ -34,6 +34,7 @@ public class JWindowHolderX implements JGameHolderX {
 
     @Override
     public final void clearBackbuffer() {
+	this.resetGraphics();
 	g2d.setPaint(background_color);
 	g2d.fillRect(0, 0, this.frame.getWidth(), this.frame.getHeight());
     }

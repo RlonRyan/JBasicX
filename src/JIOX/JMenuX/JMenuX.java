@@ -48,8 +48,6 @@ public class JMenuX {
     private boolean visible;
     private int separator;
 
-    private boolean drawBounds = false;
-
     /*
      * Constructors Go Here
      */
@@ -72,25 +70,8 @@ public class JMenuX {
     }
 
     /*
-     * public JMenuX(String title, int x, int y, int width, int height,
-     * JMenuElementX... elements) {
-     * this.title = title;
-     * this.bounds = new Rectangle(x, y, width, height);
-     * this.elements = new ArrayList<>();
-     * this.listeners = new ArrayList<>();
-     * this.style = new JStyleX();
-     * this.validateStyle();
-     * this.elements.addAll(Arrays.asList(elements));
-     * }
-     */
-
-    /*
      * Setters Go Here
      */
-    synchronized public final void setBoundsVisable(boolean visable) {
-	this.drawBounds = visable;
-    }
-
     synchronized public final void setStyle(JStyleX style) {
 	this.style = style;
     }
@@ -144,11 +125,12 @@ public class JMenuX {
      * Methods Go Here
      */
     synchronized public final void highlight(int index) {
-	this.elements.get(this.index).dehighlight();
-	this.index = index % this.elements.size();
-	if (this.index < 0) {
-	    this.index += this.elements.size();
+	this.elements.get(this.index).reset();
+	index = index % this.elements.size();
+	if (index < 0) {
+	    index += this.elements.size();
 	}
+	this.index = index;
 	this.elements.get(this.index).highlight();
     }
 
@@ -164,8 +146,8 @@ public class JMenuX {
     }
 
     synchronized public final void selectMenuElement(int index) {
-	this.elements.get(this.index).dehighlight();
-	this.index = index;
+	this.elements.get(this.index).reset();
+	this.index = index % this.elements.size();
 	selectMenuElement();
     }
 
@@ -231,7 +213,6 @@ public class JMenuX {
     }
 
     public void close() {
-	this.highlight(0);
 	this.visible = false;
     }
     /*
@@ -278,14 +259,32 @@ public class JMenuX {
 	for (JMenuElementX e : elements) {
 	    y += separator;
 	    e.draw(g2d, style, x, y);
-	    if (drawBounds) {
-		e.drawBounds(g2d, style, x, y);
-	    }
 	    y += e.getBounds().height;
 	}
-	if (drawBounds) {
-	    g2d.setColor(this.style.getColor("border"));
-	    g2d.draw(bounds);
+    }
+    
+    public void paintBounds(Graphics2D g2d) {
+	if (!this.visible) {
+	    return;
+	}
+	/*
+	 * Draw the background & Border
+	 */
+	g2d.setColor(this.style.getColor("border"));
+	g2d.draw(bounds);
+	    
+	/*
+	 * Vars!
+	 */
+	int x = this.bounds.x + this.bounds.width / 50;
+	int y = this.bounds.y + this.header.height + this.separator;
+
+	/*
+	 * Draw menu elements
+	 */
+	for (JMenuElementX e : elements) {
+	    e.drawBounds(g2d, style, x, y);
+	    y += e.getBounds().height + separator;
 	}
     }
 }

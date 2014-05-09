@@ -267,9 +267,9 @@ final public class JSpriteHolderX implements Runnable {
      *
      * @param g2d
      */
-    synchronized final public void drawSprites(Graphics2D g2d) {
+    synchronized final public void paintSprites(Graphics2D g2d) {
 	for (int i = 0; i < this.sprites.size(); i++) {
-	    this.sprites.get(i).draw(g2d);
+	    this.sprites.get(i).paint(g2d);
 	}
     }
 
@@ -277,9 +277,9 @@ final public class JSpriteHolderX implements Runnable {
      *
      * @param g2d
      */
-    synchronized final public void drawSpriteBounds(Graphics2D g2d) {
+    synchronized final public void paintSpriteBounds(Graphics2D g2d) {
 	for (int i = 0; i < this.sprites.size(); i++) {
-	    this.sprites.get(i).drawBoundsTo(g2d);
+	    this.sprites.get(i).paintBounds(g2d);
 	}
     }
 
