@@ -5,13 +5,37 @@
  */
 package JNetX.JNetEventX;
 
-/**
+/*
  * @author RlonRyan
  * @name JNetEventX
  * @date Jan 27, 2014
  *
  */
+
+/**
+ *
+ * @author Ryan
+ */
+
 public enum JNetEventTypeX {
 
-    PACKET_RECIEVED, TIMEOUT, ERROR, TERMINATE;
+    /**
+     *
+     */
+    PACKET_RECIEVED,
+
+    /**
+     *
+     */
+    TIMEOUT,
+
+    /**
+     *
+     */
+    ERROR,
+
+    /**
+     *
+     */
+    TERMINATE;
 }

@@ -11,16 +11,27 @@ package JIOX;
 import java.awt.AWTEvent;
 import java.util.EventObject;
 
-/**
+/*
  * @author RlonRyan
  * @name JInputOutputX
  */
-public interface JInputOutputX {
 
+/**
+ *
+ * @author Ryan
+ */
+
+public interface JInputOutputX {
+    
     /**
      *
+     * @param e
      */
     public void updateIO(AWTEvent e);
 
+    /**
+     *
+     * @param e
+     */
     public void lostFocus(EventObject e);
 }

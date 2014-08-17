@@ -1,4 +1,4 @@
-/**
+/*
  * @author RlonRyan
  * @name JSpriteX
  * @version 1.0.0
@@ -14,10 +14,16 @@ import java.awt.Graphics2D;
 import java.awt.image.BufferedImage;
 import java.util.LinkedList;
 
-/**
+/*
  * @author RlonRyan
  * @name JSpriteHolderX
  */
+
+/**
+ *
+ * @author Ryan
+ */
+
 final public class JSpriteHolderX implements Runnable {
 
     // Constants
@@ -44,11 +50,11 @@ final public class JSpriteHolderX implements Runnable {
     // Public
     // Private
     private Thread spriteUpdateThread;
-    
+
     private final LinkedList<JSpriteX> sprites;
     private final JImageHandlerX images;
     private final JGameEngineX holder;
-    
+
     private int dsups = 100;
     private int sups = 0;
     private long updatetime;
@@ -81,10 +87,20 @@ final public class JSpriteHolderX implements Runnable {
 	return sups;
     }
 
+    /**
+     *
+     * @param index
+     * @return
+     */
     public final JSpriteX getSprite(int index) {
 	return this.sprites.get(index);
     }
 
+    /**
+     *
+     * @param name
+     * @return
+     */
     public final BufferedImage getImage(String name) {
 	return this.images.getImage(name);
     }
@@ -121,6 +137,15 @@ final public class JSpriteHolderX implements Runnable {
 	this.sprites.add(spr);
     }
 
+    /**
+     *
+     * @param type
+     * @param direction
+     * @param vel
+     * @param x
+     * @param y
+     * @param imagename
+     */
     synchronized final public void addSprite(int type, int direction, double vel, double x, double y, String imagename) {
 	JSpriteX spr = new JPictureSpriteX(this.images.getImage(imagename), x, y);
 	spr.setDirection(direction);
@@ -151,10 +176,19 @@ final public class JSpriteHolderX implements Runnable {
 	this.sprites.add(spr);
     }
 
+    /**
+     *
+     * @param name
+     */
     synchronized final public void addImage(String name) {
 	this.images.addImage(name);
     }
 
+    /**
+     *
+     * @param name
+     * @param path
+     */
     synchronized final public void addImage(String name, String path) {
 	this.images.addImage(name, path);
     }
@@ -168,7 +202,6 @@ final public class JSpriteHolderX implements Runnable {
     }
 
     /**
-     *
      *
      */
     synchronized final public void deleteAllSprites() {
@@ -286,8 +319,6 @@ final public class JSpriteHolderX implements Runnable {
     /**
      *
      * @param sprite
-     *               <
-     * p/>
      * @return
      */
     synchronized final public JSpriteX collidesWith(JSpriteX sprite) {
@@ -302,8 +333,6 @@ final public class JSpriteHolderX implements Runnable {
     /**
      *
      * @param sprite
-     *               <
-     * p/>
      * @return
      */
     synchronized final public JSpriteX collidesWithAndRemove(JSpriteX sprite) {
@@ -318,8 +347,7 @@ final public class JSpriteHolderX implements Runnable {
     /**
      *
      * @param sprite
-     *               <
-     * p/>
+     * <p>
      * @return
      */
     synchronized final public int checkCollisionsWith(JSpriteX sprite) {
@@ -335,8 +363,7 @@ final public class JSpriteHolderX implements Runnable {
     /**
      *
      * @param sprite
-     *               <
-     * p/>
+     * <p>
      * @return
      */
     synchronized final public int checkCollisionsWithAndRemove(JSpriteX sprite) {
@@ -364,6 +391,9 @@ final public class JSpriteHolderX implements Runnable {
 	}
     }
 
+    /**
+     *
+     */
     synchronized final public void pauseAll() {
 	for (JSpriteX e : sprites) {
 	    e.pause();
@@ -384,6 +414,9 @@ final public class JSpriteHolderX implements Runnable {
 	this.updatenumber = 0;
     }
 
+    /**
+     *
+     */
     @Override
     final public void run() {
 	Thread current = Thread.currentThread();

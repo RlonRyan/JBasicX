@@ -4,44 +4,81 @@ import JBasicX.JStyleX;
 import java.awt.Graphics2D;
 import java.awt.Rectangle;
 
-/**
+/*
  * @author RlonRyan
  * @name JMenuElementX
  * @version 1.0.0
  * @date Jan 9, 2012
  * @info Powered by JBasicX
  */
+
+/**
+ *
+ * @author Ryan
+ */
+
 public interface JMenuElementX {
 
+    /**
+     *
+     */
     public enum JMenuElementStateX {
 
+	/**
+	 *
+	 */
 	STATELESS,
+
+	/**
+	 *
+	 */
 	NORMAL,
+
+	/**
+	 *
+	 */
 	HIGHLIGHTED,
+
+	/**
+	 *
+	 */
 	SELECTED;
     }
     
+    /**
+     *
+     */
     @FunctionalInterface
     interface JMenuElementActionX {
+
+	/**
+	 *
+	 */
 	void act();
     }
 
     /**
      * Retrieves the state of the element.
-     * <p/>
      * @return state
      */
     public JMenuElementStateX getState();
     
     /**
      * Retrieves the element's dimensions.
-     * <p/>
      * @return state
      */
     public Rectangle getBounds();
     
+    /**
+     *
+     * @param width
+     */
     public void setWidth(int width);
     
+    /**
+     *
+     * @param height
+     */
     public void setHeight(int height);
 
     /**
@@ -71,7 +108,6 @@ public interface JMenuElementX {
 
     /**
      * Renders the element using the given graphics.
-     * <p/>
      * @param g2d   The graphics to be drawn to.
      * @param style The style to use.
      * @param x     The x-position of the element.
@@ -79,5 +115,12 @@ public interface JMenuElementX {
      */
     public void draw(Graphics2D g2d, JStyleX style, int x, int y);
     
+    /**
+     *
+     * @param g2d
+     * @param style
+     * @param x
+     * @param y
+     */
     public void drawBounds(Graphics2D g2d, JStyleX style, int x, int y);
 }

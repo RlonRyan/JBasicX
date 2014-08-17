@@ -11,13 +11,50 @@ package JNetX.JPacketX;
  */
 public enum JPacketTypeX {
 
-    INVALID(0), LOGON(1), UPDATE(2), MESSAGE(3), LOGOFF(4), TERMINATE(5);
+    /**
+     *
+     */
+    INVALID(0),
+
+    /**
+     *
+     */
+    LOGON(1),
+
+    /**
+     *
+     */
+    UPDATE(2),
+
+    /**
+     *
+     */
+    MESSAGE(3),
+
+    /**
+     *
+     */
+    LOGOFF(4),
+
+    /**
+     *
+     */
+    TERMINATE(5);
+
+    /**
+     *
+     */
     public byte id;
 
     private JPacketTypeX(int id) {
 	this.id = (id < Byte.MAX_VALUE ? (byte) id : 0);
     }
 
+    /**
+     *
+     * @param id
+     * @return
+     */
     public static JPacketTypeX getForID(byte id) {
 	for (JPacketTypeX e : values()) {
 	    if (e.id == id) {

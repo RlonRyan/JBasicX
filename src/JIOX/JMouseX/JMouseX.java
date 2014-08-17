@@ -13,10 +13,16 @@ import java.awt.Point;
 import java.awt.event.*;
 import java.awt.geom.Point2D;
 
-/**
+/*
  * @author RlonRyan
  * @name JMouseX
  */
+
+/**
+ *
+ * @author Ryan
+ */
+
 public class JMouseX implements MouseListener, MouseMotionListener, MouseWheelListener {
 
     private JEventBinderX bindings;
@@ -35,8 +41,19 @@ public class JMouseX implements MouseListener, MouseMotionListener, MouseWheelLi
     private Boolean mousedrag = false;
     private int mousebutton = 0;
 
+    /**
+     *
+     */
     public final int leftbutton		= 1;
+
+    /**
+     *
+     */
     public final int rightbutton	= 2;
+
+    /**
+     *
+     */
     public final int centerbutton	= 3;
 
     /**
@@ -110,10 +127,18 @@ public class JMouseX implements MouseListener, MouseMotionListener, MouseWheelLi
 	return position;
     }
     
+    /**
+     *
+     * @return
+     */
     public int getX() {
 	return position.x;
     }
     
+    /**
+     *
+     * @return
+     */
     public int getY() {
 	return position.y;
     }
@@ -211,6 +236,10 @@ public class JMouseX implements MouseListener, MouseMotionListener, MouseWheelLi
 	this.scroll = 0;
     }
     
+    /**
+     *
+     * @param bindings
+     */
     public void setBindings(JEventBinderX bindings) {
 	this.bindings = bindings;
     }
@@ -231,6 +260,10 @@ public class JMouseX implements MouseListener, MouseMotionListener, MouseWheelLi
 	this.position = e.getPoint();
     }
 
+    /**
+     *
+     * @param e
+     */
     @Override
     public void mouseEntered(MouseEvent e) {
 	enter.setLocation(e.getX(), e.getY());
@@ -239,6 +272,10 @@ public class JMouseX implements MouseListener, MouseMotionListener, MouseWheelLi
 	fireEvent(e);
     }
 
+    /**
+     *
+     * @param e
+     */
     @Override
     public void mouseMoved(MouseEvent e) {
 	mousedrag = false;
@@ -247,6 +284,10 @@ public class JMouseX implements MouseListener, MouseMotionListener, MouseWheelLi
 	fireEvent(e);
     }
 
+    /**
+     *
+     * @param e
+     */
     @Override
     public void mouseDragged(MouseEvent e) {
 	mousedrag = true;
@@ -256,6 +297,10 @@ public class JMouseX implements MouseListener, MouseMotionListener, MouseWheelLi
 	fireEvent(e);
     }
 
+    /**
+     *
+     * @param e
+     */
     @Override
     public void mouseWheelMoved(MouseWheelEvent e) {
 	scroll += e.getWheelRotation();
@@ -263,6 +308,10 @@ public class JMouseX implements MouseListener, MouseMotionListener, MouseWheelLi
 	fireEvent(e);
     }
 
+    /**
+     *
+     * @param e
+     */
     @Override
     public void mouseClicked(MouseEvent e) {
 	click.setLocation(e.getX(), e.getY());
@@ -271,6 +320,10 @@ public class JMouseX implements MouseListener, MouseMotionListener, MouseWheelLi
 	fireEvent(e);
     }
     
+    /**
+     *
+     * @param e
+     */
     @Override
     public void mousePressed(MouseEvent e) {
 	mousedown = true;
@@ -280,6 +333,10 @@ public class JMouseX implements MouseListener, MouseMotionListener, MouseWheelLi
 	fireEvent(e);
     }
 
+    /**
+     *
+     * @param e
+     */
     @Override
     public void mouseReleased(MouseEvent e) {
 	mousedown = false;
@@ -289,6 +346,10 @@ public class JMouseX implements MouseListener, MouseMotionListener, MouseWheelLi
 	fireEvent(e);
     }
 
+    /**
+     *
+     * @param e
+     */
     @Override
     public void mouseExited(MouseEvent e) {
 	exit.setLocation(e.getX(), e.getY());
@@ -297,6 +358,10 @@ public class JMouseX implements MouseListener, MouseMotionListener, MouseWheelLi
 	fireEvent(e);
     }
     
+    /**
+     *
+     * @param e
+     */
     public void fireEvent(MouseEvent e) {
 	if (bindings != null) {
 	    this.bindings.fireEvent(e);

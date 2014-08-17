@@ -1,4 +1,4 @@
-/**
+/*
  * @author RlonRyan
  * @name JMidiX
  * @version 1.0.0
@@ -10,10 +10,16 @@ package JIOX;
 
 import java.net.URL;
 
-/**
+/*
  * @author RlonRyan
  * @name JMidiX
  */
+
+/**
+ *
+ * @author Ryan
+ */
+
 public class JMidiX {
 
     private String file = "drwhotheme.wav";

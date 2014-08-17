@@ -1,10 +1,10 @@
-/**
+/*
  * @author RlonRyan
  * @name JSoundX
  * @version 1.0.0
  * @date Dec 23, 2011
  * @info Sound class.
- *
+ * 
  */
 package JIOX;
 
@@ -12,10 +12,16 @@ import javax.sound.sampled.AudioInputStream;
 import javax.sound.sampled.AudioSystem;
 import javax.sound.sampled.Clip;
 
-/**
+/*
  * @author RlonRyan
  * @name JSoundX
  */
+
+/**
+ *
+ * @author Ryan
+ */
+
 public final class JSoundX {
 
     private Class holder;
@@ -97,6 +103,8 @@ public final class JSoundX {
 
     /**
      *
+     * @param holder
+     * @param file
      */
     public JSoundX(Class holder, String file) {
 	this.holder = holder;

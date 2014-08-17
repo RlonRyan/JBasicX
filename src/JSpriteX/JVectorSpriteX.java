@@ -1,4 +1,4 @@
-/**
+/*
  * @author RlonRyan
  * @name JVectorSpriteX
  * @version 1.0.0
@@ -11,11 +11,17 @@ package JSpriteX;
 import java.awt.*;
 import java.awt.geom.AffineTransform;
 
-/**
+/*
  * @author RlonRyan
  * @name JVectorSpriteX
  *
  */
+
+/**
+ *
+ * @author Ryan
+ */
+
 public class JVectorSpriteX extends JSpriteX {
 
     //Variables

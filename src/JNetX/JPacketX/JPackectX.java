@@ -24,22 +24,48 @@ public class JPackectX {
     private byte id;
     private byte type;
 
+    /**
+     *
+     * @return
+     */
     public byte getSize() {
 	return size;
     }
 
+    /**
+     *
+     * @return
+     */
     public byte getId() {
 	return id;
     }
 
+    /**
+     *
+     * @return
+     */
     public JPacketTypeX getType() {
 	return JPacketTypeX.getForID(type);
     }
 
+    /**
+     *
+     * @param key
+     * @param data
+     */
     public void set(String key, byte... data) {
 	size += data.length;
     }
 
+    /**
+     *
+     * @param ip
+     * @param port
+     * @param ack
+     * @param acks
+     * @param id
+     * @return
+     */
     public DatagramPacket send(InetAddress ip, int port, byte ack, BitSet acks, byte id) {
 	byte[] bytes = new byte[7 + size];
 	bytes[0] = 112;
@@ -61,11 +87,19 @@ public class JPackectX {
 	return new DatagramPacket(bytes, size + 2, ip, port);
     }
 
+    /**
+     *
+     * @param type
+     */
     public JPackectX(JPacketTypeX type) {
 	this.size = 0;
 	this.type = type.id;
     }
 
+    /**
+     *
+     * @param data
+     */
     public JPackectX(byte[] data) {
 	this.id = data[4];
 	this.size = data[5];

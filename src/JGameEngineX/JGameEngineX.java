@@ -1,10 +1,3 @@
-/**
- * @author RlonRyan
- * @name JGameX
- * @version 1.0.2
- * @date September 11th, 2011
- *
- */
 package JGameEngineX;
 
 import JBasicX.JImageHandlerX;
@@ -27,17 +20,40 @@ import java.util.Timer;
 import java.util.TimerTask;
 
 /**
- * @author RlonRyan
- * @name JGameX
+ * JGameEngineX
+ * <p>
+ * @author Ryan
  */
 public class JGameEngineX implements Runnable {
 
+    /**
+     * The title of the game.
+     */
     public final String title;
 
+    /**
+     * The game sprite manager.
+     */
     public JSpriteHolderX spriteholder;
+
+    /**
+     * The game mouse tracker.
+     */
     public JMouseX mouse;
+
+    /**
+     * The game keyboard tracker.
+     */
     public JKeyboardX keyboard;
+
+    /**
+     * The game event binder.
+     */
     public JEventBinderX binder;
+
+    /**
+     * The game image resource handler.
+     */
     public JImageHandlerX images;
 
     private String mode;
@@ -55,6 +71,16 @@ public class JGameEngineX implements Runnable {
     private HashMap<String, JGameModeX> modes;
 
     // Initializers
+    /**
+     * Creates a new instance of the game engine to run a client game.
+     * @param title The title of the game.
+     * @param mode The display mode of the game. Example: "windowed" or "applet"
+     * @param fps The desired screen refresh rate. Example: 60
+     * @param width The desired width of the game screen. Example: 640
+     * @param height The desired height of the game screen. Example: 480
+     *               <p>
+     * @throws HeadlessException
+     */
     public JGameEngineX(String title, String mode, int fps, int width, int height) throws HeadlessException {
 	//  Set Game Atributes
 	this.modes = new HashMap();
@@ -81,17 +107,27 @@ public class JGameEngineX implements Runnable {
 	return this.mode;
     }
 
-    public final JGameModeX getGameMode(String mode) {
-	return this.modes.get(mode);
+    /**
+     * Returns a JGameModeX with the given name, or null if no mode is found matching the given name.
+     * @param modename The name of the mode to retrieve.
+     *             <p>
+     * @return A JGameModeX with the mode name or null.
+     */
+    public final JGameModeX getGameMode(String modename) {
+	return this.modes.get(modename);
     }
 
+    /**
+     * Retrieves the game window's dimensions.
+     * @return A rectangle representing the game's screen bounds.
+     */
     public final Rectangle2D getDimensions() {
 	return this.dimensions;
     }
 
     /**
      * Returns the frames per second drawn to the screen (framerate).
-     * <p/>
+     * <p>
      * @return The game's framerate.
      */
     public final int getFPS() {
@@ -100,7 +136,7 @@ public class JGameEngineX implements Runnable {
 
     /**
      * Returns the game's desired frames per second rate (desired framerate).
-     * <p/>
+     * <p>
      * @return The game's desired framerate.
      */
     public final double getDFPS() {
@@ -109,7 +145,7 @@ public class JGameEngineX implements Runnable {
 
     /**
      * Returns the game's graphics, which point to the backbuffer.
-     * <p/>
+     * <p>
      * @return The game's primary graphics.
      */
     public final Graphics2D getGameGraphics() {
@@ -117,7 +153,6 @@ public class JGameEngineX implements Runnable {
     }
 
     /**
-     *
      * @return
      */
     public final boolean isGameDataVisible() {
@@ -125,6 +160,10 @@ public class JGameEngineX implements Runnable {
     }
 
     //Mutators
+    /**
+     *
+     * @param mode
+     */
     public final void registerGameMode(JGameModeX mode) {
 	this.modes.put(mode.name.toLowerCase(), mode);
     }
@@ -165,6 +204,9 @@ public class JGameEngineX implements Runnable {
 	this.dfps = dfps;
     }
 
+    /**
+     *
+     */
     public final void toggleGameDataVisable() {
 	this.showgamedata = !this.showgamedata;
     }
@@ -176,11 +218,17 @@ public class JGameEngineX implements Runnable {
 	this.holder.getGraphics().setFont(font);
     }
 
+    /**
+     *
+     */
     public final void resetGraphics() {
 	this.holder.resetGraphics();
     }
 
     // Paint
+    /**
+     *
+     */
     public final void paint() {
 	framenum++;
 	if (System.currentTimeMillis() > frametime + 1000) {
@@ -256,6 +304,11 @@ public class JGameEngineX implements Runnable {
     }
 
     // Run
+    /**
+     * Begins game execution.
+     * Initializes run-time prerequisites. Starts with core io, followed by the
+     * game modes.
+     */
     public final void init() {
 
 	System.out.println(title + " is initializing!");
@@ -313,6 +366,12 @@ public class JGameEngineX implements Runnable {
 
     }
 
+    /**
+     * Follows initialize, starts actual execution.
+     * Creates the main game thread.
+     * <p>
+     * @param mode The name of the mode to start with.
+     */
     public final void start(String mode) {
 
 	System.out.print("Starting...");
@@ -346,6 +405,9 @@ public class JGameEngineX implements Runnable {
 
     }
 
+    /**
+     *
+     */
     @Override
     public final void run() {
 	Thread current = Thread.currentThread();
@@ -364,6 +426,9 @@ public class JGameEngineX implements Runnable {
 	}
     }
 
+    /**
+     *
+     */
     public final void stop() {
 	gamemain = null;
 	this.spriteholder.stop();

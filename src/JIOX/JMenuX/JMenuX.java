@@ -1,4 +1,4 @@
-/**
+/*
  * @author RlonRyan
  * @name JMenuX
  * @version 1.0.0
@@ -18,18 +18,42 @@ import java.awt.Rectangle;
 import java.util.ArrayList;
 import java.util.List;
 
-/**
+/*
  * @author RlonRyan
  * @name JMenuX
  */
+
+/**
+ *
+ * @author Ryan
+ */
+
 public class JMenuX {
 
     /*
      * Constants for events
      */
+
+    /**
+     *
+     */
+    
     public enum JMenuStateX {
 
-	MENU_CHANGED, ELEMENT_HIGHLIGHTED, ELEMENT_SELECTED;
+	/**
+	 *
+	 */
+	MENU_CHANGED,
+
+	/**
+	 *
+	 */
+	ELEMENT_HIGHLIGHTED,
+
+	/**
+	 *
+	 */
+	ELEMENT_SELECTED;
     }
 
     /*
@@ -51,6 +75,17 @@ public class JMenuX {
     /*
      * Constructors Go Here
      */
+
+    /**
+     *
+     * @param title
+     * @param x
+     * @param y
+     * @param width
+     * @param height
+     * @param elements
+     */
+    
     public JMenuX(String title, int x, int y, int width, int height, String... elements) {
 	this.title = title;
 	this.bounds = new Rectangle(x, y, width, height);
@@ -72,10 +107,21 @@ public class JMenuX {
     /*
      * Setters Go Here
      */
+
+    /**
+     *
+     * @param style
+     */
+    
     synchronized public final void setStyle(JStyleX style) {
 	this.style = style;
     }
 
+    /**
+     *
+     * @param name
+     * @param element
+     */
     synchronized public final void setStyleElement(String name, Object element) {
 	this.style.setStyleElement(name, element);
     }
@@ -83,6 +129,12 @@ public class JMenuX {
     /*
      * Putters Go Here
      */
+
+    /**
+     *
+     * @param element
+     */
+    
     synchronized public final void addMenuElement(JMenuElementX element) {
 	this.elements.add(element);
 	this.separator = this.bounds.width / (10 * this.elements.size());
@@ -91,14 +143,29 @@ public class JMenuX {
     /*
      * Getters Go Here
      */
+
+    /**
+     *
+     * @return
+     */
+    
     final public String getTitle() {
 	return this.title;
     }
 
+    /**
+     *
+     * @return
+     */
     synchronized public final int getIndex() {
 	return this.index;
     }
 
+    /**
+     *
+     * @param idex
+     * @return
+     */
     synchronized public final JMenuElementX getMenuElement(int idex) {
 	if (index < 0 || index >= this.elements.size()) {
 	    return null;
@@ -109,14 +176,26 @@ public class JMenuX {
     /*
      * Incrementers Go Here
      */
+
+    /**
+     *
+     */
+    
     synchronized public final void incrementHighlight() {
 	this.incrementHighlight(1);
     }
 
+    /**
+     *
+     */
     synchronized public final void deincrementHighlight() {
 	this.incrementHighlight(-1);
     }
 
+    /**
+     *
+     * @param increment
+     */
     synchronized public final void incrementHighlight(int increment) {
 	highlight(this.index + increment);
     }
@@ -124,6 +203,12 @@ public class JMenuX {
     /*
      * Methods Go Here
      */
+
+    /**
+     *
+     * @param index
+     */
+    
     synchronized public final void highlight(int index) {
 	this.elements.get(this.index).reset();
 	index = index % this.elements.size();
@@ -134,6 +219,10 @@ public class JMenuX {
 	this.elements.get(this.index).highlight();
     }
 
+    /**
+     *
+     * @param p
+     */
     synchronized public final void selectMenuElement(Point p) {
 	int pos = this.bounds.y + this.header.height + this.separator;
 	for (int i = 0; i < this.elements.size(); i++) {
@@ -145,18 +234,28 @@ public class JMenuX {
 	}
     }
 
+    /**
+     *
+     * @param index
+     */
     synchronized public final void selectMenuElement(int index) {
 	this.elements.get(this.index).reset();
 	this.index = index % this.elements.size();
 	selectMenuElement();
     }
 
+    /**
+     *
+     */
     synchronized public final void selectMenuElement() {
 	if (this.index < this.elements.size()) {
 	    this.elements.get(index).select();
 	}
     }
 
+    /**
+     *
+     */
     synchronized public final void validateStyle() {
 	if (this.style == null) {
 	    this.style = new JStyleX();
@@ -190,6 +289,9 @@ public class JMenuX {
 	}
     }
 
+    /**
+     *
+     */
     public void normalize() {
 	int width = (int) (0.80 * this.bounds.width);
 	int height = (this.bounds.height) / (this.elements.size() + separator);
@@ -203,6 +305,9 @@ public class JMenuX {
 	}
     }
 
+    /**
+     *
+     */
     public void open() {
 	if (this.elements.isEmpty()) {
 	    this.elements.add(new JMenuTextElementX("Oops! This menu has yet to be filled!"));
@@ -212,6 +317,9 @@ public class JMenuX {
 	this.visible = true;
     }
 
+    /**
+     *
+     */
     public void close() {
 	this.visible = false;
     }
@@ -219,6 +327,10 @@ public class JMenuX {
      * Draw Methods Go Here
      */
 
+    /**
+     *
+     * @param g2d
+     */
     public void paint(Graphics2D g2d) {
 	if (!this.visible) {
 	    return;
@@ -263,6 +375,10 @@ public class JMenuX {
 	}
     }
     
+    /**
+     *
+     * @param g2d
+     */
     public void paintBounds(Graphics2D g2d) {
 	if (!this.visible) {
 	    return;

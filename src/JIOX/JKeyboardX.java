@@ -9,24 +9,33 @@ import JEventX.JEventBinderX;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
 
-/**
+/*
  * @author RlonRyan
  * @name JKeyX
  * @date Jan 10, 2014
  *
  */
+
+/**
+ *
+ * @author Ryan
+ */
+
 public class JKeyboardX implements KeyListener {
 
     private JEventBinderX bindings;
     private boolean[] keys;
 
+    /**
+     *
+     */
     public JKeyboardX() {
 	this.keys = keys = new boolean[526];
     }
 
     /**
      * Returns the currently active keys.
-     * <p/>
+     * <p>
      * @return The active key array.
      */
     public final boolean[] getKeys() {
@@ -35,7 +44,7 @@ public class JKeyboardX implements KeyListener {
 
     /**
      * Returns the currently active keys as a string.
-     * <p/>
+     * <p>
      * @return The active key array as a string.
      */
     public final String getKeysDownString() {
@@ -50,10 +59,10 @@ public class JKeyboardX implements KeyListener {
 
     /**
      * Tests a key to see if it is currently active.
-     * <p/>
+     * <p>
      * @param keycode The key to test for its the state.
-     * <p/>
-     * @return
+     * <p>
+     * @return boolean
      */
     public final boolean isKeyDown(int keycode) {
 	return this.keys[keycode];
@@ -62,9 +71,9 @@ public class JKeyboardX implements KeyListener {
     /**
      * Tests a key to see if it is currently active and if it is, removes it
      * from the active key array.
-     * <p/>
+     * <p>
      * @param keycode The key to test for its the state.
-     * <p/>
+     * <p>
      * @return
      */
     public final boolean isKeyDownAndRemove(int keycode) {
@@ -74,22 +83,38 @@ public class JKeyboardX implements KeyListener {
 	}
 	return false;
     }
-    
+
+    /**
+     *
+     * @param bindings
+     */
     public void setBindings(JEventBinderX bindings) {
 	this.bindings = bindings;
     }
 
+    /**
+     *
+     * @param k
+     */
     @Override
     public void keyTyped(KeyEvent k) {
 	fireEvent(k);
     }
 
+    /**
+     *
+     * @param k
+     */
     @Override
     public void keyPressed(KeyEvent k) {
 	this.keys[k.getKeyCode()] = true;
 	fireEvent(k);
     }
 
+    /**
+     *
+     * @param k
+     */
     @Override
     public void keyReleased(KeyEvent k) {
 	this.keys[k.getKeyCode()] = false;
@@ -101,6 +126,12 @@ public class JKeyboardX implements KeyListener {
      * Likely will be deprecated or removed, as the elements themselves will get
      * their own events.
      */
+
+    /**
+     *
+     * @param k
+     */
+    
     public void fireEvent(KeyEvent k) {
 	if (bindings != null) {
 	    this.bindings.fireEvent(k);

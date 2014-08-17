@@ -1,4 +1,4 @@
-/**
+/*
  * @author RlonRyan
  * @name JImageHandlerX
  * @version 1.0.0
@@ -13,10 +13,16 @@ import java.io.IOException;
 import java.util.HashMap;
 import javax.imageio.ImageIO;
 
-/**
+/*
  * @author RlonRyan
  * @name JImageHandlerX
  */
+
+/**
+ *
+ * @author Ryan
+ */
+
 public final class JImageHandlerX extends Object {
 
     /**
@@ -30,10 +36,10 @@ public final class JImageHandlerX extends Object {
      * Retrieves a previously imported image from the internal array based on
      * its
      * <code>name</code>
-     * <p/>
+     * <p>
      * @param name The name of the image to be retrieved from the internal
      *             array.
-     * <p/>
+     * <p>
      * @return The image held in memory under that name. If no image is found
      *         for that name, returns null.
      */
@@ -50,7 +56,7 @@ public final class JImageHandlerX extends Object {
     /**
      * Retrieves the default image from the internal array. Defaults to
      * <code>"nopic.png"</code>
-     * <p/>
+     * <p>
      * @return Returns the default image.
      */
     synchronized public final BufferedImage getDefaultImage() {
@@ -61,9 +67,9 @@ public final class JImageHandlerX extends Object {
      * Imports an image from the
      * <code>filename</code> location to the internal
      * array.
-     * <p/>
+     * <p>
      * @param name The name the retrieved image is to be referenced under.
-     * <p/>
+     * <p>
      * @see addImage
      */
     synchronized public final void addImage(String name) {
@@ -74,8 +80,8 @@ public final class JImageHandlerX extends Object {
      * Imports an image from the
      * <code>filename</code> location to the internal
      * array.
-     * <p/>
-     * @param filename The path to the file.
+     * <p>
+     * @param path The path to the file.
      * @param name     The name the retrieved image is to be referenced under.
      */
     synchronized public final void addImage(String name, String path) {
@@ -117,6 +123,7 @@ public final class JImageHandlerX extends Object {
     /**
      * Initializes the image handler. Sets the default image to
      * <code>nopic.png</code>.
+     * @param holder
      */
     public JImageHandlerX(Class holder) {
 	this.images = new HashMap<>();

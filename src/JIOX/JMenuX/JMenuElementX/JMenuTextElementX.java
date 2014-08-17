@@ -7,12 +7,18 @@ import JBasicX.JStyleX;
 import java.awt.Graphics2D;
 import java.awt.Rectangle;
 
-/**
+/*
  * @author RlonRyan
  * @name JMenuTextElementX
  * @date Dec 4, 2013
  *
  */
+
+/**
+ *
+ * @author Ryan
+ */
+
 public class JMenuTextElementX implements JMenuElementX {
 
     /*
@@ -27,14 +33,25 @@ public class JMenuTextElementX implements JMenuElementX {
     /*
      * Constructor
      */
+
+    /**
+     *
+     * @param text
+     */
+    
     public JMenuTextElementX(String text) {
 	this.text = text;
 	this.state = JMenuElementStateX.NORMAL;
-	this.action = () -> {
-	};
+	this.action = () -> {};
 	this.bounds = new Rectangle(0, 0);
     }
 
+    /**
+     *
+     * @param text
+     * @param width
+     * @param height
+     */
     public JMenuTextElementX(String text, int width, int height) {
 	this.text = text;
 	this.state = JMenuElementStateX.NORMAL;
@@ -42,6 +59,11 @@ public class JMenuTextElementX implements JMenuElementX {
 	this.bounds = new Rectangle(width, height);
     }
 
+    /**
+     *
+     * @param text
+     * @param action
+     */
     public JMenuTextElementX(String text, JMenuElementActionX action) {
 	this.text = text;
 	this.state = JMenuElementStateX.NORMAL;
@@ -49,6 +71,13 @@ public class JMenuTextElementX implements JMenuElementX {
 	this.bounds = new Rectangle(0, 0);
     }
 
+    /**
+     *
+     * @param text
+     * @param action
+     * @param width
+     * @param height
+     */
     public JMenuTextElementX(String text, JMenuElementActionX action, int width, int height) {
 	this.text = text;
 	this.state = JMenuElementStateX.NORMAL;
@@ -66,11 +95,19 @@ public class JMenuTextElementX implements JMenuElementX {
 	return bounds;
     }
 
+    /**
+     *
+     * @param width
+     */
     @Override
     public void setWidth(int width) {
 	this.bounds.setRect(0, 0, width, this.bounds.getHeight());
     }
 
+    /**
+     *
+     * @param height
+     */
     @Override
     public void setHeight(int height) {
 	this.bounds.setRect(0, 0, this.bounds.getWidth(), height);
@@ -127,6 +164,13 @@ public class JMenuTextElementX implements JMenuElementX {
 	g2d.drawString(this.text, x, y + (int)(this.bounds.getCenterY() + g2d.getFontMetrics().getAscent() / 2));
     }
 
+    /**
+     *
+     * @param g2d
+     * @param style
+     * @param x
+     * @param y
+     */
     @Override
     public void drawBounds(Graphics2D g2d, JStyleX style, int x, int y) {
 	g2d.drawRect(x, y, bounds.width, bounds.height);

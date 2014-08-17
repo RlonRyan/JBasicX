@@ -1,4 +1,4 @@
-/**
+/*
  * @author RlonRyan
  * @name JPictureSpriteX
  * @version 1.0.0
@@ -14,10 +14,16 @@ import java.awt.Rectangle;
 import java.awt.geom.AffineTransform;
 import java.awt.image.BufferedImage;
 
-/**
+/*
  * @author RlonRyan
  * @name JPictureSpriteX
  */
+
+/**
+ *
+ * @author Ryan
+ */
+
 public final class JPictureSpriteX extends JSpriteX {
     //vars
 

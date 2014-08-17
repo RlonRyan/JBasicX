@@ -30,13 +30,32 @@ public class JClientX extends Thread {
     private BitSet acks;
     private byte ack;
     private HashMap<Integer, JPackectX> sent;
+
+    /**
+     *
+     */
     public final InetAddress address;
+
+    /**
+     *
+     */
     public final int port;
 
+    /**
+     *
+     * @param address
+     * @param port
+     */
     public JClientX(InetAddress address, int port) {
 	this(address, port, 10000);
     }
 
+    /**
+     *
+     * @param address
+     * @param port
+     * @param timeout
+     */
     public JClientX(InetAddress address, int port, int timeout) {
 	this.address = address;
 	this.port = port;
@@ -55,6 +74,11 @@ public class JClientX extends Thread {
 
     }
 
+    /**
+     *
+     * @param packet
+     * @return
+     */
     public boolean sendPacket(JPackectX packet) {
 	try {
 	    this.socket.send(packet.send(address, port, ack, acks, id));
@@ -65,10 +89,17 @@ public class JClientX extends Thread {
 	return true;
     }
 
+    /**
+     *
+     * @return
+     */
     public JConnectionStateX getConnectionState() {
 	return this.state;
     }
 
+    /**
+     *
+     */
     @Override
     public void run() {
 	try {
@@ -90,19 +121,35 @@ public class JClientX extends Thread {
 	}
     }
 
+    /**
+     *
+     */
     public void close() {
 	this.state = JConnectionStateX.TERMINATED;
 	this.socket.close();
     }
 
+    /**
+     *
+     * @param listener
+     */
     public void addListener(JNetworkListenerX listener) {
 	this.listeners.add(listener);
     }
 
+    /**
+     *
+     * @param listener
+     */
     public void removeListener(JNetworkListenerX listener) {
 	this.listeners.remove(listener);
     }
 
+    /**
+     *
+     * @param type
+     * @param data
+     */
     public void notifyListeners(JNetEventTypeX type, Object... data) {
 	switch (type) {
 	    case PACKET_RECIEVED:

@@ -8,17 +8,33 @@ import java.net.Inet4Address;
 import java.net.ServerSocket;
 import java.util.List;
 
-/**
+/*
  * @author RlonRyan
  * @name JLobbyX
  * @date Jan 23, 2014
  *
  */
+
+/**
+ *
+ * @author Ryan
+ */
+
 public class JLobbyX extends Thread {
 
+    /**
+     *
+     */
     public int port;
+
+    /**
+     *
+     */
     public static List<Inet4Address> clients;
 
+    /**
+     *
+     */
     @Override
     public void run() {
 
@@ -35,6 +51,10 @@ public class JLobbyX extends Thread {
 
     }
 
+    /**
+     *
+     * @param port
+     */
     public JLobbyX(int port) {
 	this.port = port;
     }

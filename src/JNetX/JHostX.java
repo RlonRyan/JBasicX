@@ -21,6 +21,10 @@ public class JHostX extends Thread implements JNetworkListenerX {
     private int externalport;
     private boolean listening;
 
+    /**
+     *
+     * @param port
+     */
     public JHostX(int port) {
 	this.listeners = new ArrayList<>();
 	this.connections = new ArrayList<>();
@@ -28,27 +32,50 @@ public class JHostX extends Thread implements JNetworkListenerX {
 	this.listening = false;
     }
 
+    /**
+     *
+     * @return
+     */
     public boolean isListening() {
 	return listening;
     }
 
+    /**
+     *
+     * @param listener
+     */
     public void addListener(JNetworkListenerX listener) {
 	this.listeners.add(listener);
     }
 
+    /**
+     *
+     * @param listener
+     */
     public void removeListener(JNetworkListenerX listener) {
 	this.listeners.remove(listener);
     }
 
+    /**
+     *
+     * @param packet
+     */
     public void notifyListeners(JPackectX packet) {
 	for (JNetworkListenerX e : listeners) {
 	    e.onPacket(packet);
 	}
     }
 
+    /**
+     *
+     * @param packet
+     */
     public void sendPacket(JPackectX packet) {
     }
 
+    /**
+     *
+     */
     @Override
     public void run() {
 	try (ServerSocket serverSocket = new ServerSocket(this.port)) {
@@ -66,21 +93,34 @@ public class JHostX extends Thread implements JNetworkListenerX {
 	}
     }
 
+    /**
+     *
+     * @param packet
+     */
     @Override
     public void onPacket(JPackectX packet) {
 	// Yay! Who cares? Not this class!
     }
 
+    /**
+     *
+     */
     @Override
     public void onError() {
 	// Nothing for now...
     }
 
+    /**
+     *
+     */
     @Override
     public void onTimeout() {
 	// Nothing for now...
     }
 
+    /**
+     *
+     */
     @Override
     public void onTerminate() {
 	// Nothing for now...

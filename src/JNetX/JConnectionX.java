@@ -25,10 +25,21 @@ public class JConnectionX extends Thread {
     private JConnectionStateX state;
     private List<JNetworkListenerX> listeners;
 
+    /**
+     *
+     * @param address
+     * @param port
+     */
     public JConnectionX(InetAddress address, int port) {
 	this(address, port, 10000);
     }
 
+    /**
+     *
+     * @param address
+     * @param port
+     * @param timeout
+     */
     public JConnectionX(InetAddress address, int port, int timeout) {
 	try {
 	    this.state = JConnectionStateX.INVALID;
@@ -41,10 +52,17 @@ public class JConnectionX extends Thread {
 	}
     }
 
+    /**
+     *
+     * @return
+     */
     public JConnectionStateX getConnectionState() {
 	return this.state;
     }
 
+    /**
+     *
+     */
     @Override
     public void run() {
 	try {
@@ -64,19 +82,35 @@ public class JConnectionX extends Thread {
 	}
     }
 
+    /**
+     *
+     */
     public void close() {
 	this.state = JConnectionStateX.TERMINATED;
 	this.socket.close();
     }
 
+    /**
+     *
+     * @param listener
+     */
     public void addListener(JNetworkListenerX listener) {
 	this.listeners.add(listener);
     }
 
+    /**
+     *
+     * @param listener
+     */
     public void removeListener(JNetworkListenerX listener) {
 	this.listeners.remove(listener);
     }
 
+    /**
+     *
+     * @param type
+     * @param data
+     */
     public void notifyListeners(JNetEventTypeX type, Object... data) {
 	switch (type) {
 	    case PACKET_RECIEVED:

@@ -12,11 +12,24 @@ import JNetX.JPacketX.JPackectX;
  */
 public interface JNetworkListenerX {
 
+    /**
+     *
+     * @param packet
+     */
     public void onPacket(JPackectX packet);
 
+    /**
+     *
+     */
     public void onError();
 
+    /**
+     *
+     */
     public void onTimeout();
 
+    /**
+     *
+     */
     public void onTerminate();
 }

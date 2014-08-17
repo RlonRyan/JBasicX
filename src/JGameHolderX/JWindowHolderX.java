@@ -13,12 +13,18 @@ import java.awt.geom.AffineTransform;
 import java.awt.image.BufferedImage;
 import javax.swing.JFrame;
 
-/**
+/*
  * @author RlonRyan
  * @name JWindowX
  * @date Jan 10, 2014
  *
  */
+
+/**
+ *
+ * @author Ryan
+ */
+
 public class JWindowHolderX implements JGameHolderX {
 
     JFrame frame;
@@ -27,11 +33,18 @@ public class JWindowHolderX implements JGameHolderX {
     Color background_color;
     Color draw_color;
 
+    /**
+     *
+     * @return
+     */
     @Override
     public Graphics2D getGraphics() {
 	return g2d;
     }
 
+    /**
+     *
+     */
     @Override
     public final void clearBackbuffer() {
 	this.resetGraphics();
@@ -39,6 +52,9 @@ public class JWindowHolderX implements JGameHolderX {
 	g2d.fillRect(0, 0, this.frame.getWidth(), this.frame.getHeight());
     }
 
+    /**
+     *
+     */
     @Override
     public void resetGraphics() {
 	this.g2d.setTransform(new AffineTransform());
@@ -46,16 +62,28 @@ public class JWindowHolderX implements JGameHolderX {
 	this.g2d.setColor(draw_color);
     }
 
+    /**
+     *
+     * @param color
+     */
     @Override
     public void setBackgroundColor(Color color) {
 	this.background_color = color;
     }
 
+    /**
+     *
+     */
     @Override
     public void flip() {
 	this.frame.getGraphics().drawImage(this.buffer, 0, 0, this.frame);
     }
 
+    /**
+     *
+     * @param winw
+     * @param winh
+     */
     @Override
     public void resize(int winw, int winh) {
 	this.frame.setSize(winw, winh);
@@ -66,6 +94,12 @@ public class JWindowHolderX implements JGameHolderX {
 	this.g2d.setColor(draw_color);
     }
 
+    /**
+     *
+     * @param title
+     * @param winw
+     * @param winh
+     */
     public JWindowHolderX(String title, int winw, int winh) {
 	this.frame = new JFrame(title);
 	this.frame.setSize(winw, winh);
@@ -80,11 +114,19 @@ public class JWindowHolderX implements JGameHolderX {
 	this.draw_color = Color.WHITE;
     }
 
+    /**
+     *
+     * @param listener
+     */
     @Override
     public void addKeyListener(KeyListener listener) {
 	this.frame.addKeyListener(listener);
     }
 
+    /**
+     *
+     * @param listener
+     */
     @Override
     public void addMouseListener(JMouseX listener) {
 	this.frame.addMouseListener(listener);

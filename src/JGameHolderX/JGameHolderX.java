@@ -16,19 +16,49 @@ import java.awt.event.KeyListener;
  */
 public interface JGameHolderX {
 
+    /**
+     *
+     * @return
+     */
     public Graphics2D getGraphics();
 
+    /**
+     *
+     */
     public void resetGraphics();
 
+    /**
+     *
+     * @param color
+     */
     public void setBackgroundColor(Color color);
 
+    /**
+     *
+     */
     public void clearBackbuffer();
 
+    /**
+     *
+     */
     public void flip();
 
+    /**
+     *
+     * @param winw
+     * @param winh
+     */
     public void resize(int winw, int winh);
 
+    /**
+     *
+     * @param listener
+     */
     public void addKeyListener(KeyListener listener);
 
+    /**
+     *
+     * @param listener
+     */
     public void addMouseListener(JMouseX listener);
 }
