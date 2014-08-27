@@ -5,9 +5,12 @@
 package JNetX.JPacketX;
 
 import java.net.DatagramPacket;
+import java.net.InetAddress;
 import java.util.Arrays;
 import java.util.BitSet;
 import java.util.HashMap;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 /**
  *
@@ -20,8 +23,11 @@ public class JPackectX {
      * Does not include header size...
      */
     private byte size;
-    private byte id;
     private byte type;
+    private byte id;
+    
+    private InetAddress address;
+    private int port;
 
     /**
      *
@@ -39,12 +45,29 @@ public class JPackectX {
 	return id;
     }
 
+    public InetAddress getAddress() {
+	return address;
+    }
+
+    public int getPort() {
+	return port;
+    }
+
     /**
      *
      * @return
      */
     public JPacketTypeX getType() {
 	return JPacketTypeX.getForID(type);
+    }
+    
+    /**
+     *
+     * @param field
+     * @return 
+     */
+    public byte[] get(JPacketFieldX field) {
+	return this.data.get(field);
     }
 
     /**
@@ -59,21 +82,23 @@ public class JPackectX {
 
     /**
      *
+     * @param address
+     * @param port
      * @param ack
      * @param acks
      * @param id
      * <p>
      * @return
      */
-    public DatagramPacket convert(byte ack, BitSet acks, byte id) {
+    public DatagramPacket convert(InetAddress address, int port, byte ack, BitSet acks, Byte id) {
 	byte[] bytes = new byte[7 + size];
 	bytes[0] = 112;
 	bytes[1] = 35;
 	bytes[2] = ack;
 	bytes[3] = 0; //acks.toByteArray()[0];
 	bytes[4] = id;
-	bytes[5] = size;
-	bytes[6] = type;
+	bytes[5] = this.size;
+	bytes[6] = this.type;
 	byte c = 7;
 	for (JPacketFieldX field : data.keySet()) {
 	    bytes[c] = field.id;
@@ -85,7 +110,7 @@ public class JPackectX {
 		c++;
 	    }
 	}
-	return new DatagramPacket(bytes, c + 1);
+	return new DatagramPacket(bytes, c, address, port);
     }
 
     /**
@@ -100,12 +125,14 @@ public class JPackectX {
 
     /**
      *
-     * @param data
+     * @param packet
      */
-    public JPackectX(byte[] data) {
-	this.id = data[4];
-	this.size = data[5];
-	this.type = data[6];
+    public JPackectX(DatagramPacket packet) {
+	this.address = packet.getAddress();
+	this.port = packet.getPort();
+	this.id = packet.getData()[4];
+	this.size = packet.getData()[5];
+	this.type = packet.getData()[6];
 	this.data = new HashMap<>();
 	
 	switch (JPacketTypeX.getForID(type)) {
@@ -114,16 +141,20 @@ public class JPackectX {
 	    case LOGON:
 		break;
 	    case MESSAGE:
-		this.data.put(JPacketFieldX.MESSAGE, Arrays.copyOfRange(data, 7, data.length));
-		System.out.println(new String(this.data.get(JPacketFieldX.MESSAGE)));
+		this.data.put(JPacketFieldX.MESSAGE, Arrays.copyOfRange(packet.getData(), 7, packet.getData().length));
+		Logger.getLogger("Network").log(Level.INFO, new String(this.data.get(JPacketFieldX.MESSAGE)));
 		break;
 	    case TERMINATE:
 		break;
 	    case UPDATE:
-		for (int i = 7; i < data.length;) {
-		    byte size = JPacketFieldX.getForID(data[i]).size;
-		    this.data.put(JPacketFieldX.getForID(data[i]), Arrays.copyOfRange(data, i + 1, i + size + 1));
+		for (int i = 7; i < packet.getData().length;) {
+		    byte size = JPacketFieldX.getForID(packet.getData()[i]).size;
+		    this.data.put(JPacketFieldX.getForID(packet.getData()[i]), Arrays.copyOfRange(packet.getData(), i + 1, i + size + 1));
 		}
+		break;
+	    case HEARTBEAT:
+		this.data.put(JPacketFieldX.MESSAGE, Arrays.copyOfRange(packet.getData(), 7, packet.getData().length));
+		Logger.getLogger("Network").log(Level.INFO, new String(this.data.get(JPacketFieldX.MESSAGE)));
 		break;
 	    case INVALID:
 	    default:

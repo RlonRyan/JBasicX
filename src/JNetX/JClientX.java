@@ -12,9 +12,12 @@ import java.net.DatagramSocket;
 import java.net.InetAddress;
 import java.net.SocketException;
 import java.net.SocketTimeoutException;
+import java.util.ArrayList;
 import java.util.BitSet;
 import java.util.HashMap;
 import java.util.List;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 /**
  *
@@ -23,12 +26,14 @@ import java.util.List;
 public class JClientX extends Thread {
 
     private DatagramSocket socket;
+    
+    private final List<JNetworkListenerX> listeners;
+    private final HashMap<Integer, JPackectX> sent;
+    
     private JConnectionStateX state;
-    private List<JNetworkListenerX> listeners;
     private byte id;
     private BitSet acks;
     private byte ack;
-    private HashMap<Integer, JPackectX> sent;
 
     /**
      *
@@ -58,10 +63,13 @@ public class JClientX extends Thread {
     public JClientX(InetAddress address, int port, int timeout) {
 	this.address = address;
 	this.port = port;
+	this.listeners = new ArrayList<>();
+	this.sent = new HashMap<>();
 
 	try {
 	    this.state = JConnectionStateX.INVALID;
 	    this.socket = new DatagramSocket(port, address);
+	    this.socket.connect(address, port);
 	    System.out.println(socket.isConnected());
 	    this.socket.setSoTimeout(timeout);
 	    this.acks = new BitSet(256);
@@ -69,9 +77,14 @@ public class JClientX extends Thread {
 	    this.state = JConnectionStateX.ACTIVE;
 	}
 	catch (SocketException e) {
+	    e.printStackTrace();
 	    System.err.println("Well that's great...");
 	}
 
+    }
+    
+    public void incID() {
+	this.id = (byte) ((this.id + 1) < Byte.MAX_VALUE ? (this.id + 1) : (0));
     }
 
     /**
@@ -81,7 +94,9 @@ public class JClientX extends Thread {
      */
     public boolean sendPacket(JPackectX packet) {
 	try {
-	    this.socket.send(packet.convert(ack, acks, id));
+	    Logger.getLogger("Network").log(Level.INFO, "Send packet: {0}", packet.getSize());
+	    this.socket.send(packet.convert(this.address, this.port, ack, acks, id));
+	    this.incID();
 	}
 	catch (IOException e) {
 	    return false;
@@ -115,7 +130,8 @@ public class JClientX extends Thread {
 	    this.close();
 	}
 	catch (IOException e) {
-	    System.err.println("Well that's great...");
+	    e.printStackTrace();
+	    Logger.getLogger("Network").log(Level.WARNING, "IOException: {0}", e.getLocalizedMessage());
 	    this.state = JConnectionStateX.INVALID;
 	    this.notifyListeners(JNetEventTypeX.ERROR);
 	    this.close();

@@ -20,26 +20,31 @@ public enum JPacketTypeX {
      *
      */
     LOGON(1),
+    
+    /**
+     *
+     */
+    HEARTBEAT(2),
 
     /**
      *
      */
-    UPDATE(2),
+    UPDATE(3),
 
     /**
      *
      */
-    MESSAGE(3),
+    MESSAGE(4),
 
     /**
      *
      */
-    LOGOFF(4),
+    LOGOFF(5),
 
     /**
      *
      */
-    TERMINATE(5);
+    TERMINATE(6);
 
     /**
      *

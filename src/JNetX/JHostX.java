@@ -3,134 +3,100 @@
  */
 package JNetX;
 
+import JBasicX.JBinderX;
 import JNetX.JPacketX.JPackectX;
+import JNetX.JPacketX.JPacketFieldX;
+import JNetX.JPacketX.JPacketTypeX;
 import java.io.IOException;
-import java.net.ServerSocket;
-import java.util.ArrayList;
-import java.util.List;
+import java.net.DatagramPacket;
+import java.net.DatagramSocket;
+import java.net.InetAddress;
+import java.util.HashMap;
+import java.util.Timer;
+import java.util.TimerTask;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 /**
  *
  * @author RlonRyan
  */
-public class JHostX extends Thread implements JNetworkListenerX {
+public class JHostX extends Thread {
 
     private final int port;
+    private final Timer heart;
+    private final DatagramSocket socket;
+    private final HashMap<InetAddress, JConnectionX> group;
     
-    private final List<JConnectionX> connections;
-    private final List<JNetworkListenerX> listeners;
+    public final JBinderX<JPacketTypeX, JPackectX> bindings;
     
-    private int externalport;
-    private boolean isActive;
-    
-    private ServerSocket socket;
+    private JConnectionStateX state;
 
-    /**
-     *
-     * @param port
-     */
-    public JHostX(int port) {
-	this.listeners = new ArrayList<>();
-	this.connections = new ArrayList<>();
+    public JHostX(int port) throws IOException {
+	this.group = new HashMap<>();
+	this.bindings = new JBinderX<>();
 	this.port = port;
-	this.isActive = false;
+	this.socket = new DatagramSocket(port);
+	this.state = JConnectionStateX.ACTIVE;
+	this.heart = new Timer();
+	
+	this.bindings.bind(JPacketTypeX.LOGON, (packet) -> {
+	    Logger.getLogger("Network").log(Level.INFO, "Join: {0}", packet.getAddress());
+	    this.group.put(packet.getAddress(), new JConnectionX(packet.getAddress(), packet.getPort()));
+	});
+	this.bindings.bind(JPacketTypeX.HEARTBEAT, (packet) -> {
+	    this.group.get(packet.getAddress()).onHeartbeat();
+	});
+	this.bindings.bind(JPacketTypeX.LOGOFF, (packet) -> {
+	    Logger.getLogger("Network").log(Level.INFO, "Part: {0}", packet.getAddress());
+	    this.group.remove(packet.getAddress());
+	});
+	
+	this.heart.scheduleAtFixedRate(new TimerTask() {
+            @Override
+            public void run() {
+                JPackectX heartbeat = new JPackectX(JPacketTypeX.HEARTBEAT);
+                heartbeat.set(JPacketFieldX.MESSAGE, ("Time: " + System.currentTimeMillis()).getBytes());
+		broadcast(heartbeat);
+            }
+        }, 0, 1000);
+	
     }
 
-    /**
-     *
-     * @return
-     */
-    public boolean isListening() {
-	return isActive;
-    }
-
-    /**
-     *
-     * @param listener
-     */
-    public void addListener(JNetworkListenerX listener) {
-	this.listeners.add(listener);
-    }
-
-    /**
-     *
-     * @param listener
-     */
-    public void removeListener(JNetworkListenerX listener) {
-	this.listeners.remove(listener);
-    }
-
-    /**
-     *
-     * @param packet
-     */
-    public void notifyListeners(JPackectX packet) {
-	for (JNetworkListenerX e : listeners) {
-	    e.onPacket(packet);
+    public boolean broadcast(JPackectX packet) {
+	try {
+	    for (JConnectionX connection : group.values()) {
+		this.socket.send(packet.convert(connection.address, connection.port, (byte) 0, null, (byte) 0));
+	    }
+	    return true;
 	}
-    }
-
-    /**
-     *
-     * @param packet
-     */
-    public void broadcastPacket(JPackectX packet) {
-	if(this.isActive) {
+	catch (IOException e) {
+	    Logger.getLogger("Network").log(Level.WARNING, "Network send Failure");
 	}
+	return false;
     }
 
-    /**
-     *
-     */
     @Override
     public void run() {
 	try {
-	    this.socket = new ServerSocket(this.port);
-	    
-	    System.out.println("Listening on port: " + this.socket.getLocalPort() + ".");
-	    this.isActive = true;
-	    while (isActive) {
-		this.connections.add(new JConnectionX(this, this.socket.accept().getInetAddress(), this.port));
-		this.connections.get(this.connections.size()).start();
+	    DatagramPacket p = new DatagramPacket(new byte[512], 256);
+	    JPackectX packet;
+	    while (this.state == JConnectionStateX.ACTIVE) {
+		this.socket.receive(p);
+		packet = new JPackectX(p);
+		this.bindings.trigger(packet.getType(), packet);
 	    }
 	}
 	catch (IOException e) {
-	    System.err.println("Could not listen on port " + this.port + ".");
-	    this.isActive = false;
+	    Logger.getLogger("Network").log(Level.SEVERE, "Network Failure.");
+	    this.state = JConnectionStateX.IO_EXCEPTION;
+	    this.close();
 	}
     }
-
-    /**
-     *
-     * @param packet
-     */
-    @Override
-    public void onPacket(JPackectX packet) {
-	// Yay! Who cares? Not this class!
-	System.out.println();
+    
+    public void close() {
+	this.heart.cancel();
+	this.socket.close();
     }
 
-    /**
-     *
-     */
-    @Override
-    public void onError() {
-	// Nothing for now...
-    }
-
-    /**
-     *
-     */
-    @Override
-    public void onTimeout() {
-	// Nothing for now...
-    }
-
-    /**
-     *
-     */
-    @Override
-    public void onTerminate() {
-	// Nothing for now...
-    }
 }
