@@ -10,26 +10,27 @@ import JNetX.JPacketX.JPackectX;
  *
  * @author Ryan
  */
+@Deprecated
 public interface JNetworkListenerX {
 
     /**
      *
      * @param packet
      */
-    public void onPacket(JPackectX packet);
+    default public void onPacket(JPackectX packet){return;};
 
     /**
      *
      */
-    public void onError();
+    default public void onError(){return;};
 
     /**
      *
      */
-    public void onTimeout();
+    default public void onTimeout(){return;};
 
     /**
      *
      */
-    public void onTerminate();
+    default public void onTerminate(){return;};
 }

@@ -16,10 +16,14 @@ import java.util.List;
 public class JHostX extends Thread implements JNetworkListenerX {
 
     private final int port;
-    private final List<JNetworkListenerX> listeners;
+    
     private final List<JConnectionX> connections;
+    private final List<JNetworkListenerX> listeners;
+    
     private int externalport;
-    private boolean listening;
+    private boolean isActive;
+    
+    private ServerSocket socket;
 
     /**
      *
@@ -29,7 +33,7 @@ public class JHostX extends Thread implements JNetworkListenerX {
 	this.listeners = new ArrayList<>();
 	this.connections = new ArrayList<>();
 	this.port = port;
-	this.listening = false;
+	this.isActive = false;
     }
 
     /**
@@ -37,7 +41,7 @@ public class JHostX extends Thread implements JNetworkListenerX {
      * @return
      */
     public boolean isListening() {
-	return listening;
+	return isActive;
     }
 
     /**
@@ -70,7 +74,9 @@ public class JHostX extends Thread implements JNetworkListenerX {
      *
      * @param packet
      */
-    public void sendPacket(JPackectX packet) {
+    public void broadcastPacket(JPackectX packet) {
+	if(this.isActive) {
+	}
     }
 
     /**
@@ -78,18 +84,19 @@ public class JHostX extends Thread implements JNetworkListenerX {
      */
     @Override
     public void run() {
-	try (ServerSocket serverSocket = new ServerSocket(this.port)) {
-	    System.out.println("Listening on port: " + serverSocket.getLocalPort() + ".");
-	    this.listening = true;
-	    while (listening) {
-		this.connections.add(new JConnectionX(serverSocket.accept().getInetAddress(), externalport));
-		this.connections.get(this.connections.size()).addListener(this);
+	try {
+	    this.socket = new ServerSocket(this.port);
+	    
+	    System.out.println("Listening on port: " + this.socket.getLocalPort() + ".");
+	    this.isActive = true;
+	    while (isActive) {
+		this.connections.add(new JConnectionX(this, this.socket.accept().getInetAddress(), this.port));
 		this.connections.get(this.connections.size()).start();
 	    }
 	}
 	catch (IOException e) {
 	    System.err.println("Could not listen on port " + this.port + ".");
-	    this.listening = false;
+	    this.isActive = false;
 	}
     }
 
@@ -100,6 +107,7 @@ public class JHostX extends Thread implements JNetworkListenerX {
     @Override
     public void onPacket(JPackectX packet) {
 	// Yay! Who cares? Not this class!
+	System.out.println();
     }
 
     /**

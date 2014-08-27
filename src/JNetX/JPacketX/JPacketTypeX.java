@@ -7,7 +7,7 @@ package JNetX.JPacketX;
 
 /**
  *
- * @author 8000214
+ * @author RlonRyan
  */
 public enum JPacketTypeX {
 

@@ -23,7 +23,6 @@ import java.util.List;
 public class JClientX extends Thread {
 
     private DatagramSocket socket;
-    private DatagramPacket packet;
     private JConnectionStateX state;
     private List<JNetworkListenerX> listeners;
     private byte id;
@@ -63,6 +62,7 @@ public class JClientX extends Thread {
 	try {
 	    this.state = JConnectionStateX.INVALID;
 	    this.socket = new DatagramSocket(port, address);
+	    System.out.println(socket.isConnected());
 	    this.socket.setSoTimeout(timeout);
 	    this.acks = new BitSet(256);
 	    this.ack = 0;
@@ -81,7 +81,7 @@ public class JClientX extends Thread {
      */
     public boolean sendPacket(JPackectX packet) {
 	try {
-	    this.socket.send(packet.send(address, port, ack, acks, id));
+	    this.socket.send(packet.convert(ack, acks, id));
 	}
 	catch (IOException e) {
 	    return false;
@@ -103,6 +103,7 @@ public class JClientX extends Thread {
     @Override
     public void run() {
 	try {
+	    DatagramPacket packet = new DatagramPacket(new byte[512], 256);
 	    this.socket.receive(packet);
 	    this.acks.set(packet.getData()[4], true);
 	    System.out.println(this.ack + ": " + this.acks.toString());

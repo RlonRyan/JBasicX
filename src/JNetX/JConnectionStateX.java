@@ -33,5 +33,10 @@ public enum JConnectionStateX {
     /**
      *
      */
-    TERMINATED;
+    TERMINATED,
+    
+    /**
+     *
+     */
+    IO_EXCEPTION;
 }
