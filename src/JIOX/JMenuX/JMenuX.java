@@ -17,39 +17,35 @@ import java.awt.Point;
 import java.awt.Rectangle;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 /*
  * @author RlonRyan
  * @name JMenuX
  */
-
 /**
  *
  * @author Ryan
  */
-
 public class JMenuX {
 
     /*
      * Constants for events
      */
-
     /**
      *
      */
-    
     public enum JMenuStateX {
 
 	/**
 	 *
 	 */
 	MENU_CHANGED,
-
 	/**
 	 *
 	 */
 	ELEMENT_HIGHLIGHTED,
-
 	/**
 	 *
 	 */
@@ -75,7 +71,6 @@ public class JMenuX {
     /*
      * Constructors Go Here
      */
-
     /**
      *
      * @param title
@@ -85,7 +80,6 @@ public class JMenuX {
      * @param height
      * @param elements
      */
-    
     public JMenuX(String title, int x, int y, int width, int height, String... elements) {
 	this.title = title;
 	this.bounds = new Rectangle(x, y, width, height);
@@ -96,23 +90,16 @@ public class JMenuX {
 	for (String e : elements) {
 	    this.elements.add(new JMenuTextElementX(e));
 	}
-	if (!this.elements.isEmpty()) {
-	    this.separator = width / (10 * this.elements.size());
-	}
-	else {
-	    this.separator = width / 10;
-	}
+	this.separator = 10;
     }
 
     /*
      * Setters Go Here
      */
-
     /**
      *
      * @param style
      */
-    
     synchronized public final void setStyle(JStyleX style) {
 	this.style = style;
     }
@@ -129,26 +116,43 @@ public class JMenuX {
     /*
      * Putters Go Here
      */
-
     /**
      *
      * @param element
      */
-    
     synchronized public final void addMenuElement(JMenuElementX element) {
 	this.elements.add(element);
-	this.separator = this.bounds.width / (10 * this.elements.size());
+	this.normalize();
+    }
+
+    /**
+     *
+     * @param position
+     * @param element
+     */
+    synchronized public final void addMenuElement(int index, JMenuElementX element) {
+	this.elements.add(index, element);
+	this.normalize();
+    }
+
+    synchronized public final int findElementContaining(String text) {
+	for (int i = 0; i < this.elements.size(); i++) {
+	    if (this.elements.get(i) instanceof JMenuTextElementX) {
+		if (((JMenuTextElementX) this.elements.get(i)).text.contains(text)) {
+		    return i;
+		}
+	    }
+	}
+	return -1;
     }
 
     /*
      * Getters Go Here
      */
-
     /**
      *
      * @return
      */
-    
     final public String getTitle() {
 	return this.title;
     }
@@ -164,6 +168,7 @@ public class JMenuX {
     /**
      *
      * @param idex
+     *             <p>
      * @return
      */
     synchronized public final JMenuElementX getMenuElement(int idex) {
@@ -176,11 +181,9 @@ public class JMenuX {
     /*
      * Incrementers Go Here
      */
-
     /**
      *
      */
-    
     synchronized public final void incrementHighlight() {
 	this.incrementHighlight(1);
     }
@@ -197,26 +200,44 @@ public class JMenuX {
      * @param increment
      */
     synchronized public final void incrementHighlight(int increment) {
+	if (increment == 0) {
+	    return;
+	}
+	while (!this.elements.get(verifyIndex(this.index + increment)).isHighlightable()) {
+	    increment += increment < 0 ? -1 : 1;
+	}
+
 	highlight(this.index + increment);
+
     }
 
     /*
      * Methods Go Here
      */
-
     /**
      *
      * @param index
      */
-    
     synchronized public final void highlight(int index) {
 	this.elements.get(this.index).reset();
-	index = index % this.elements.size();
-	if (index < 0) {
-	    index += this.elements.size();
+	this.index = verifyIndex(index);
+	while (!this.elements.get(this.index).isHighlightable()) {
+	    this.index = verifyIndex(this.index + 1);
+
+	    if (this.index == index) {
+		Logger.getLogger(title).log(Level.WARNING, "No Highlightable elements found!");
+		return;
+	    }
 	}
-	this.index = index;
 	this.elements.get(this.index).highlight();
+    }
+
+    synchronized public final int verifyIndex(int i) {
+	i = i % this.elements.size();
+	if (i < 0) {
+	    i += this.elements.size();
+	}
+	return i;
     }
 
     /**
@@ -226,7 +247,7 @@ public class JMenuX {
     synchronized public final void selectMenuElement(Point p) {
 	int pos = this.bounds.y + this.header.height + this.separator;
 	for (int i = 0; i < this.elements.size(); i++) {
-	    if (new Rectangle(this.bounds.x, pos, elements.get(i).getBounds().width, elements.get(i).getBounds().height).contains(p)) {
+	    if (new Rectangle(this.bounds.x, pos, elements.get(i).getBounds().width, elements.get(i).getBounds().height).contains(p) && elements.get(i).isSelectable()) {
 		selectMenuElement(i);
 		return;
 	    }
@@ -248,9 +269,35 @@ public class JMenuX {
      *
      */
     synchronized public final void selectMenuElement() {
-	if (this.index < this.elements.size()) {
+	if (this.index < this.elements.size() && this.elements.get(index).isSelectable()) {
 	    this.elements.get(index).select();
 	}
+    }
+
+    synchronized public final JMenuElementX removeElement(int index) {
+	if (index < 0 || index >= this.elements.size()) {
+	    Logger.getLogger(title).log(Level.WARNING, "No menu element of index: {0}", index);
+	    return null;
+	}
+	JMenuElementX result = elements.remove(index);
+	if (index <= this.index) {
+	    this.incrementHighlight(-1);
+	}
+	this.normalize();
+	return result;
+    }
+
+    synchronized public final boolean removeElement(JMenuElementX element) {
+	if (index < 0 || index >= this.elements.size()) {
+	    Logger.getLogger(title).log(Level.WARNING, "No menu element of index: {0}", index);
+	    return false;
+	}
+	boolean result = elements.remove(element);
+	if (index <= this.index) {
+	    this.incrementHighlight(-1);
+	}
+	this.normalize();
+	return result;
     }
 
     /**
@@ -293,8 +340,12 @@ public class JMenuX {
      *
      */
     public void normalize() {
+	if(this.elements.size() <= 0) {
+	    return;
+	}
+	
 	int width = (int) (0.80 * this.bounds.width);
-	int height = (this.bounds.height) / (this.elements.size() + separator);
+	int height = (this.bounds.height - this.header.height) / (this.elements.size() + separator);
 	for (JMenuElementX e : elements) {
 	    if (e.getBounds().width == 0) {
 		e.setWidth(width);
@@ -303,6 +354,7 @@ public class JMenuX {
 		e.setHeight(height);
 	    }
 	}
+	
     }
 
     /**
@@ -374,7 +426,7 @@ public class JMenuX {
 	    y += e.getBounds().height;
 	}
     }
-    
+
     /**
      *
      * @param g2d
@@ -388,7 +440,7 @@ public class JMenuX {
 	 */
 	g2d.setColor(this.style.getColor("border"));
 	g2d.draw(bounds);
-	    
+
 	/*
 	 * Vars!
 	 */

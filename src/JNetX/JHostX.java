@@ -27,19 +27,19 @@ public class JHostX extends Thread {
     private final Timer heart;
     private final DatagramSocket socket;
     private final HashMap<InetAddress, JConnectionX> group;
-    
+
     public final JBinderX<JPacketTypeX, JPackectX> bindings;
-    
-    private JConnectionStateX state;
+
+    private JConnectionStateX connectionState;
 
     public JHostX(int port) throws IOException {
 	this.group = new HashMap<>();
 	this.bindings = new JBinderX<>();
 	this.port = port;
-	this.socket = new DatagramSocket(port);
-	this.state = JConnectionStateX.ACTIVE;
+	this.socket = new DatagramSocket(this.port);
+	this.connectionState = JConnectionStateX.ACTIVE;
 	this.heart = new Timer();
-	
+
 	this.bindings.bind(JPacketTypeX.LOGON, (packet) -> {
 	    Logger.getLogger("Network").log(Level.INFO, "Join: {0}", packet.getAddress());
 	    this.group.put(packet.getAddress(), new JConnectionX(packet.getAddress(), packet.getPort()));
@@ -51,16 +51,23 @@ public class JHostX extends Thread {
 	    Logger.getLogger("Network").log(Level.INFO, "Part: {0}", packet.getAddress());
 	    this.group.remove(packet.getAddress());
 	});
-	
+
 	this.heart.scheduleAtFixedRate(new TimerTask() {
-            @Override
-            public void run() {
-                JPackectX heartbeat = new JPackectX(JPacketTypeX.HEARTBEAT);
-                heartbeat.set(JPacketFieldX.MESSAGE, ("Time: " + System.currentTimeMillis()).getBytes());
+	    @Override
+	    public void run() {
+		JPackectX heartbeat = new JPackectX(JPacketTypeX.HEARTBEAT);
+		heartbeat.set(JPacketFieldX.MESSAGE, ("Time: " + System.currentTimeMillis()).getBytes());
 		broadcast(heartbeat);
-            }
-        }, 0, 1000);
-	
+	    }
+	}, 500, 1000);
+    }
+
+    public HashMap<InetAddress, JConnectionX> getClients() {
+	return group;
+    }
+
+    public JConnectionStateX getConnectionState() {
+	return connectionState;
     }
 
     public boolean broadcast(JPackectX packet) {
@@ -79,21 +86,22 @@ public class JHostX extends Thread {
     @Override
     public void run() {
 	try {
-	    DatagramPacket p = new DatagramPacket(new byte[512], 256);
-	    JPackectX packet;
-	    while (this.state == JConnectionStateX.ACTIVE) {
+	    while (this.connectionState == JConnectionStateX.ACTIVE) {
+		DatagramPacket p = new DatagramPacket(new byte[512], 256);
 		this.socket.receive(p);
-		packet = new JPackectX(p);
+		JPackectX packet = new JPackectX(p);
 		this.bindings.trigger(packet.getType(), packet);
+		Logger.getLogger("Network").log(Level.INFO, packet.getType().toString());
+		//Logger.getLogger("Network").log(Level.INFO, Arrays.toString(p.getData()));
 	    }
 	}
 	catch (IOException e) {
 	    Logger.getLogger("Network").log(Level.SEVERE, "Network Failure.");
-	    this.state = JConnectionStateX.IO_EXCEPTION;
+	    this.connectionState = JConnectionStateX.IO_EXCEPTION;
 	    this.close();
 	}
     }
-    
+
     public void close() {
 	this.heart.cancel();
 	this.socket.close();

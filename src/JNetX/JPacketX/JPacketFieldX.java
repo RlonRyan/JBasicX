@@ -22,17 +22,21 @@ public enum JPacketFieldX {
     /**
      *
      */
-    MESSAGE(1, -1),
+    MESSAGE(1, 0),
 
     /**
      *
      */
-    KEY(2, 1),
+    KEY(2, 4),
 
     /**
      *
      */
-    MOUSE(3, 1);
+    MOUSE(3, 1),
+    
+    XPOS(4, 4),
+    
+    YPOS(5, 4);
 
     /**
      *
@@ -41,8 +45,8 @@ public enum JPacketFieldX {
     public byte size;
 
     private JPacketFieldX(int id, int size) {
-	this.id = (id < Byte.MAX_VALUE ? (byte) id : 0);
-	this.size = (size < Byte.MAX_VALUE ? (byte) id : 0);
+	this.id = (byte) id;
+	this.size = (byte) size;
     }
 
     /**

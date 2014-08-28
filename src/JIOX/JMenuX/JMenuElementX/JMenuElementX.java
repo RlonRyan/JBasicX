@@ -56,6 +56,10 @@ public interface JMenuElementX {
 	 */
 	void act();
     }
+    
+    public boolean isHighlightable();
+    
+    public boolean isSelectable();
 
     /**
      * Retrieves the state of the element.
@@ -81,6 +85,10 @@ public interface JMenuElementX {
      */
     public void setHeight(int height);
 
+    public void setHighlightable(boolean isHighlightable);
+    
+    public void setSelectable(boolean isSelectable);
+    
     /**
      * Checks to see if the element is valid to use.
      */

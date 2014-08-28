@@ -24,9 +24,12 @@ public class JMenuTextElementX implements JMenuElementX {
     /*
      * Variable Variables
      */
+    private boolean isHighlightable = true;
+    private boolean isSelectable = true;
+    
+    public String text;
     private JMenuElementStateX state;
     
-    private final String text;
     private final JMenuElementActionX action;
     private final Rectangle bounds;
 
@@ -86,6 +89,16 @@ public class JMenuTextElementX implements JMenuElementX {
     }
 
     @Override
+    public boolean isHighlightable() {
+	return isHighlightable;
+    }
+
+    @Override
+    public boolean isSelectable() {
+	return isSelectable;
+    }
+    
+    @Override
     public JMenuElementStateX getState() {
 	return state;
     }
@@ -95,6 +108,16 @@ public class JMenuTextElementX implements JMenuElementX {
 	return bounds;
     }
 
+    @Override
+    public void setHighlightable(boolean isHighlightable) {
+	this.isHighlightable = isHighlightable;
+    }
+    
+    @Override
+    public void setSelectable(boolean isSelectable) {
+	this.isSelectable = isSelectable;
+    }
+    
     /**
      *
      * @param width

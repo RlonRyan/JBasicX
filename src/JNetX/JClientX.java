@@ -4,18 +4,20 @@
  */
 package JNetX;
 
-import JNetX.JNetEventX.JNetEventTypeX;
+import JBasicX.JBinderX;
 import JNetX.JPacketX.JPackectX;
+import JNetX.JPacketX.JPacketTypeX;
+import java.io.BufferedReader;
 import java.io.IOException;
+import java.io.InputStreamReader;
 import java.net.DatagramPacket;
 import java.net.DatagramSocket;
 import java.net.InetAddress;
 import java.net.SocketException;
 import java.net.SocketTimeoutException;
-import java.util.ArrayList;
+import java.net.URL;
 import java.util.BitSet;
 import java.util.HashMap;
-import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -25,32 +27,27 @@ import java.util.logging.Logger;
  */
 public class JClientX extends Thread {
 
-    private DatagramSocket socket;
-    
-    private final List<JNetworkListenerX> listeners;
+    public final JBinderX<JPacketTypeX, JPackectX> bindings;
+
     private final HashMap<Integer, JPackectX> sent;
-    
+
+    private DatagramSocket socket;
     private JConnectionStateX state;
     private byte id;
     private BitSet acks;
     private byte ack;
 
-    /**
-     *
-     */
     public final InetAddress address;
-
-    /**
-     *
-     */
     public final int port;
 
     /**
      *
      * @param address
      * @param port
+     * <p>
+     * @throws java.io.IOException
      */
-    public JClientX(InetAddress address, int port) {
+    public JClientX(String address, int port) throws IOException {
 	this(address, port, 10000);
     }
 
@@ -59,30 +56,46 @@ public class JClientX extends Thread {
      * @param address
      * @param port
      * @param timeout
+     * <p>
+     * @throws java.io.IOException
      */
-    public JClientX(InetAddress address, int port, int timeout) {
-	this.address = address;
+    public JClientX(String address, int port, int timeout) throws IOException {
+
+	try {
+	    URL checkip = new URL("http://checkip.amazonaws.com/");
+	    BufferedReader in = new BufferedReader(new InputStreamReader(checkip.openStream()));
+	    String desired = InetAddress.getByName("rlonryan.selfip.com").getHostAddress();
+	    String external = in.readLine();
+	    Logger.getLogger("Network").log(Level.INFO, "Desired: {0}\nThis Computer: {1}", new Object[]{desired, external});
+	    this.address = (desired.equalsIgnoreCase(external) ? InetAddress.getLoopbackAddress() : InetAddress.getByName(desired));
+	    Logger.getLogger("Network").log(Level.INFO, "Using: {0}", this.address.getHostAddress());
+	}
+	catch (IOException e) {
+	    Logger.getLogger("Network").log(Level.SEVERE, "Unable to resolve host address!");
+	    throw e;
+	}
+
 	this.port = port;
-	this.listeners = new ArrayList<>();
+	this.bindings = new JBinderX<>();
 	this.sent = new HashMap<>();
 
 	try {
 	    this.state = JConnectionStateX.INVALID;
-	    this.socket = new DatagramSocket(port, address);
-	    this.socket.connect(address, port);
-	    System.out.println(socket.isConnected());
+	    this.socket = new DatagramSocket();
+	    this.socket.connect(this.address, this.port);
+	    Logger.getLogger("Network").log(Level.INFO, "Created Socket.\nConnection Status: {0}", this.socket.isConnected() ? "Connected" : "Disconnected");
 	    this.socket.setSoTimeout(timeout);
 	    this.acks = new BitSet(256);
 	    this.ack = 0;
 	    this.state = JConnectionStateX.ACTIVE;
 	}
 	catch (SocketException e) {
-	    e.printStackTrace();
-	    System.err.println("Well that's great...");
+	    Logger.getLogger("Network").log(Level.SEVERE, "Unable to create socket!");
+	    throw e;
 	}
 
     }
-    
+
     public void incID() {
 	this.id = (byte) ((this.id + 1) < Byte.MAX_VALUE ? (this.id + 1) : (0));
     }
@@ -90,6 +103,7 @@ public class JClientX extends Thread {
     /**
      *
      * @param packet
+     * <p>
      * @return
      */
     public boolean sendPacket(JPackectX packet) {
@@ -118,22 +132,29 @@ public class JClientX extends Thread {
     @Override
     public void run() {
 	try {
-	    DatagramPacket packet = new DatagramPacket(new byte[512], 256);
-	    this.socket.receive(packet);
-	    this.acks.set(packet.getData()[4], true);
-	    System.out.println(this.ack + ": " + this.acks.toString());
+	    DatagramPacket packet;
+	    JPackectX p;
+	    this.sendPacket(new JPackectX(JPacketTypeX.LOGON));
+	    while (this.state == JConnectionStateX.ACTIVE) {
+		packet = new DatagramPacket(new byte[512], 256);
+		this.socket.receive(packet);
+		p = new JPackectX(packet);
+		this.acks.set(packet.getData()[4], true);
+		this.bindings.trigger(p.getType(), p);
+	    }
+	    this.sendPacket(new JPackectX(JPacketTypeX.LOGOFF));
 	}
 	catch (SocketTimeoutException e) {
 	    System.err.println("Connection with " + this.socket.getInetAddress() + ":" + this.socket.getPort() + " timed out.");
 	    this.state = JConnectionStateX.TIMEDOUT;
-	    this.notifyListeners(JNetEventTypeX.TIMEOUT);
+	    this.bindings.trigger(JPacketTypeX.INVALID, null);
 	    this.close();
 	}
 	catch (IOException e) {
 	    e.printStackTrace();
 	    Logger.getLogger("Network").log(Level.WARNING, "IOException: {0}", e.getLocalizedMessage());
 	    this.state = JConnectionStateX.INVALID;
-	    this.notifyListeners(JNetEventTypeX.ERROR);
+	    this.bindings.trigger(JPacketTypeX.INVALID, null);
 	    this.close();
 	}
     }
@@ -146,58 +167,4 @@ public class JClientX extends Thread {
 	this.socket.close();
     }
 
-    /**
-     *
-     * @param listener
-     */
-    public void addListener(JNetworkListenerX listener) {
-	this.listeners.add(listener);
-    }
-
-    /**
-     *
-     * @param listener
-     */
-    public void removeListener(JNetworkListenerX listener) {
-	this.listeners.remove(listener);
-    }
-
-    /**
-     *
-     * @param type
-     * @param data
-     */
-    public void notifyListeners(JNetEventTypeX type, Object... data) {
-	switch (type) {
-	    case PACKET_RECIEVED:
-		if (data[0] instanceof JPackectX) {
-		    for (JNetworkListenerX e : listeners) {
-			e.onPacket((JPackectX) data[0]);
-		    }
-		}
-		break;
-
-	    case TIMEOUT:
-		for (JNetworkListenerX e : listeners) {
-		    e.onTimeout();
-		}
-		break;
-
-	    case ERROR:
-		for (JNetworkListenerX e : listeners) {
-		    e.onError();
-		}
-		break;
-
-	    case TERMINATE:
-		for (JNetworkListenerX e : listeners) {
-		    e.onTerminate();
-		}
-		break;
-
-	    default:
-		break; // UMMMM?!?!?
-	}
-
-    }
 }
