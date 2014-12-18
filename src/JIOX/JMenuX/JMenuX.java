@@ -204,7 +204,7 @@ public class JMenuX {
 	    return;
 	}
 	while (!this.elements.get(verifyIndex(this.index + increment)).isHighlightable()) {
-	    increment += increment < 0 ? -1 : 1;
+	    increment += (increment < 0 ? -1 : 1);
 	}
 
 	highlight(this.index + increment);
@@ -280,7 +280,7 @@ public class JMenuX {
 	    return null;
 	}
 	JMenuElementX result = elements.remove(index);
-	if (index <= this.index) {
+	if (index < this.index) {
 	    this.incrementHighlight(-1);
 	}
 	this.normalize();

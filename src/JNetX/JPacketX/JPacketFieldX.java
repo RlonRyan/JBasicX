@@ -19,24 +19,30 @@ public enum JPacketFieldX {
      * 
      */
     INVALID(0, 0),
+    
+    /**
+     * 
+     */
+    CUSTOM(1, 4),
+    
     /**
      *
      */
-    MESSAGE(1, 0),
+    MESSAGE(2, 4),
 
     /**
      *
      */
-    KEY(2, 4),
+    KEY(3, 4),
 
     /**
      *
      */
-    MOUSE(3, 1),
+    MOUSE(4, 4),
     
-    XPOS(4, 4),
+    XPOS(5, 4),
     
-    YPOS(5, 4);
+    YPOS(6, 4);
 
     /**
      *
@@ -62,4 +68,5 @@ public enum JPacketFieldX {
 	}
 	return INVALID;
     }
+
 }
