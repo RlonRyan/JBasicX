@@ -145,6 +145,17 @@ public class JMenuX {
 	}
 	return -1;
     }
+    
+    synchronized public final int findElementContainingIgnoreCase(String text) {
+	for (int i = 0; i < this.elements.size(); i++) {
+	    if (this.elements.get(i) instanceof JMenuTextElementX) {
+		if (((JMenuTextElementX) this.elements.get(i)).text.toLowerCase().contains(text.toLowerCase())) {
+		    return i;
+		}
+	    }
+	}
+	return -1;
+    }
 
     /*
      * Getters Go Here
@@ -245,13 +256,13 @@ public class JMenuX {
      * @param p
      */
     synchronized public final void selectMenuElement(Point p) {
-	int pos = this.bounds.y + this.header.height + this.separator;
+	int posy = this.bounds.y + this.header.height + this.separator;
 	for (int i = 0; i < this.elements.size(); i++) {
-	    if (new Rectangle(this.bounds.x, pos, elements.get(i).getBounds().width, elements.get(i).getBounds().height).contains(p) && elements.get(i).isSelectable()) {
+	    if (new Rectangle(this.bounds.x + this.header.width / 50, posy, elements.get(i).getBounds().width, elements.get(i).getBounds().height).contains(p) && elements.get(i).isSelectable()) {
 		selectMenuElement(i);
 		return;
 	    }
-	    pos += elements.get(i).getBounds().height + separator;
+	    posy += elements.get(i).getBounds().height + separator;
 	}
     }
 

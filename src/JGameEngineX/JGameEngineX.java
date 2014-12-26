@@ -16,6 +16,8 @@ import java.awt.HeadlessException;
 import java.awt.Rectangle;
 import java.awt.geom.Rectangle2D;
 import java.util.HashMap;
+import java.util.Iterator;
+import java.util.Map;
 import java.util.Timer;
 import java.util.TimerTask;
 
@@ -57,6 +59,7 @@ public class JGameEngineX implements Runnable {
     public JImageHandlerX images;
 
     private String mode;
+    private String prevmode;
     private JGameHolderX holder;
     private Rectangle2D dimensions;
     private Thread gamemain;
@@ -73,12 +76,14 @@ public class JGameEngineX implements Runnable {
     // Initializers
     /**
      * Creates a new instance of the game engine to run a client game.
-     * @param title The title of the game.
-     * @param mode The display mode of the game. Example: "windowed" or "applet"
-     * @param fps The desired screen refresh rate. Example: 60
-     * @param width The desired width of the game screen. Example: 640
+     * <p>
+     * @param title  The title of the game.
+     * @param mode   The display mode of the game. Example: "windowed" or
+     *               "applet"
+     * @param fps    The desired screen refresh rate. Example: 60
+     * @param width  The desired width of the game screen. Example: 640
      * @param height The desired height of the game screen. Example: 480
-     *               <p>
+     * <p>
      * @throws HeadlessException
      */
     public JGameEngineX(String title, String mode, int fps, int width, int height) throws HeadlessException {
@@ -108,9 +113,11 @@ public class JGameEngineX implements Runnable {
     }
 
     /**
-     * Returns a JGameModeX with the given name, or null if no mode is found matching the given name.
+     * Returns a JGameModeX with the given name, or null if no mode is found
+     * matching the given name.
+     * <p>
      * @param modename The name of the mode to retrieve.
-     *             <p>
+     * <p>
      * @return A JGameModeX with the mode name or null.
      */
     public final JGameModeX getGameMode(String modename) {
@@ -119,6 +126,7 @@ public class JGameEngineX implements Runnable {
 
     /**
      * Retrieves the game window's dimensions.
+     * <p>
      * @return A rectangle representing the game's screen bounds.
      */
     public final Rectangle2D getDimensions() {
@@ -159,6 +167,10 @@ public class JGameEngineX implements Runnable {
 	return this.showgamedata;
     }
 
+    public final boolean hasGameMode(String modename) {
+	return this.modes.containsKey(modename);
+    }
+
     //Mutators
     /**
      *
@@ -181,11 +193,16 @@ public class JGameEngineX implements Runnable {
      * @param mode
      */
     public final void setGameMode(String mode) {
+	this.prevmode = this.mode;
 	this.modes.get(this.mode).stop();
 	this.mode = mode.toLowerCase();
 	this.modes.get(this.mode).start();
 	this.mouse.setBindings(this.modes.get(this.mode).bindings);
 	this.keyboard.setBindings(this.modes.get(this.mode).bindings);
+    }
+
+    public final void previousGameMode() {
+	setGameMode(this.prevmode);
     }
 
     /**
@@ -338,11 +355,22 @@ public class JGameEngineX implements Runnable {
 	    this.spriteholder = new JSpriteHolderX(this);
 
 	    System.out.println("Core Initialized!");
-	    System.out.print("Initalizing Modes...");
+	    System.out.print("Initalizing Modes...\n");
 
-	    for (String k : modes.keySet()) {
-		modes.get(k).init();
-	    }
+	    Iterator<Map.Entry<String, JGameModeX>> it = modes.entrySet().iterator();
+
+	    it.forEachRemaining((e) -> {
+		System.out.print("\tInitialing Mode: " + e.getKey() + "...");
+		if (e.getValue().init()) {
+		    System.out.println("Initialized.");
+		}
+		else {
+		    System.out.println("Failed.");
+		    System.out.print("\t\tRemoving Mode: " + e.getKey() + "...");
+		    it.remove();
+		    System.out.println("Removed.");
+		}
+	    });
 
 	    System.out.println("Modes Initialized!");
 	    System.out.print("Initalizing Bindings...");
@@ -351,7 +379,7 @@ public class JGameEngineX implements Runnable {
 		modes.get(key).registerBindings();
 	    }
 
-	    System.out.println("Modes Initialized!");
+	    System.out.println("Initialized!");
 	    progressor.cancel();
 	    System.out.println();
 	    System.out.println("Initialized! (" + (System.currentTimeMillis() - init_time) + " ms)");

@@ -57,7 +57,7 @@ public abstract class JGameModeX {
     /**
      * Called during game initialization. Initialize the mode here.
      */
-    public abstract void init();
+    public abstract boolean init();
     
     /**
      * Called following game initialization. Register all event bindings here.
