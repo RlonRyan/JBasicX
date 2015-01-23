@@ -3,7 +3,8 @@
 ####################
 private.xml
 private.properties
+
 /nbproject/
 /build/
-/nbproject/private
 /dist/
+/.gradle/
