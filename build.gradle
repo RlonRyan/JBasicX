@@ -36,6 +36,7 @@ test {
 }
 
 task cleanup << {
+    description "Move the compiled jar to /dist and clean up after build."
     delete fileTree(dir: "${projectDir}/dist", include: '*.jar')
     copy {
         from "${buildDir}/libs"
@@ -45,5 +46,6 @@ task cleanup << {
 }
 
 task wrapper(type: Wrapper) {
+    description "Generates the Gradle wrapper for the project."
     gradleVersion = '2.2.1'
 }

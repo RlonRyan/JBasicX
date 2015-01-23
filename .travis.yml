@@ -1,0 +1,11 @@
+language: java
+
+before_install: chmod +x gradlew
+
+install: true
+
+matrix:
+    include:
+        - jdk: oraclejdk8
+
+script: ./gradlew build cleanup
