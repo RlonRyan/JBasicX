@@ -16,9 +16,15 @@ sourceSets {
             srcDir 'src'
             exclude 'JTestsX/**'
         }
+        resources {
+            srcDir 'src'
+        }
     }
     test {
         java {
+            srcDir 'src'
+        }
+        resources {
             srcDir 'src'
         }
     }
