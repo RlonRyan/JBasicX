@@ -8,3 +8,6 @@ private.properties
 /build/
 /dist/
 /.gradle/
+/.nb-gradle/profiles/private/
+/JBasicX/.nb-gradle/profiles/private/
+/.nb-gradle/private/

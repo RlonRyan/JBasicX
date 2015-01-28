@@ -14,8 +14,11 @@ sourceSets {
     main {
         java {
             srcDir 'src'
+            exclude 'JTestsX/**'
         }
-	resources {
+    }
+    test {
+        java {
             srcDir 'src'
         }
     }
@@ -26,12 +29,14 @@ repositories {
 }
 
 dependencies {
-    compile group: 'commons-collections', name: 'commons-collections', version: '3.2'
-    testCompile group: 'junit', name: 'junit', version: '4.+'
+    test {
+        compile group: 'junit', name: 'junit', version: '4.11'
+    }
 }
 
 test {
-    useJUnit {
+    testLogging {
+        events 'started', 'passed'
     }
 }
 
