@@ -24,7 +24,7 @@ public class JTestsX {
     @Test
     public void testCreateDrawing() {
 
-        JGameEngineX testGameEngine = new JGameEngineX("Tester", "windowed", 60, 640, 480);
+        JGameEngineX testGameEngine = new JGameEngineX("testCreateDrawing", "dummy", 60, 640, 480);
 
         JGameModeX testGameMode = new JDummyGameModeX("testMode", testGameEngine) {
             @Override
@@ -38,7 +38,7 @@ public class JTestsX {
         testGameEngine.init();
         testGameEngine.start("testMode");
 
-        wait(1);
+        wait(500);
 
         testGameEngine.stop();
     }
@@ -46,7 +46,7 @@ public class JTestsX {
     @Test
     public void testCreateMenu() {
 
-        JGameEngineX testGameEngine = new JGameEngineX("Tester", "windowed", 60, 640, 480);
+        JGameEngineX testGameEngine = new JGameEngineX("testCreateMenu", "dummy", 60, 640, 480);
         JMenuX testMenu = new JMenuX("Menu", 100, 100, 440, 280, "element 1", "element 2", "element 3");
 
         JDummyGameModeX testGameMode = new JDummyGameModeX("testMode", testGameEngine) {
@@ -67,14 +67,14 @@ public class JTestsX {
         testGameEngine.init();
         testGameEngine.start("testMode");
 
-        wait(1);
+        wait(500);
 
         testGameEngine.stop();
     }
 
     private void wait(int sec) {
         try {
-            Thread.sleep(sec * 1000);
+            Thread.sleep(sec);
         } catch (InterruptedException e) {
             //ignore
         }
