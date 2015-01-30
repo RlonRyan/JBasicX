@@ -59,15 +59,20 @@ task cleanPreTest << {
 
 test.dependsOn(cleanPreTest)
 
-task cleanup << {
-    description "Move the compiled jar to /dist and clean up after build."
-    delete fileTree(dir:"${projectDir}/dist", include: "*.jar")
+task dist << {
+    description "Generate the dist folder."
+    delete "${projectDir}/dist"
     copy {
         from "${buildDir}/libs"
         into "${projectDir}/dist"
     }
-    delete "${projectDir}/build"
+    copy {
+        from "${projectDir}/build/classes/test/Output"
+        into "${projectDir}/dist/test-images"
+    }
 }
+
+dist.shouldRunAfter(build)
 
 task wrapper(type: Wrapper) {
     description "Generates the Gradle wrapper for the project."

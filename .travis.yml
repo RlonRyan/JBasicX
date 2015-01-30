@@ -1,11 +1,10 @@
 language: java
-before_install: chmod +x gradlew
 install: true
 matrix:
   include:
   - jdk: oraclejdk8
-script: ./gradlew build
-before_deploy:
+script: gradle build dist
+after_success:
   - git config --global user.email "builds@travis-ci.com"
   - git config --global user.name "Travis CI"
   - export GIT_TAG=$TRAVIS_BRANCH-0.1.$TRAVIS_BUILD_NUMBER
@@ -17,10 +16,9 @@ deploy:
   api_key:
     secure: cGJ7GW90FRuqVcSk9OLuHmwUE346/YlM5AiH24FKQbVXPFYfHojMOHMnyPWmw7OeDC1GcusZBI9LnH4XAgj9nq4cSGbZwMYDaMIbj6yU7gZ2xbDCUyxX4gJdic9Ic/qZ4X0s7HTRUHxtk8a+btUgr4RW8AhnDzVZHDtzNTqguww=
   file:
-    - "build/libs"
-    - "build/classes/test/output"
+    - "dist"
   on:
-    tags: false
+    tags: true
     all_branches: true
 env:
   global:
