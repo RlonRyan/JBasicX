@@ -99,7 +99,8 @@ task zipTest(type: Zip, dependsOn: distSetup) {
     }
 }
 
-dist.shouldRunAfter(build)
+distSetup.dependsOn(build)
+
 dist.dependsOn(zipDist)
 dist.dependsOn(zipTest)
 
