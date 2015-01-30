@@ -10,7 +10,9 @@ deploy:
   api_key:
     secure: cGJ7GW90FRuqVcSk9OLuHmwUE346/YlM5AiH24FKQbVXPFYfHojMOHMnyPWmw7OeDC1GcusZBI9LnH4XAgj9nq4cSGbZwMYDaMIbj6yU7gZ2xbDCUyxX4gJdic9Ic/qZ4X0s7HTRUHxtk8a+btUgr4RW8AhnDzVZHDtzNTqguww=
   file:
-    - "dist"
+    - README.md
+    - "dist/JBasicX-Main-0.1.0.zip"
+    - "dist/JBasicX-Test Output-0.1.0.zip"
   on:
     tags: true
     all_branches: true

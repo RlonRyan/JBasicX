@@ -1,9 +1,11 @@
 apply plugin: 'java'
 
+version = '0.1.0'
+
 jar {
     from { configurations.compile.collect { it.isDirectory() ? it : zipTree(it) } }
     baseName = 'JBasicX'
-    version =  '0.1.0'
+    version =  "${version}"
     manifest {
         attributes("Implementation-Title": "JBasicX",
                    "Implementation-Version": version)
@@ -59,20 +61,47 @@ task cleanPreTest << {
 
 test.dependsOn(cleanPreTest)
 
-task dist << {
+
+task dist {
+    description "Generate the dist(s) into the dist folder."
+}
+
+task distSetup {
     description "Generate the dist folder."
     delete "${projectDir}/dist"
     copy {
         from "${buildDir}/libs"
-        into "${projectDir}/dist"
+        into "${projectDir}/dist/main"
     }
     copy {
         from "${projectDir}/build/classes/test/Output"
-        into "${projectDir}/dist/test-images"
+        into "${projectDir}/dist/test"
+    }
+}
+
+task zipDist(type: Zip, dependsOn: distSetup) {
+    from "${projectDir}/dist/main"
+    destinationDir = file("${projectDir}/dist")
+    version = "${version}"
+    appendix = "Main"
+    doLast {
+        println "Created ${zipDist.archiveName}"
+    }
+}
+
+task zipTest(type: Zip, dependsOn: distSetup) {
+    from "${projectDir}/dist/test"
+    destinationDir = file("${projectDir}/dist")
+    version = "${version}"
+    appendix = "Test Output"
+    doLast{
+        println "Created ${zipTest.archiveName}"
     }
 }
 
 dist.shouldRunAfter(build)
+dist.dependsOn(zipDist)
+dist.dependsOn(zipTest)
 
 task wrapper(type: Wrapper) {
     description "Generates the Gradle wrapper for the project."
