@@ -42,13 +42,26 @@ dependencies {
 
 test {
     testLogging {
-        events 'started', 'passed'
+        events 'started', 'passed', 'failed'
+    }
+    afterTest {
+        copy {
+            from "${projectDir}/build/classes/test/Output"
+            into "${projectDir}/build/test-results/output-screen"
+        }
     }
 }
 
+task cleanPreTest << {
+    delete fileTree(dir: "${projectDir}/build/classes/test/Output", include: "*.png")
+    delete fileTree(dir: "${projectDir}/test-results/output-screen", include: "*.png")
+}
+
+test.dependsOn(cleanPreTest)
+
 task cleanup << {
     description "Move the compiled jar to /dist and clean up after build."
-    delete fileTree(dir: "${projectDir}/dist", include: '*.jar')
+    delete fileTree(dir:"${projectDir}/dist", include: "*.jar")
     copy {
         from "${buildDir}/libs"
         into "${projectDir}/dist"

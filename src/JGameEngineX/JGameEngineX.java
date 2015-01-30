@@ -121,7 +121,7 @@ public class JGameEngineX implements Runnable {
      * @return A JGameModeX with the mode name or null.
      */
     public final JGameModeX getGameMode(String modename) {
-        return this.modes.get(modename);
+        return this.modes.get(modename.toLowerCase());
     }
 
     /**
@@ -168,7 +168,7 @@ public class JGameEngineX implements Runnable {
     }
 
     public final boolean hasGameMode(String modename) {
-        return this.modes.containsKey(modename);
+        return this.modes.containsKey(modename.toLowerCase());
     }
 
     //Mutators
@@ -193,8 +193,10 @@ public class JGameEngineX implements Runnable {
      * @param mode
      */
     public final void setGameMode(String mode) {
-        this.prevmode = this.mode;
-        this.modes.get(this.mode).stop();
+        if (!(this.mode == null)) {
+            this.prevmode = this.mode;
+            this.modes.get(this.mode).stop();
+        }
         this.mode = mode.toLowerCase();
         this.modes.get(this.mode).start();
         this.mouse.setBindings(this.modes.get(this.mode).bindings);

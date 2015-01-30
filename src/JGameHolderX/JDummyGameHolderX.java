@@ -5,7 +5,6 @@
  */
 package JGameHolderX;
 
-import JGameHolderX.JGameHolderX;
 import JIOX.JMouseX.JMouseX;
 import java.awt.Color;
 import java.awt.Graphics2D;
@@ -80,13 +79,30 @@ public class JDummyGameHolderX implements JGameHolderX {
 
         this.framenum++;
 
+        String header = this.title + " Frame: " + this.framenum;
+
+        int width = g2d.getFontMetrics().stringWidth(header);
+        int height = g2d.getFontMetrics().getHeight();
+        int xpos = (this.dummyScreen.getWidth() - width) / 2;
+
+        this.g2d.setColor(new Color(100, 100, 100, 100));
+        this.g2d.fillRoundRect(xpos - 5, -5, width + 10, height + 10, 5, 5);
+        this.g2d.setColor(Color.WHITE);
+        this.g2d.drawRoundRect(xpos - 5, -5, width + 10, height + 10, 5, 5);
+
+        this.g2d.setColor(draw_color);
+        this.g2d.drawString(header, xpos, height);
+
         // Where to?
+        File file = new File(this.folder, this.title + "Frame" + this.framenum + ".png");
+
         try {
-            File file = new File(this.folder, this.title + "Frame" + this.framenum + ".png");
             ImageIO.write(dummyScreen, "PNG", file);
         } catch (IOException e) {
             // Oh well, It's probably the enviorment.
-            // throw new Error("Can't write!");
+            if (file.exists()) {
+                file.delete();
+            }
         }
     }
 

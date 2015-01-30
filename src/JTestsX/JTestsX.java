@@ -27,18 +27,45 @@ public class JTestsX {
         JGameEngineX testGameEngine = new JGameEngineX("testCreateDrawing", "dummy", 60, 640, 480);
 
         JGameModeX testGameMode = new JDummyGameModeX("testMode", testGameEngine) {
+
+            int size = 100;
+            int rot = -15;
+
             @Override
             public void paint(Graphics2D g2d) {
+
+                size = size + 50;
+                rot = rot + 15;
+
+                int xpos = (int) (holder.getDimensions().getWidth() / 2);
+                int ypos = (int) (holder.getDimensions().getHeight() / 2);
+
+                int radius = (int) Math.sqrt(((size / 2) * (size / 2)) * 2);
+
+                g2d.translate(xpos, ypos);
+                g2d.rotate(Math.toRadians(rot));
+
+                g2d.setColor(Color.red);
+                g2d.drawOval(-radius, -radius, radius * 2, radius * 2);
                 g2d.setColor(Color.green);
-                g2d.draw3DRect((int) (holder.getDimensions().getWidth() / 2) - (100 / 2), (int) (holder.getDimensions().getHeight() / 2) - (100 / 2), 100, 100, true);
+                g2d.drawRect(-(size / 2), -(size / 2), size, size);
+                g2d.setColor(Color.blue);
+                g2d.drawLine(-(size / 2), -(size / 2), (size / 2), (size / 2));
+                g2d.drawLine((size / 2), -(size / 2), -(size / 2), (size / 2));
+
+                g2d.rotate(-Math.toRadians(rot));
+                g2d.translate(-xpos, -ypos);
             }
         };
 
         testGameEngine.registerGameMode(testGameMode);
         testGameEngine.init();
-        testGameEngine.start("testMode");
+        testGameEngine.setGameMode(testGameMode.name);
 
-        wait(500);
+        for (int i = 0; i < 10; i++) {
+            testGameMode.update();
+            testGameEngine.paint();
+        }
 
         testGameEngine.stop();
     }
@@ -59,15 +86,19 @@ public class JTestsX {
             public void paint(Graphics2D g2d) {
                 testMenu.paint(testGameEngine.getGameGraphics());
                 testMenu.paintBounds(testGameEngine.getGameGraphics());
+                testMenu.incrementHighlight();
             }
         };
 
         testGameEngine.registerGameMode(testGameMode);
 
         testGameEngine.init();
-        testGameEngine.start("testMode");
+        testGameEngine.setGameMode(testGameMode.name);
 
-        wait(500);
+        for (int i = 0; i < 10; i++) {
+            testGameMode.update();
+            testGameEngine.paint();
+        }
 
         testGameEngine.stop();
     }
