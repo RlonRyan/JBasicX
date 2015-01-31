@@ -81,6 +81,7 @@ task distSetup {
 
 task zipDist(type: Zip, dependsOn: distSetup) {
     from "${projectDir}/dist/main"
+    from "${projectDir}/Readme.md"
     destinationDir = file("${projectDir}/dist")
     version = "${version}"
     appendix = "Main"
@@ -91,6 +92,7 @@ task zipDist(type: Zip, dependsOn: distSetup) {
 
 task zipTest(type: Zip, dependsOn: distSetup) {
     from "${projectDir}/dist/test"
+    from "${projectDir}/Readme.md"
     destinationDir = file("${projectDir}/dist")
     version = "${version}"
     appendix = "Test Output"
