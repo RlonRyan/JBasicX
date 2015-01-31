@@ -32,11 +32,6 @@ public class JGameEngineX implements Runnable {
     public final String title;
 
     /**
-     * The game sprite manager.
-     */
-    public JSpriteHolderX spriteholder;
-
-    /**
      * The game mouse tracker.
      */
     public JMouseX mouse;
@@ -280,7 +275,6 @@ public class JGameEngineX implements Runnable {
             holder.getGraphics().fillRoundRect(10, (int) (this.dimensions.getMaxY() - 1.5 * h), (int) this.dimensions.getWidth() - 20, (int) this.dimensions.getWidth() - 20, (int) this.dimensions.getWidth() / 25, (int) this.dimensions.getHeight() / 25);
             holder.getGraphics().setColor(Color.WHITE);
             holder.getGraphics().drawString("FPS: " + this.fps, 25, (int) this.dimensions.getHeight() - 10);
-            holder.getGraphics().drawString("Sups: " + this.spriteholder.getSups(), 125, (int) this.dimensions.getHeight() - 10);
         }
         holder.resetGraphics();
     }
@@ -353,7 +347,6 @@ public class JGameEngineX implements Runnable {
             this.holder.addKeyListener(this.keyboard);
 
             this.images = new JImageHandlerX(this.getClass());
-            this.spriteholder = new JSpriteHolderX(this);
 
             System.out.println("Core Initialized!");
             System.out.print("Initalizing Modes...\n");
@@ -424,9 +417,6 @@ public class JGameEngineX implements Runnable {
         // Timing Stuff
         this.frametime = System.currentTimeMillis();
 
-        //  Start-up Sprite holder
-        this.spriteholder.start();
-
         progressor.cancel();
         System.out.println("Started! (" + (System.currentTimeMillis() - start_time) + " ms)");
 
@@ -453,11 +443,10 @@ public class JGameEngineX implements Runnable {
     }
 
     /**
-     *
+     * Stop Game Thread Execution
      */
     public final void stop() {
         gamemain = null;
-        this.spriteholder.stop();
     }
 
 }
