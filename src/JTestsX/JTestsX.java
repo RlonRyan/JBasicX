@@ -11,14 +11,17 @@ package JTestsX;
 import JGameEngineX.JGameEngineX;
 import JGameEngineX.JGameModeX.JGameModeX;
 import JIOX.JMenuX.JMenuX;
+import JSpriteX.JSpriteHolderX;
 import java.awt.Color;
 import java.awt.Graphics2D;
 import org.junit.*;
+import org.junit.runners.MethodSorters;
 
 /**
  *
  * @author Ryan
  */
+@FixMethodOrder(MethodSorters.NAME_ASCENDING)
 public class JTestsX {
 
     @Test
@@ -96,6 +99,54 @@ public class JTestsX {
         testGameEngine.setGameMode(testGameMode.name);
 
         for (int i = 0; i < 10; i++) {
+            testGameMode.update();
+            testGameEngine.paint();
+        }
+
+        testGameEngine.stop();
+    }
+
+    @Test
+    public void testCreateSprites() {
+
+        JGameEngineX testGameEngine = new JGameEngineX("testCreateSprites", "dummy", 60, 640, 480);
+
+        JDummyGameModeX testGameMode = new JDummyGameModeX("testMode", testGameEngine) {
+
+            JSpriteHolderX spriteholder;
+
+            @Override
+            public boolean init() {
+                spriteholder = new JSpriteHolderX(holder);
+                return true;
+            }
+
+            @Override
+            public void start() {
+                for (int i = 0; i < 90; i++) {
+                    spriteholder.addSprite(JSpriteHolderX.SPRITE_BOUNCER, i * 4, i * 4, i, holder.getDimensions().getCenterX() - 25, holder.getDimensions().getCenterY() - 25);
+                }
+            }
+
+            @Override
+            public void update() {
+                spriteholder.updateSprites();
+            }
+
+            @Override
+            public void paint(Graphics2D g2d) {
+                spriteholder.paintSprites(g2d);
+                spriteholder.paintSpriteBounds(g2d);
+            }
+
+        };
+
+        testGameEngine.registerGameMode(testGameMode);
+
+        testGameEngine.init();
+        testGameEngine.setGameMode(testGameMode.name);
+
+        for (int i = 0; i < 25; i++) {
             testGameMode.update();
             testGameEngine.paint();
         }

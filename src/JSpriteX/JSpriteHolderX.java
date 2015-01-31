@@ -123,6 +123,7 @@ final public class JSpriteHolderX implements Runnable {
      *
      * @param type
      * @param direction
+     * @param rotation
      * @param vel
      * @param x
      * @param y
@@ -131,7 +132,7 @@ final public class JSpriteHolderX implements Runnable {
     synchronized final public void addSprite(int type, int direction, int rotation, double vel, double x, double y, String imagename) {
         JSpriteX spr = new JPictureSpriteX(this.images.getImage(imagename), x, y);
         spr.setDirection(direction);
-        spr.setDirection(rotation);
+        spr.setRotation(rotation);
         spr.setVel(vel);
         spr.setType(type);
         this.sprites.add(spr);
