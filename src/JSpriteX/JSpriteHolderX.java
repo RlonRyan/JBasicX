@@ -350,7 +350,7 @@ final public class JSpriteHolderX implements Runnable {
      * @param sprite
      * @return
      */
-    synchronized final public JSpriteX collidesWith(JSpriteX sprite) {
+    synchronized final public JSpriteX findCollidesWith(JSpriteX sprite) {
         for (int i = 0; i < this.sprites.size(); i++) {
             if (this.sprites.get(i).collidesWith(sprite)) {
                 return this.sprites.get(i);
@@ -364,7 +364,7 @@ final public class JSpriteHolderX implements Runnable {
      * @param sprite
      * @return
      */
-    synchronized final public JSpriteX collidesWithAndRemove(JSpriteX sprite) {
+    synchronized final public JSpriteX findCollidesWithAndRemove(JSpriteX sprite) {
         for (int i = 0; i < this.sprites.size(); i++) {
             if (this.sprites.get(i).collidesWith(sprite)) {
                 return this.sprites.remove(i);
