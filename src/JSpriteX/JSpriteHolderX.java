@@ -408,6 +408,22 @@ final public class JSpriteHolderX implements Runnable {
 
     /**
      *
+     * @param type1 The type of the first sprite.
+     * @param type2 The type of the second sprite.
+     */
+    synchronized final public void checkCollisionsAndRemove(int type1, int type2) {
+        for (int i = 0; i < this.sprites.size(); i++) {
+            for (int ii = 0; ii < this.sprites.size(); ii++) {
+                if (i != ii && this.sprites.get(i).type == type1 && this.sprites.get(ii).type == type2 && this.sprites.get(i).collidesWith(this.sprites.get(ii))) {
+                    this.sprites.remove(i);
+                    this.sprites.remove(ii);
+                }
+            }
+        }
+    }
+
+    /**
+     *
      */
     synchronized final public void checkCollisionsAndRemove() {
         for (int i = 0; i < this.sprites.size(); i++) {
