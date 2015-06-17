@@ -412,11 +412,11 @@ final public class JSpriteHolderX implements Runnable {
      * @param type2 The type of the second sprite.
      */
     synchronized final public void checkCollisionsAndRemove(int type1, int type2) {
-        for (int i = 0; i < (this.sprites.size() + 1) / 2; i++) {
-            for (int ii = i; ii < this.sprites.size(); ii++) {
-                if (i != ii && this.sprites.get(i).type == type1 && this.sprites.get(ii).type == type2 && this.sprites.get(i).collidesWith(this.sprites.get(ii))) {
+        for (int i = 0; i < this.sprites.size(); i++) {
+            for (int ii = 0; ii < this.sprites.size(); ii++) {
+                if (i != ii && this.sprites.get(i).getType() == type1 && this.sprites.get(ii).getType() == type2 && this.sprites.get(i).collidesWith(this.sprites.get(ii))) {
                     this.sprites.remove(i);
-                    this.sprites.remove(ii - 1);
+                    this.sprites.remove(ii < i ? ii : ii - 1);
                     i = i - 1;
                     break;
                 }
@@ -432,7 +432,7 @@ final public class JSpriteHolderX implements Runnable {
             for (int ii = 0; ii < this.sprites.size(); ii++) {
                 if (i != ii && this.sprites.get(i).collidesWith(this.sprites.get(ii))) {
                     this.sprites.remove(i);
-                    this.sprites.remove(ii - 1);
+                    this.sprites.remove(ii < i ? ii : ii - 1);
                     i = i - 1;
                     break;
                 }
